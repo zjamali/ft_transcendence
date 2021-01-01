@@ -58,7 +58,7 @@ export class TwoFactorAuthenticationController {
     return res.status(HttpStatus.OK).send('success');
   }
 
-  @Get('turnOn')
+  @Post('turnOn')
   @UseGuards(JwtAuthGuard)
   async turnOnTwoFactorAuthentication(
     @Req() req: RequestWithUser,

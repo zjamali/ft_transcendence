@@ -12,6 +12,7 @@ import { AppContext } from "../../context/AppContext";
 import MainUserNav from "./MainUserNav";
 import OtherUserNav from "./OtherUserNav";
 import Router, { useRouter } from "next/router";
+import Active2FA from "../2FA/create2FA";
 
 const Profile = () => {
 	const [active, setActive] = useState<String>("DefaultData");
@@ -20,14 +21,15 @@ const Profile = () => {
 	const [openModal, setOpenModal] = useState<Boolean>(
 		router.query.edit_profile ? true : false
 	);
+	const [open2FAModal, setOpen2FAModal] = useState<Boolean>(false);
 
 	const { state } = useContext(AppContext);
 	const renderComponent = (active: String) => {
 		switch (active) {
 			case "DefaultData":
-				return <DefaultData id={state.mainUser.id}/>;
+				return <DefaultData id={state.mainUser.id} />;
 			case "Friends":
-				return <FriendsList id={state.mainUser.id}/>;
+				return <FriendsList id={state.mainUser.id} />;
 			case "History":
 				return <HistoryList />;
 		}
@@ -40,13 +42,12 @@ const Profile = () => {
 		setOpenModal(router.query.edit_profile ? true : false);
 	}, [router]);
 	useEffect(() => {
-		if (!openModal)
-			Router.push("/");
+		if (!openModal) Router.push("/");
 	}, [openModal]);
 
 	const src = state.mainUser?.image;
-	
-	console.log("path------------>", src)
+
+	console.log("path------------>", src);
 	return (
 		<div className="profile-content">
 			<div className="profile-wall">
@@ -68,14 +69,19 @@ const Profile = () => {
 				{/* <OtherUserNav /> */}
 			</div>
 			{renderComponent(active)}
-		{/* </div> */}
-		{openModal ? (
-			<Portal>
-				<EditModal closeModal={setOpenModal} />
-			</Portal>
-		) : null}
-	{/* </div> */}
-	</div>
+			{/* </div> */}
+			{openModal ? (
+				<Portal>
+					<EditModal closeModal={setOpenModal} setOpen2FAModal={setOpen2FAModal} />
+				</Portal>
+			) : null}
+			{open2FAModal ? (
+				<Portal>
+					<Active2FA closeModal2FA={setOpen2FAModal} />
+				</Portal>
+			) : null}
+			{/* </div> */}
+		</div>
 	);
 };
 

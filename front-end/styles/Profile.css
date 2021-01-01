@@ -663,13 +663,48 @@
 	/* border: 1px solid red; */
 	margin-bottom: -25px;
 }
-
+.edit-modal-qr{
+	background-color: var(--primary-color);
+	width: 350px;
+	height: 400px;
+	/* max-width: 500px;
+	max-height: 450px; */
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	/* border: 0.1px solid white; */
+	border-radius: 12px;
+	position: fixed;
+	display: flex;
+	align-items: center;
+	/* justify-content: center; */
+	gap: 50px;
+	flex-direction: column;
+	z-index: 2000;
+}
 .modal-picture-container {
 	position: relative;
 	width: 100px;
 	height: 100px;
 	overflow: hidden;
 	border-radius: 50px;
+}
+.modal-picture-qr-container {
+	background-color: #ffffff;
+	top: 10px;
+	position: relative;
+	width: 300px;
+	height: 300px;
+	overflow: hidden; 
+	border-radius: 50px;
+}
+.modal-picture-qr-container .modal-data {
+	width: 300px;
+	height: 50px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
 }
 
 .modal-data {
