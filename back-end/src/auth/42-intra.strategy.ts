@@ -31,7 +31,7 @@ export class IntraStrategy extends PassportStrategy(Strategy, '42') {
     profile: any,
     done: VerifyCallback,
   ): Promise<any> {
-    console.log('validating time');
+    // console.log('validating time');
     const { id, userName, displayName, firstName, lastName, image } = profile;
     const user = {
       id,
@@ -40,7 +40,6 @@ export class IntraStrategy extends PassportStrategy(Strategy, '42') {
       firstName,
       lastName,
       image,
-      accessToken,
     };
     done(null, user);
   }

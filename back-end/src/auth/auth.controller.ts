@@ -1,6 +1,7 @@
 import { Controller, Req, Get, UseGuards, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
+import { Request, Response } from 'express';
 
 @Controller('auth/42')
 export class AuthController {
@@ -15,11 +16,11 @@ export class AuthController {
 
   @Get('callback')
   @UseGuards(AuthGuard('42'))
-  async intraAuthRedirect(@Req() req, @Res() res): Promise<any> {
+  intraAuthRedirect(@Req() req: Request, @Res() res: Response) {
     console.log('I am in loginBlah()');
     // console.log(req.user);
     // return req.user;
 
-    return this.authService.intraLogin(req, res);
+    return  this.authService.intraLogin(req, res);
   }
 }
