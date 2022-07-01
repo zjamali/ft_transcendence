@@ -39,7 +39,7 @@ export default function Chat() {
           user.isOnline = status
         }
       })
-      setContacts([...contacts]);
+      setContacts([...contacts])
     } else fetchAllusers()
   }
   useEffect(() => {
@@ -58,9 +58,16 @@ export default function Chat() {
         return
       }
       sockets.events.on('A_USER_STATUS_UPDATED', (user: any) => {
-        setContactStatus(user.isOnline, user);
+        setContactStatus(user.isOnline, user)
       })
+    }
 
+    return () => {
+      if (sockets.event) {
+        sockets.events.off('A_USER_STATUS_UPDATED', (user: any) => {
+          setContactStatus(user.isOnline, user)
+        })
+      }
     }
   }, [sockets])
 

@@ -23,6 +23,9 @@ const Home: NextPage = () => {
           }
           else setLogin(false);
         })
+        .catch((res) => {
+          setLogin(false);
+        })
     }, [])
 
     useEffect(() => {
