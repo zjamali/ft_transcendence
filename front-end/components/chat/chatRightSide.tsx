@@ -24,7 +24,7 @@ export default function ChatRightSide() {
         </div>
         {state.receiver &&
           (isContact(state.receiver) ? (
-            <BlockUser/>
+           ''
             ) : (
             <RoomManagement/>
           ))}

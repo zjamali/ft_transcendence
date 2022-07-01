@@ -4,16 +4,11 @@ import {v4 as uuidv4} from 'uuid'
 
 import { api_contacts } from '../pages/api/contacts'
 import { api_rooms } from '../pages/api/rooms'
-export const ChatContext = createContext<any>(null)
+export const ChatContext = createContext<any>({});
 
 export const ChatProvider = (props: any) => {
   const [session, setSession] = useState<any>(null);
-  const [mainUser, setMainUser] = useState({
-    image: '/images/contacts/default_avatar.jpeg',
-    userName: '',
-    lastName: '',
-    firstName: '',
-  })
+  const [mainUser, setMainUser] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([])
   const [messageInput, setMessageinput] = useState<string>('')
   // const [contacts, setContacts] = useState<ContactProps[]>([])

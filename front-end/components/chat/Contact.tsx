@@ -25,10 +25,10 @@ function Contact(props: ContactComponentProps) {
         {props.contact.playing && (
           <div className={ContactStyles.playing}>playing</div>
         )}
-        {props.contact.status && (
+        {props.contact.isOnline && (
           <div className={ContactStyles.onlineCircle}></div>
         )}
-        {!props.contact.status && (
+        {!props.contact.isOnline && (
           <div className={ContactStyles.offlineCircle}></div>
         )}
       </div>

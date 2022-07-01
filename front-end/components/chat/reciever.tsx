@@ -13,7 +13,7 @@ export default function Reciever() {
           <Avatar image={state.receiver.image} />
           <div>
             <h3>{`${state.receiver.firstName} ${state.receiver.lastName}` }</h3>
-            <p>@{state.receiver.user_name}</p>
+            <p>@{state.receiver.userName}</p>
           </div>
         </div>
       ) : (

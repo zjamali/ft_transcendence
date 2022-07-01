@@ -9,15 +9,13 @@ export interface MessageComponentProps{
 }
 
 export interface User {
-  id?: string;
-  profile_id?: string;
-  image?: string;
-  userName?: string;
-  lastName?: string;
-  firstName?: string;
-  socketId?: string;
-  status?: boolean;
-  playing?: boolean;
+  id: string;
+  image: string;
+  userName: string;
+  lastName: string;
+  firstName: string;
+  isOnline: boolean;
+  playing: boolean;
   peer_to_peer_room_id?: string;
 }
 export interface Profile {

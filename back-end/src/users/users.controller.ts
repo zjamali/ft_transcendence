@@ -7,16 +7,19 @@ import { Request } from 'express';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   getUsers() {
     return this.usersService.getUsers();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('create')
   createUser(@Body() createUserDto: any) {
     return this.usersService.createUser(createUserDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('id/:id')
   findUserById(@Param('id') id: string) {
     return this.usersService.findOne(id);
