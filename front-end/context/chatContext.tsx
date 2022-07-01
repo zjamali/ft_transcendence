@@ -17,7 +17,7 @@ export const ChatProvider = (props: any) => {
   const [rooms, setRomms] = useState<Room[]>([])
   const [receiver, setReceiver] = useState<User | Room | null>(null)
   const [chatSockets, setsChatSockets] = useState<any>(null);
-  const [alertSockets, setsAlertSockets] = useState<any>(null);
+  const [eventSockets, setsEventSockets] = useState<any>(null);
   return (
     <ChatContext.Provider
       value={{
@@ -32,7 +32,7 @@ export const ChatProvider = (props: any) => {
         },
         sockets:{
           chat :chatSockets,
-          alerts: alertSockets,
+          events: eventSockets,
         },
         setMessages,
         setMessageinput,
@@ -41,7 +41,7 @@ export const ChatProvider = (props: any) => {
         setReceiver,
         setMainUser,
         setsChatSockets,
-        setsAlertSockets,
+        setsEventSockets,
         setSession,
       }}
     >

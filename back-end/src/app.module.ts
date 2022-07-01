@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { JwtAuthModule } from './auth/jwt-auth.module';
 import entities from 'src';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import entities from 'src';
     AuthModule,
     UsersModule,
     JwtAuthModule,
+    EventsModule,
   ],
 })
 export class AppModule {}
