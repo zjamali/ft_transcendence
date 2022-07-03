@@ -47,7 +47,8 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       if (userSockets.length === 1)
       {
         console.log('✅ user : connected : ', response);
-        this.Server.emit('A_USER_STATUS_UPDATED', { ...user});
+        // this.Server.emit('A_USER_STATUS_UPDATED', { ...user});
+        client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user});
         await this.eventsService.setUserOnlineInDb(user_id);
       }
     }
@@ -68,7 +69,8 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (userSockets.length === 0)
     {
       console.log("user: disconnect ❌", response);
-      this.Server.emit('A_USER_STATUS_UPDATED', { ...user});
+      // this.Server.emit('A_USER_STATUS_UPDATED', { ...user});
+      client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user});
       await this.eventsService.setUserOfflineInDb(user_id);
     }
   }

@@ -11,28 +11,34 @@ export default function Chat() {
   const { state, sockets, setContacts, setsEventSockets } = useContext(
     ChatContext,
   )
-  const [onConnection, setOnConnection] = useState(true)
   useEffect(() => {
+    console.log("new build");
     try{
       setsEventSockets(io('http://localhost:5000/events', {withCredentials: true}))
+      fetchAllusers();
     }
     catch(error)
     {
       console.log("socket error");
     }
-    fetchAllusers();
-    
     return () => {
-      console.log("close socket ");
-      sockets.events.close();
       
+      if (sockets.events)
+      {
+        sockets.events.disconnect();
+        console.log("delete socket : ", sockets.events);
+      }
     };
   }, [])
 
   function fetchAllusers() {
     try
     {
-    axios
+
+
+
+
+      axios
       .get('http://localhost:5000/users', { withCredentials: true })
       .then((res) => {
         setContacts([...res.data])
@@ -43,6 +49,7 @@ export default function Chat() {
       console.log("CANT GET ALL USERS");
     }
   }
+
   function setContactStatus(status: boolean, user: any) {
     let contacts = [...state.contacts]
     if (
@@ -58,6 +65,7 @@ export default function Chat() {
       setContacts([...contacts])
     } else fetchAllusers()
   }
+
   useEffect(() => {
     console.log('event socket : ', sockets.events)
     if (sockets.events) {
