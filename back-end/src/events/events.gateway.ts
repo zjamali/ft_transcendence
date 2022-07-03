@@ -34,36 +34,59 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly jwtService: JwtService,
   ) {}
 
-
   @UseGuards(JwtAuthGuard)
   async handleConnection(client: any) {
     this.allgetwaySockets.push(client.id);
-    const cookies = client.handshake.headers.cookie;
-    const response = await this.eventsService.addUserSocket(this.getUserIdFromJWT(cookies), client.id);
+    const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
+    const response = await this.eventsService.addUserSocket(
+      user_id,
+      client.id,
+    );
     if (response) {
-      console.log('✅ user : connected : ', response);
-      const { user, opnedSockets } = response;
-      this.Server.emit('A_USER_STATUS_UPDATED', { ...user, isOnline: true });
+      const { user, userSockets } = response;
+      if (userSockets.length === 1)
+      {
+        console.log('✅ user : connected : ', response);
+        this.Server.emit('A_USER_STATUS_UPDATED', { ...user});
+        await this.eventsService.setUserOnlineInDb(user_id);
+      }
     }
+    console.log('getway sockets :', this.allgetwaySockets);
   }
   @UseGuards(JwtAuthGuard)
   async handleDisconnect(client: any) {
     const cookies = client.handshake.headers.cookie;
-    this.allgetwaySockets = this.allgetwaySockets.filter((socketid) => socketid != client.id);
-    const response = await this.eventsService.removeUserSocket(this.getUserIdFromJWT(cookies), client.id);
-    if (response.user) {
-      console.log('❌ user disconnect : ', response);
-      const { user, opnedSockets } = response;
-      this.Server.emit('A_USER_STATUS_UPDATED', { ...user, isOnline: false });
+    const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
+    this.allgetwaySockets = this.allgetwaySockets.filter(
+      (socketid) => socketid != client.id,
+    );
+    const response = await this.eventsService.removeUserSocket(
+      user_id,
+      client.id,
+    );
+    const { user, userSockets } = response;
+    if (userSockets.length === 0)
+    {
+      console.log("user: disconnect ❌", response);
+      this.Server.emit('A_USER_STATUS_UPDATED', { ...user});
+      await this.eventsService.setUserOfflineInDb(user_id);
     }
-    console.log('getway sockets :', this.allgetwaySockets);
   }
 
   getUserIdFromJWT(cookies: string): string {
     const decodedJwtAccessToken: any = this.jwtService.decode(
-      cookies.replace('access_token=', ''),
+      this.parseCookie(cookies)['access_token'],
     );
     const jwtPayload: JwtPayload = { ...decodedJwtAccessToken };
     return jwtPayload.id;
+  }
+  parseCookie(cookies: any) {
+    cookies = cookies.split('; ');
+    const result = {};
+    for (let i in cookies) {
+      const cur = cookies[i].split('=');
+      result[cur[0]] = cur[1];
+    }
+    return result;
   }
 }

@@ -13,18 +13,20 @@ export default function Chat() {
   )
   const [onConnection, setOnConnection] = useState(true)
   useEffect(() => {
-    console.log('state : ', state)
     try{
-
       setsEventSockets(io('http://localhost:5000/events', {withCredentials: true}))
     }
     catch(error)
     {
       console.log("socket error");
     }
-    fetchAllusers()
-
-    // return () => sockets.events.disconnect();
+    fetchAllusers();
+    
+    return () => {
+      console.log("close socket ");
+      sockets.events.close();
+      
+    };
   }, [])
 
   function fetchAllusers() {
