@@ -7,58 +7,58 @@ import User from 'src/users/user.entity';
 @Injectable()
 export class EventsService {
   OnlineUsers: Map<string, string[]> = new Map();
+  AllOpnedSockets: string[] = [];
+  Users: any;
 
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
   ) {}
-  async addUserSocket(user : User ,socket_id: string) {
-    const opned_sockets = this.OnlineUsers.get(user.id);
-    if (opned_sockets)
-      this.OnlineUsers.set(user.id, [...opned_sockets, socket_id]);
-    else this.OnlineUsers.set(user.id, [socket_id]);
 
-    await this.usersRepository.update(user.id, { isOnline: true });
-    if ( this.OnlineUsers.get(user.id).length === 1)
+
+  async addUserSocket(user_id : string, socket_id: string) {
+    this.AllOpnedSockets.push(socket_id);
+    this.Users = await this.usersRepository.find();
+    //get already opened sockets of user if exist
+    const opened_sockets = this.OnlineUsers.get(user_id);
+    if (opened_sockets)
+      this.OnlineUsers.set(user_id, [...opened_sockets, socket_id]);
+    else 
+      this.OnlineUsers.set(user_id, [socket_id]);
+    await this.setUserOnlineInDb(user_id);
+    return {
+      user: { ...this.Users.filter((user : User) => user.id === user_id) , isOnline: true },
+      opnedSockets: [...this.AllOpnedSockets],
+    };
+  }
+
+  async removeUserSocket(user_id : string,socket_id: string) {
+    // remove socket from sockets array
+    this.AllOpnedSockets = this.AllOpnedSockets.filter(
+      (socket) => socket != socket_id,
+    );
+    // set user offline in database
+    await this.setUserOfflineInDb(user_id);
+    const offline_user = this.Users.filter((user) => user.id == user_id);
+    if (this.OnlineUsers.get(user_id).length === 1) 
     {
-      // get sockets of user friends
-      // HERE WE SEND EMIT TO ALL USERS 
-      let allusersockets: string[] = [];
-      for (const [key , value] of this.OnlineUsers) {
-        allusersockets.push(...this.OnlineUsers.get(key));
-      }
-      return {user:{...user, isOnline: true} , sockets : [...allusersockets]}
+      return { user: { ...offline_user }, sockets: this.AllOpnedSockets };
+    }
+    else 
+    {
+      this.OnlineUsers.set(user_id, this.OnlineUsers.get(user_id).filter((socket) => socket != socket_id));
+      return { user: null, opnedSockets: [...this.AllOpnedSockets] };
     }
   }
-
-  async removeUserSocket(socket_id: string) {
-    let user_id: string;
-    console.log('remove socket ', socket_id);
-    for (const [key, value] of this.OnlineUsers.entries()) {
-      console.log(key + ' = ' + value);
-      if (value.includes(socket_id)) {
-        user_id = key;
-        console.log('user to remove his socket', user_id);
-        if (this.OnlineUsers.get(user_id).length === 1) {
-          // set user offline;
-          console.log('set user as offline : ', user_id);
-          this.OnlineUsers.delete(user_id);
-          console.log(
-            'user to set offline : ',
-            await this.usersRepository.findOne(user_id),
-          );
-          await this.usersRepository.update(user_id, { isOnline: false });
-          return await this.usersRepository.findOne(user_id);
-        } else {
-          // just remove socket specified
-          this.OnlineUsers.set(
-            user_id,
-            this.OnlineUsers.get(user_id).filter((socket) => {
-              return socket != socket_id;
-            }),
-          );
-          return null;
-        }
-      }
-    }
+  // update user status in DB
+  async setUserOfflineInDb(user_id: string) {
+    await this.usersRepository.update(user_id, { isOnline: false });
   }
+  async setUserOnlineInDb(user_id: string) {
+    await this.usersRepository.update(user_id, { isOnline: true });
+  }
+  
+  public get AllopnedSockets() : string[] {
+    return this.AllOpnedSockets;
+  }
+  
 }

@@ -8,40 +8,62 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { EventsService } from './events.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { UseGuards } from '@nestjs/common';
+
+import { JwtService } from '@nestjs/jwt';
+
+type JwtPayload = { id: string; username: string };
 
 @WebSocketGateway({
   cors: {
-    origin: '*',
+    origin: 'http://localhost:3000',
+    allowedHeaders: ['my-custom-header'],
+    credentials: true,
   },
   namespace: 'events',
+  // origin : 'http://localhost:3000'
 })
 export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   Server: Server;
+  allgetwaySockets: string[] = [];
 
-  constructor(private readonly eventsService: EventsService) {}
+  constructor(
+    private readonly eventsService: EventsService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  @SubscribeMessage('IAM ONLINE')
-  async setUserOnline(client: Socket, payload: any) {
-   
-    await this.eventsService.addUserSocket(payload, client.id).then((response) => {
-      if (response) {
-        const {user , sockets} = response;
-        /// emit a user his status updated
-        this.Server.emit('A_USER_STATUS_UPDATED', {...user});
-      }
-    });
-  }
 
+  @UseGuards(JwtAuthGuard)
   async handleConnection(client: any) {
-    console.log('connect ', client.id);
+    this.allgetwaySockets.push(client.id);
+    const cookies = client.handshake.headers.cookie;
+    const response = await this.eventsService.addUserSocket(this.getUserIdFromJWT(cookies), client.id);
+    if (response) {
+      console.log('✅ user : connected : ', response);
+      const { user, opnedSockets } = response;
+      this.Server.emit('A_USER_STATUS_UPDATED', { ...user, isOnline: true });
+    }
+  }
+  @UseGuards(JwtAuthGuard)
+  async handleDisconnect(client: any) {
+    const cookies = client.handshake.headers.cookie;
+    this.allgetwaySockets = this.allgetwaySockets.filter((socketid) => socketid != client.id);
+    const response = await this.eventsService.removeUserSocket(this.getUserIdFromJWT(cookies), client.id);
+    if (response.user) {
+      console.log('❌ user disconnect : ', response);
+      const { user, opnedSockets } = response;
+      this.Server.emit('A_USER_STATUS_UPDATED', { ...user, isOnline: false });
+    }
+    console.log('getway sockets :', this.allgetwaySockets);
   }
 
-  async handleDisconnect(client: any) {
-    await this.eventsService.removeUserSocket(client.id).then((user) => {
-      if (user) {
-        this.Server.emit('A_USER_STATUS_UPDATED', { ...user });
-      }
-    });
+  getUserIdFromJWT(cookies: string): string {
+    const decodedJwtAccessToken: any = this.jwtService.decode(
+      cookies.replace('access_token=', ''),
+    );
+    const jwtPayload: JwtPayload = { ...decodedJwtAccessToken };
+    return jwtPayload.id;
   }
 }

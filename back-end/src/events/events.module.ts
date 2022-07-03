@@ -1,3 +1,4 @@
+import { JwtService } from '@nestjs/jwt';
 import { Module } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { EventsGateway } from './events.gateway';
@@ -7,7 +8,7 @@ import User from 'src/users/user.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
-  providers: [EventsGateway, EventsService, UsersService],
+  providers: [EventsGateway, EventsService, UsersService, JwtService],
   controllers: []
 })
 export class EventsModule {}
