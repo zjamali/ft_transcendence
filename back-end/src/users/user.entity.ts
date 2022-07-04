@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
+import Friend from './friend.entity';
 
 @Entity()
 class User {
@@ -23,8 +24,9 @@ class User {
   @Column({ default: false })
   public isPlaying: boolean;
 
-  @Column('simple-array', { nullable: true })
-  public sockets: string[];
+  @ManyToMany(() => Friend)
+  @JoinTable()
+  public friends: Friend[];
 }
 
 export default User;

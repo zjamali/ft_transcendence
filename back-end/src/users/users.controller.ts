@@ -1,5 +1,13 @@
 import { JwtAuthGuard } from './../auth/jwt-auth.guard';
-import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Request } from 'express';
 
@@ -27,10 +35,15 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  getme(@Req() req: Request)
-  {
+  getme(@Req() req: Request) {
     console.log('uWu');
     // console.log(req);
     return req.user;
+  }
+
+  @Post('add')
+  addFriend() {
+    this.usersService.addFriend();
+    return 'success';
   }
 }
