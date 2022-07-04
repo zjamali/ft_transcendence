@@ -1,11 +1,11 @@
 import messageStyles from '../../styles/Chat.module.css'
-import { MessageComponentProps } from './interfaces'
+import { MessageComponentProps } from '../../utils/interfaces'
 
 export default function MessageComponent(props: MessageComponentProps) {
 
   return (
     <>
-      { props.mainUser?.id === props.message?.creator_id ? (
+      { props.mainUser?.id === props.message?.senderId ? (
         <div
           className={
             messageStyles.message_content +

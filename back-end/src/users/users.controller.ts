@@ -31,6 +31,6 @@ export class UsersController {
   {
     console.log('uWu');
     // console.log(req);
-    return req.user;
+    return {...req.user, isOnline: true};
   }
 }

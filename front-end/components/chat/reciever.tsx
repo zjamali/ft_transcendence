@@ -20,7 +20,7 @@ export default function Reciever() {
         <div className={reciverStyle.main_user}>
           <Avatar image={state.receiver.image} />
           <div>
-            <h3>{state.receiver.room_name}</h3>
+            <h3>{state.receiver.channel_name}</h3>
           </div>
         </div>
       )}

@@ -1,5 +1,5 @@
 import React, { ReactNode, createContext, useState } from 'react'
-import { Message, Room , User} from '../components/chat/interfaces'
+import { Message, Channel , User} from '../utils/interfaces'
 import {v4 as uuidv4} from 'uuid'
 
 import { api_contacts } from '../pages/api/contacts'
@@ -13,9 +13,9 @@ export const ChatProvider = (props: any) => {
   const [messageInput, setMessageinput] = useState<string>('')
   // const [contacts, setContacts] = useState<ContactProps[]>([])
   const [contacts, setContacts] = useState<User[]>([])
-  // const [rooms, setRomms] = useState<Room[]>([])
-  const [rooms, setRomms] = useState<Room[]>([])
-  const [receiver, setReceiver] = useState<User | Room | null>(null)
+  //const [channels, setChannels] = useState<Channel[]>([])
+  const [channels, setChannels] = useState<Channel[]>([...api_rooms])
+  const [receiver, setReceiver] = useState<User | Channel | null>(null)
   const [chatSockets, setsChatSockets] = useState<any>(null);
   const [eventSockets, setsEventSockets] = useState<any>(null);
   return (
@@ -27,7 +27,7 @@ export const ChatProvider = (props: any) => {
           messages,
           messageInput,
           contacts,
-          rooms,
+          channels,
           receiver,
         },
         sockets:{
@@ -37,7 +37,7 @@ export const ChatProvider = (props: any) => {
         setMessages,
         setMessageinput,
         setContacts,
-        setRomms,
+        setChannels,
         setReceiver,
         setMainUser,
         setsChatSockets,

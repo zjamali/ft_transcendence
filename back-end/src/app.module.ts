@@ -6,7 +6,8 @@ import { UsersModule } from './users/users.module';
 import { JwtAuthModule } from './auth/jwt-auth.module';
 import entities from 'src';
 import { EventsModule } from './events/events.module';
-import { ChatModule } from './chat/chat.module';
+import { MessagesModule } from './chat/messages/messages.module';
+import { RoomsModule } from './chat/rooms/rooms.module';
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { ChatModule } from './chat/chat.module';
     UsersModule,
     JwtAuthModule,
     EventsModule,
-    ChatModule,
+    MessagesModule,
+    RoomsModule
   ],
 })
 export class AppModule {}

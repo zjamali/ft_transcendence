@@ -22,7 +22,6 @@ type JwtPayload = { id: string; username: string };
     credentials: true,
   },
   namespace: 'events',
-  // origin : 'http://localhost:3000'
 })
 export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()

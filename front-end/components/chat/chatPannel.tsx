@@ -1,9 +1,9 @@
 import React, { useContext } from 'react'
 import {useRef, useEffect } from 'react'
-import rightSideStyle from '../../styles/Chat.module.css'
+import chatPannelStyle from '../../styles/Chat.module.css'
 import uniqid from 'uniqid'
 import { isContact } from '../../utils/utils'
-import RoomManagement from './roomManagemet'
+import RoomManagement from './ChannelManagemet'
 import MessageComponent from './message'
 import BlockUser from './blockUser'
 import Reciever from './reciever'
@@ -11,15 +11,15 @@ import { ChatContext } from '../../context/chatContext'
 
 
 
-export default function ChatRightSide() {
+export default function ChatPannel() {
   
   /// automatic scroll message
   const {state, setMessageinput} = useContext(ChatContext);
   const chatContainer = useRef<HTMLDivElement>(null)
   return (
-    <div className={rightSideStyle.message}>
-      <div className={rightSideStyle.message_head}>
-        <div className={rightSideStyle.reciverInfo}>
+    <div className={chatPannelStyle.message}>
+      <div className={chatPannelStyle.message_head}>
+        <div className={chatPannelStyle.reciverInfo}>
           <Reciever  />
         </div>
         {state.receiver &&
@@ -29,14 +29,14 @@ export default function ChatRightSide() {
             <RoomManagement/>
           ))}
       </div>
-      <div className={rightSideStyle.message_body}>
-        <div ref={chatContainer} className={rightSideStyle.messages_list}>
+      <div className={chatPannelStyle.message_body}>
+        <div ref={chatContainer} className={chatPannelStyle.messages_list}>
           {state.meassages &&
             state.meassages.map((message : any) => {
               return <MessageComponent key={uniqid()} message={message} mainUser={state.mainUser} />
             })}
         </div>
-        <div className={rightSideStyle.message_input}>
+        <div className={chatPannelStyle.message_input}>
           <form
             onSubmit={(e) => {
               e.preventDefault();
