@@ -9,6 +9,7 @@ import Reciever from './reciever'
 import { ChatContext } from '../../context/chatContext'
 import io, { Socket } from 'socket.io-client'
 import { Message } from '../../utils/interfaces'
+import axios from 'axios'
 
 export default function ChatPannel() {
   //chat socket if a reciver is set
@@ -18,8 +19,31 @@ export default function ChatPannel() {
   const { state } = useContext(ChatContext)
   const chatContainer = useRef<HTMLDivElement>(null)
   const [messageInput, setMessageinput] = useState<string>('')
-  const messagesList = useRef<any>([]);
-  const [messages, setMessages] = useState<any[]>([]);
+  const messagesList = useRef<any>([])
+  const [messages, setMessages] = useState<any[]>([])
+  const [newMessage, setNewMessage] = useState<null | Message>(null)
+
+  console.log('channel pannel build')
+
+  useEffect(() => {
+    if (chatContainer.current) {
+      chatContainer.current.scrollIntoView({ behavior: 'smooth' })
+      chatContainer.current.scrollTop = chatContainer.current.scrollHeight
+    }
+  }, [messages])
+
+  useEffect(() => {
+    try {
+      messagesList.current =[];
+      setMessages([]);
+      axios.get(`http://localhost:5000/messages/${state.receiver.id}`, {withCredentials : true}).then((responce) => {
+        messagesList.current = [...responce.data];
+        setMessages([...messagesList.current]);
+      });
+    } catch (error) {
+      console.log("get messages history error : ",error );
+    }
+  }, [state.receiver])
 
   useEffect(() => {
     //////
@@ -32,14 +56,7 @@ export default function ChatPannel() {
     try {
       chatSocket.current.on('NEW_MESSAGE', (newMessage: any) => {
         console.log('wa message : ', newMessage);
-        console.log('reciever : ', state.receiver);
-        if (state.receiver.id === newMessage.senderId) {
-          console.log('all messages: ', messages);
-          //setMessages([...state.messages , {...message}]);
-          console.log("new message : ", newMessage)
-          messagesList.current = [...messagesList.current , newMessage];
-          setMessages([...messagesList.current]);
-        }
+        setNewMessage({ ...newMessage })
       })
     } catch (error) {
       console.log('sockets error', error)
@@ -47,14 +64,22 @@ export default function ChatPannel() {
 
     return () => {
       console.log('close sockets')
-      chatSocket.current.disconnect()
+      if (chatSocket.current)
+        chatSocket?.current.disconnect();
     }
   }, [])
 
   useEffect(() => {
-    console.log("receiver changed");
-  }, [state.receiver])
-  
+    if (newMessage) {
+      console.log('reciever : ', state.receiver)
+      console.log('new message : ', newMessage)
+      if (state.receiver.id === newMessage.senderId || newMessage.senderId === state.mainUser.id) {
+        console.log('all messages: ', messages)
+        messagesList.current = [...messagesList.current, newMessage]
+        setMessages([...messagesList.current])
+      }
+    }
+  }, [newMessage])
 
   const sendMessage = (e: any) => {
     e.preventDefault()
@@ -67,8 +92,6 @@ export default function ChatPannel() {
       content: messageInput,
       isChannel: false,
     }
-    messagesList.current = [...messagesList.current , message];
-    setMessages([...messagesList.current]);
     chatSocket.current.emit('SEND_MESSAGE', { ...message })
     setMessageinput('')
   }

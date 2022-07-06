@@ -21,9 +21,14 @@ export class MessagesService {
     return await this.messagesRepository.find();
   }
 
-  async findOne(id: string) {
-    return await this.messagesRepository.find({ roomId: id })
-    return `This action returns a #${id} message`;
+  async findOne(receiverId: string, user_id : string) {
+    return await this.messagesRepository.find({
+      where: [
+          { receiverId: receiverId, senderId: user_id },
+          { receiverId: user_id, senderId: receiverId },
+      ],
+  })
+    return `This action returns a #${receiverId} message`;
   }
 
   update(id: number, updateMessageDto: UpdateMessageDto) {

@@ -1,14 +1,30 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Req,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
+import { JwtService } from '@nestjs/jwt';
+import { JwtPayload } from '../chat.gateway';
+import { Request } from 'express';
 
 @Controller('messages')
 export class MessagesController {
-  constructor(private readonly messagesService: MessagesService) {}
+  constructor(
+    private readonly messagesService: MessagesService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   @Post()
-  create(@Body() createMessageDto: CreateMessageDto) {
+  create(@Req() req: Request, @Body() createMessageDto: CreateMessageDto) {
     return this.messagesService.create(createMessageDto);
   }
 
@@ -17,9 +33,24 @@ export class MessagesController {
     return this.messagesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.messagesService.findOne(id);
+  @UseGuards(JwtService)
+  @Get(':receiverId')
+  findOne(@Req() req: Request, @Param('receiverId') receiverId: string) {
+    console.log('queries : ', req.query['isChannel']);
+    if (req.query['isChannel']) {
+      
+      return "get channel messages";
+    } 
+    else 
+    {
+
+      const decodedJwtAccessToken: any = this.jwtService.decode(
+        req.cookies['access_token'],
+      );
+      const jwtPayload: JwtPayload = { ...decodedJwtAccessToken };
+      console.log('messages user id:  ', jwtPayload.id);
+      return this.messagesService.findOne(receiverId, jwtPayload.id);
+    }
   }
 
   @Patch(':id')

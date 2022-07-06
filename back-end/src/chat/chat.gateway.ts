@@ -17,7 +17,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 import { JwtService } from '@nestjs/jwt';
 
-type JwtPayload = { id: string; username: string };
+export type JwtPayload = { id: string; username: string };
 
 @WebSocketGateway({
   cors: {
@@ -45,9 +45,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log(" ✉ message : ",  createMessageDto);
     
     // save message in db
-    // this.messagesService.create(createMessageDto);
-
-    const targetUserSockets = GlobalService.UsersChatSockets.get(createMessageDto.receiverId);
+    this.messagesService.create(createMessageDto);
+    
+    const receiverSockets = GlobalService.UsersChatSockets.get(createMessageDto.receiverId);
+    let  targetUserSockets = [...GlobalService.UsersChatSockets.get(createMessageDto.senderId)];
+    if (receiverSockets)
+       targetUserSockets = [...targetUserSockets, ...receiverSockets];
     console.log("target to send it message :  ", targetUserSockets);
     targetUserSockets.forEach(socket => {
       this.server.to(socket).emit("NEW_MESSAGE", {...createMessageDto});

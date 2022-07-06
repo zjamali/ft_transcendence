@@ -15,12 +15,7 @@ function NoContacts(props: { message: string }) {
 }
 
 export default function ChatContacts() {
-  const { state, setReceiver } = useContext(ChatContext)
-  useEffect(() => {
-    if (!state.receiver && state.contacts[0])
-       setReceiver(state.contacts[0])
-  }, [state.contacts[0]])
-
+  const { state } = useContext(ChatContext)
   
   return (
     <>

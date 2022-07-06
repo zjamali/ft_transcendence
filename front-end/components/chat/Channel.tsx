@@ -10,7 +10,7 @@ export default function Channel(props: ChannelComponentProps) {
     <div className={props.channel.id === props.receiver?.id
       ? channel.contact + ' ' + channel.selected_contact
       : channel.contact} 
-      onClick={() => setReceiver(props.channel)} >
+      /*onClick={() => setReceiver(props.channel)}*/ >
       <div className={channel.contact_avatar}>
         <Avatar image={props.channel.image} />
         <h4>{props.channel.channel_name}</h4>
