@@ -10,11 +10,14 @@ import { ChatContext } from '../../context/chatContext'
 import io, { Socket } from 'socket.io-client'
 import { Message } from '../../utils/interfaces'
 import axios from 'axios'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 export default function ChatPannel() {
   //chat socket if a reciver is set
   const chatSocket = useRef<any>(null)
 
+  const notify = (message: string) => toast(message)
   /// automatic scroll message
   const { state } = useContext(ChatContext)
   const chatContainer = useRef<HTMLDivElement>(null)
@@ -34,14 +37,18 @@ export default function ChatPannel() {
 
   useEffect(() => {
     try {
-      messagesList.current =[];
-      setMessages([]);
-      axios.get(`http://localhost:5000/messages/${state.receiver.id}`, {withCredentials : true}).then((responce) => {
-        messagesList.current = [...responce.data];
-        setMessages([...messagesList.current]);
-      });
+      messagesList.current = []
+      setMessages([])
+      axios
+        .get(`http://localhost:5000/messages/${state.receiver.id}`, {
+          withCredentials: true,
+        })
+        .then((responce) => {
+          messagesList.current = [...responce.data]
+          setMessages([...messagesList.current])
+        })
     } catch (error) {
-      console.log("get messages history error : ",error );
+      console.log('get messages history error : ', error)
     }
   }, [state.receiver])
 
@@ -55,7 +62,7 @@ export default function ChatPannel() {
 
     try {
       chatSocket.current.on('NEW_MESSAGE', (newMessage: any) => {
-        console.log('wa message : ', newMessage);
+        console.log('wa message : ', newMessage)
         setNewMessage({ ...newMessage })
       })
     } catch (error) {
@@ -64,8 +71,7 @@ export default function ChatPannel() {
 
     return () => {
       console.log('close sockets')
-      if (chatSocket.current)
-        chatSocket?.current.disconnect();
+      if (chatSocket.current) chatSocket?.current.disconnect()
     }
   }, [])
 
@@ -73,10 +79,17 @@ export default function ChatPannel() {
     if (newMessage) {
       console.log('reciever : ', state.receiver)
       console.log('new message : ', newMessage)
-      if (state.receiver.id === newMessage.senderId || newMessage.senderId === state.mainUser.id) {
+      if (
+        state.receiver.id === newMessage.senderId ||
+        newMessage.senderId === state.mainUser.id
+      ) {
         console.log('all messages: ', messages)
         messagesList.current = [...messagesList.current, newMessage]
         setMessages([...messagesList.current])
+      } else {
+        // send a notification
+        console.log('send a nostification')
+        notify(`new message from ${newMessage.senderName}`)
       }
     }
   }, [newMessage])
@@ -148,6 +161,17 @@ export default function ChatPannel() {
           </form>
         </div>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   )
 }
