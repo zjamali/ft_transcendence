@@ -55,7 +55,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     targetUserSockets.forEach(socket => {
       this.server.to(socket).emit("NEW_MESSAGE", {...createMessageDto});
     });
-
   }
   @UseGuards(JwtAuthGuard)
   async handleConnection(client: Socket) {

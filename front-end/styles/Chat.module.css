@@ -1,3 +1,18 @@
+
+/* :root {
+	--wall-color: #161c24;
+	--hover-color: #3b1f25;
+	--active-color: #ff3030;
+	--primary-color: #212b36;
+	--typing-color: #ffffff;
+	--text-sidebar-color: #919eab;
+	--hover-background: #252c35;
+	--header-height: 80px;
+	--animation-duration: 200ms;
+	--animation-timing-curve: ease-in-out;
+
+} */
+
 .ChatContainer {
   width: 100vw;
   height: 100vh;
@@ -397,9 +412,10 @@
 }
 .message_content p {
   width: 450px;
-  font-size: 18px;
+  font-size: 1rem;
   height: 100%;
   font-weight: 500;
+  overflow-wrap: break-word;
 }
 
 .message_main_user

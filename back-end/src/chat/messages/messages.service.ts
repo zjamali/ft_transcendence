@@ -24,7 +24,7 @@ export class MessagesService {
   async findOne(receiverId: string, user_id : string) {
     return await this.messagesRepository.find({
       where: [
-          { receiverId: receiverId, senderId: user_id },
+          { receiverId: receiverId , senderId: user_id },
           { receiverId: user_id, senderId: receiverId },
       ],
   })

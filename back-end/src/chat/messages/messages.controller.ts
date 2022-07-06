@@ -36,6 +36,7 @@ export class MessagesController {
   @UseGuards(JwtService)
   @Get(':receiverId')
   findOne(@Req() req: Request, @Param('receiverId') receiverId: string) {
+    
     console.log('queries : ', req.query['isChannel']);
     if (req.query['isChannel']) {
       
@@ -43,7 +44,6 @@ export class MessagesController {
     } 
     else 
     {
-
       const decodedJwtAccessToken: any = this.jwtService.decode(
         req.cookies['access_token'],
       );
