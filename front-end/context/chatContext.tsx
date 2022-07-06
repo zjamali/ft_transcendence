@@ -8,16 +8,13 @@ export const ChatContext = createContext<any>({});
 
 export const ChatProvider = (props: any) => {
   const [session, setSession] = useState<any>(null);
-  const [mainUser, setMainUser] = useState<any>(null);
+  const [mainUser, setMainUser] = useState<User | null>(null);
   const [messages, setMessages] = useState<Message[]>([])
-  const [messageInput, setMessageinput] = useState<string>('')
   // const [contacts, setContacts] = useState<ContactProps[]>([])
   const [contacts, setContacts] = useState<User[]>([])
   //const [channels, setChannels] = useState<Channel[]>([])
   const [channels, setChannels] = useState<Channel[]>([...api_rooms])
   const [receiver, setReceiver] = useState<User | Channel | null>(null)
-  const [chatSockets, setsChatSockets] = useState<any>(null);
-  const [eventSockets, setsEventSockets] = useState<any>(null);
   return (
     <ChatContext.Provider
       value={{
@@ -25,23 +22,15 @@ export const ChatProvider = (props: any) => {
           session,
           mainUser,
           messages,
-          messageInput,
           contacts,
           channels,
           receiver,
         },
-        sockets:{
-          chat :chatSockets,
-          events: eventSockets,
-        },
         setMessages,
-        setMessageinput,
         setContacts,
         setChannels,
         setReceiver,
         setMainUser,
-        setsChatSockets,
-        setsEventSockets,
         setSession,
       }}
     >

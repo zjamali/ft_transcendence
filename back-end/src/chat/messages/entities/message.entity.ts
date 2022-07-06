@@ -10,7 +10,7 @@ class Message {
   @PrimaryGeneratedColumn()
   public id: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public roomId: string;
 
   @Column({ nullable: false })
@@ -19,7 +19,7 @@ class Message {
   @Column({ nullable: false })
   public senderName: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   public receiverId: string;
 
   @CreateDateColumn({ type: 'timestamp', nullable: false })
@@ -27,6 +27,9 @@ class Message {
 
   @Column({ nullable: false })
   public content: string;
+
+  @Column({nullable : false})
+  public isChannel: boolean;
 }
 
 export default Message;

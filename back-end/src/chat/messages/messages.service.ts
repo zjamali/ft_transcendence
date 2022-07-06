@@ -18,7 +18,6 @@ export class MessagesService {
   }
 
   async findAll() {
-
     return await this.messagesRepository.find();
   }
 

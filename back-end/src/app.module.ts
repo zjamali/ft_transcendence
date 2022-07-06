@@ -1,3 +1,4 @@
+import { ChatModule } from './chat/chat.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -31,7 +32,8 @@ import { RoomsModule } from './chat/rooms/rooms.module';
     JwtAuthModule,
     EventsModule,
     MessagesModule,
-    RoomsModule
+    RoomsModule,
+    ChatModule,
   ],
 })
 export class AppModule {}

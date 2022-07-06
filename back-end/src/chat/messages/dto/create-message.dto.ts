@@ -1,8 +1,9 @@
 export class CreateMessageDto {
-  roomId: string;
+  roomId?: string;
   senderId: string;
   senderName: string;
   receiverId: string;
   createdAt: Date;
   content: string;
+  isChannel: boolean;
 }

@@ -15,9 +15,6 @@ export default function ChatSideBar(props: any) {
     }
   }
 
-  /* */
-  const {state} = useContext(ChatContext);
-  /* */
 
   return (
     <div className={chatSideBar.chatSideBar}>

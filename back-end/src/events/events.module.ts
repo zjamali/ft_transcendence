@@ -1,3 +1,4 @@
+import { UsersModule } from 'src/users/users.module';
 import { JwtService } from '@nestjs/jwt';
 import { Module } from '@nestjs/common';
 import { EventsService } from './events.service';
@@ -7,8 +8,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import User from 'src/users/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [UsersModule],
   providers: [EventsGateway, EventsService, UsersService, JwtService],
-  controllers: []
+  controllers: [],
+  exports : [EventsService]
 })
 export class EventsModule {}

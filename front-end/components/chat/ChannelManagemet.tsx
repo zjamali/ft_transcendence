@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { ChatContext } from '../../context/chatContext'
 import channelManagemetStyle from '../../styles/Chat.module.css'
 
-export default function RoomManagement() {
+export default function ChannelManagement() {
   const { state } = useContext(ChatContext)
   console.log('room state :', state.receiver)
   return (

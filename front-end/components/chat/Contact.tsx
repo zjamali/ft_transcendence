@@ -2,10 +2,11 @@ import React, { useContext, useEffect } from 'react'
 import { ChatContext } from '../../context/chatContext'
 import ContactStyles from '../../styles/Chat.module.css'
 import Avatar from './avatar'
-import { ContactComponentProps } from './interfaces'
+import { ContactComponentProps } from '../../utils/interfaces'
 
 function Contact(props: ContactComponentProps) {
   const {setReceiver} = useContext(ChatContext);
+  console.log("contcats : ");
   return (
     <div
       className={

@@ -26,6 +26,7 @@ type JwtPayload = { id: string; username: string };
 export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   Server: Server;
+
   allgetwaySockets: string[] = [];
 
   constructor(
@@ -37,7 +38,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleConnection(client: any) {
     this.allgetwaySockets.push(client.id);
     const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
-    const response = await this.eventsService.addUserSocket(
+    const response = await this.eventsService.addUserEventsSocket(
       user_id,
       client.id,
     );
@@ -46,8 +47,8 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       if (userSockets.length === 1)
       {
         console.log('✅ user : connected : ', response);
-        // this.Server.emit('A_USER_STATUS_UPDATED', { ...user});
-        client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user});
+        this.Server.emit('A_USER_STATUS_UPDATED', { ...user});
+        // client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user});
         await this.eventsService.setUserOnlineInDb(user_id);
       }
     }
@@ -60,7 +61,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.allgetwaySockets = this.allgetwaySockets.filter(
       (socketid) => socketid != client.id,
     );
-    const response = await this.eventsService.removeUserSocket(
+    const response = await this.eventsService.removeUserEventsSocket(
       user_id,
       client.id,
     );
@@ -73,6 +74,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       await this.eventsService.setUserOfflineInDb(user_id);
     }
   }
+
 
   getUserIdFromJWT(cookies: string): string {
     const decodedJwtAccessToken: any = this.jwtService.decode(

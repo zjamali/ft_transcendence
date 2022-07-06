@@ -1,56 +1,57 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import styles from '../styles/Chat.module.css'
-import ChatRightSide from '../components/chat/chatPannel'
-import ChatLeftSide from '../components/chat/chatSideBar'
+import ChatPannel from '../components/chat/chatPannel'
+import ChatSideBar from '../components/chat/chatSideBar'
 import NoReceiver from '../components/chat/noReceiver'
 import { ChatContext } from '../context/chatContext'
 import io, { Socket } from 'socket.io-client'
 import axios from 'axios'
 
 export default function Chat() {
-  const { state, sockets, setContacts, setsEventSockets } = useContext(
-    ChatContext,
-  )
+  const { state, setContacts } = useContext(ChatContext)
+  const eventsSocket = useRef<any>(null)
   useEffect(() => {
-    console.log("new build");
-    try{
-      setsEventSockets(io('http://localhost:5000/events', {withCredentials: true}))
+    //////
+    /* creation Sockets start */
+    if (!eventsSocket.current)
+      eventsSocket.current = io('http://localhost:5000/events', {
+        withCredentials: true,
+      })
+
+
+    try {
       fetchAllusers();
+      eventsSocket.current.on('A_USER_STATUS_UPDATED', (user: any) => {
+        setContactStatus(user.isOnline, user)
+      });
+
+    } catch (error) {
+      console.log('sockets error', error)
     }
-    catch(error)
-    {
-      console.log("socket error");
-    }
+
     return () => {
-      
-      if (sockets.events)
-      {
-        sockets.events.disconnect();
-        console.log("delete socket : ", sockets.events);
-      }
-    };
+      console.log("close sockets");
+      eventsSocket.current.disconnect();
+    }
   }, [])
 
   function fetchAllusers() {
-    try
-    {
-
-
-
-
+    try {
       axios
-      .get('http://localhost:5000/users', { withCredentials: true })
-      .then((res) => {
-        setContacts([...res.data])
-      })
-    }
-    catch
-    {
-      console.log("CANT GET ALL USERS");
+        .get('http://localhost:5000/users', { withCredentials: true })
+        .then((res) => {
+          console.log("all users :" , res.data);
+          const userContacts = res.data.filter((user: any) => user.id != state.mainUser.id);
+          console.log("new contacts : ", userContacts);
+          setContacts([...userContacts])
+        })
+    } catch {
+      console.log('CANT GET ALL USERS')
     }
   }
 
   function setContactStatus(status: boolean, user: any) {
+    console.log("set contacts ");
     let contacts = [...state.contacts]
     if (
       contacts.filter((contact) => {
@@ -66,27 +67,49 @@ export default function Chat() {
     } else fetchAllusers()
   }
 
-  useEffect(() => {
-    console.log('event socket : ', sockets.events)
-    if (sockets.events) {
-      /// onConnection : socket connection emit event IAM ONLINE just ONCONNECTION
-      sockets.events.on('A_USER_STATUS_UPDATED', (user: any) => {
-        setContactStatus(user.isOnline, user)
-      })
+  useEffect(()=>{
+    console.log("messages ", state.messages);
+    if (state.messages.length > 0)
+    {
+      const lastMessage = state.messages.length - 1;
+      if (state.messages[lastMessage].senderId === state.mainUser.id)
+        console.log("main user message");
     }
-    return () => {
-      if (sockets.event) {
-        sockets.events.off('A_USER_STATUS_UPDATED', (user: any) => {
-          setContactStatus(user.isOnline, user)
-        })
-      }
-    }
-  }, [sockets])
+  }, [state.messages])
+
+  // useEffect(() => {
+  //   /* EVENTS */
+  //   console.log('event socket : ', sockets.events)
+  //   if (sockets.events) {
+  //     sockets.events.on('A_USER_STATUS_UPDATED', (user: any) => {
+  //       setContactStatus(user.isOnline, user)
+  //     })
+  //   }
+  //   if(sockets.chat)
+  //   {
+  //     console.log("chat socket : ", sockets.chat);
+
+  //     sockets.chat.on('NEW_MESSAGE', (message: any)=> {
+  //         console.log("wa message : ", message);
+  //     })
+  //   }
+
+  //   /* CHAt */
+
+  //   return () => {
+  //     if (sockets.event) {
+  //       sockets.events.off('A_USER_STATUS_UPDATED', (user: any) => {
+  //         setContactStatus(user.isOnline, user)
+  //       })
+  //     }
+  //   }
+
+  // }, [sockets])
 
   return (
     <div className={styles.chatComponentStyle}>
-      <ChatLeftSide />
-      {state.receiver ? <ChatRightSide /> : <NoReceiver />}
+      <ChatSideBar />
+      {state.receiver ? <ChatPannel /> : <NoReceiver />}
     </div>
   )
 }
