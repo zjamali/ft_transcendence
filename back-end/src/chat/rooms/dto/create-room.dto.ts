@@ -1,7 +1,13 @@
-import  User  from 'src/users/user.entity';
+import { RoomType } from '../entities/room.entity';
 export class CreateRoomDto {
-    id?: string;
-    roomName: string;
-    user1Id: string;
-    user2Id: string;
+  id?: string;
+  roomName: string;
+  ActiveUsers?: string[];
+  bannedUser?: string[];
+  mutedUsers?: string[];
+  owner: string;
+  admins?: string[];
+  roomType: RoomType;
+  isProtected: boolean;
+  password?: string;
 }
