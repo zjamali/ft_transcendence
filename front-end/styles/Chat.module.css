@@ -466,6 +466,28 @@
   display: none;
 }
 
+
+.new_room
+{
+  width: 100%;
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  height: 100%;
+  color: whitesmoke;
+}
+.new_room .create_room_input
+{
+  width: 100%;
+  height: 50px;
+  font-size: 16px;
+}
+
+.new_room .roomtype label
+{
+  margin-right: 30px;
+  margin-left: 10px;
+}
+
 @media only screen and (max-width: 800px) {
   .chatComponentStyle {
     grid-template-columns: 1fr;

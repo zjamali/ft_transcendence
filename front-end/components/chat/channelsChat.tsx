@@ -5,30 +5,9 @@ import Room from './Channel'
 import { ChatContext } from '../../context/chatContext'
 import Channel from './Channel'
 import Modal from 'react-modal'
+import { CreateChannel } from './createChannel'
 
-const customStyles = {
-  overlay: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(22, 28, 36, 0.5)',
-  },
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-    width: '500px',
-    height: '700px',
-    border: 'none',
-    borderRadius: '20px',
-    backgroundColor: 'rgba(22, 28, 36, 1)',
-  },
-}
+
 
 function NoChannels(props: { message: string }) {
   return (
@@ -38,18 +17,6 @@ function NoChannels(props: { message: string }) {
   )
 }
 
-function CreateChannel() {
-  return (
-    <div className={chatStyles.new_room}>
-      <h1>Craete room</h1>
-      <h1>Craete room</h1>
-      <h1>Craete room</h1>
-      <h1>Craete room</h1>
-      <h1>Craete room</h1>
-      <h1>Craete room</h1>
-    </div>
-  )
-}
 export default function Channels() {
   const { state } = useContext(ChatContext)
   const [modalIsOpen, setIsOpen] = React.useState(false)
@@ -79,8 +46,30 @@ export default function Channels() {
         <Modal
           isOpen={modalIsOpen}
           // onAfterOpen={afterOpenModal}
-          // onRequestClose={closeModal}
-          style={customStyles}
+          onRequestClose={()=> setIsOpen(false)}
+          style={{
+            overlay: {
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(22, 28, 36, 0.5)',
+            },
+            content: {
+              top: '50%',
+              left: '50%',
+              right: 'auto',
+              bottom: 'auto',
+              marginRight: '-50%',
+              transform: 'translate(-50%, -50%)',
+              minWidth: '400px',
+              height: '700px',
+              border: 'none',
+              borderRadius: '20px',
+              backgroundColor: '#212B36',
+            }
+          }}
           contentLabel="Example Modal"
         >
           <CreateChannel />
