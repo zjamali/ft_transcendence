@@ -79,7 +79,10 @@ export default function ChatPannel() {
     if (newMessage) {
       console.log('reciever : ', state.receiver)
       console.log('new message : ', newMessage)
-      if ( state.receiver.id === newMessage.senderId || newMessage.senderId === state.mainUser.id) {
+      if (
+        state.receiver.id === newMessage.senderId ||
+        newMessage.senderId === state.mainUser.id
+      ) {
         console.log('all messages: ', messages)
         messagesList.current = [...messagesList.current, newMessage]
         setMessages([...messagesList.current])
