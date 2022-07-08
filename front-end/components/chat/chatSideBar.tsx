@@ -43,7 +43,7 @@ export default function ChatSideBar(props: any) {
             onClick={hangleToogle}
             id="channels"
           >
-            channels
+            Channels
           </button>
         </div>
         {buttonState === 0 && <ChatContacts  />}

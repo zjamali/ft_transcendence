@@ -12,6 +12,7 @@ import { Message } from '../../utils/interfaces'
 import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { InputMessage } from './inputMessage'
 
 export default function ChatPannel() {
   //chat socket if a reciver is set
@@ -39,6 +40,7 @@ export default function ChatPannel() {
     try {
       messagesList.current = []
       setMessages([])
+      setMessageinput('');
       axios
         .get(`http://localhost:5000/messages/${state.receiver.id}`, {
           withCredentials: true,
@@ -135,31 +137,7 @@ export default function ChatPannel() {
               )
             })}
         </div>
-        <div className={chatPannelStyle.message_input}>
-          <form
-            onSubmit={(e) => {
-              sendMessage(e)
-            }}
-          >
-            <input
-              type="text"
-              name="message"
-              id="message_content"
-              value={messageInput}
-              onChange={(e) => {
-                setMessageinput(e.target.value)
-              }}
-            />
-            <button type="submit">
-              <img
-                src="/images/icons/send_icon.png"
-                alt="send"
-                width={30}
-                height={30}
-              />{' '}
-            </button>
-          </form>
-        </div>
+        <InputMessage sendMessage={sendMessage} messageInput={messageInput} setMessageinput={setMessageinput} />
       </div>
       <ToastContainer
         position="top-right"

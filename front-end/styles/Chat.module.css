@@ -29,7 +29,7 @@
   margin: 0 auto;
   margin-top: 20px;
   display: grid;
-  grid-template-columns: 1fr 3fr;
+  grid-template-columns: 2fr 5fr;
   color: #d0d6dc;
   overflow: hidden;
   width: 100%;
@@ -92,7 +92,7 @@
 
 .btn_toogle {
   background-color: #212b36;
-  width: 150px;
+  width: 100%;
   padding: 10px 30px;
   font-size: 18px;
   text-align: center;
@@ -467,9 +467,7 @@
 }
 
 @media only screen and (max-width: 800px) {
-  
-  .chatComponentStyle
-  {
+  .chatComponentStyle {
     grid-template-columns: 1fr;
     position: relative;
   }
@@ -487,7 +485,7 @@
     border-radius: 10px;
     position: absolute;
     top: 5px;
-    right : 12px;
+    right: 12px;
     display: flex;
     align-items: center;
     justify-content: center;

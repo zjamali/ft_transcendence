@@ -18,12 +18,12 @@ export default function ChatContacts() {
   const { state, setReceiver } = useContext(ChatContext)
 
   // set first contact as receiver 
-  useEffect(() => {
-    if (!state.receiver && state.contacts)
-    {
-      setReceiver(state.contacts[0]);
-    }
-  }, [state.contacts])
+  // useEffect(() => {
+  //   if (!state.receiver && state.contacts)
+  //   {
+  //     setReceiver(state.contacts[0]);
+  //   }
+  // }, [state.contacts])
   
   
   return (
