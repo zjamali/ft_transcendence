@@ -48,7 +48,7 @@ export interface ChannelComponentProps
   receiver: User | Channel;
 }
 
-enum channelType {
+export enum channelType {
   private,
   public,
   protected,
@@ -56,16 +56,17 @@ enum channelType {
 export interface Channel {
   id?: string;
   image? : string;
-  channel_name?: string;
-  owner_id?: string;
-  admins?: User[];
-  protected?: boolean;
+  roomName?: string;
+  owner?: string;
+  admins?: string[];
+  isProtected?: boolean;
   password?: string;
   avtar?: string;
-  channel_type?: channelType;
+  roomType?: channelType;
   created_at?: string;
-  banned_users?: User[];
-  muted_users?: User[];
+  bannedUser?: string[];
+  mutedUsers?: string[];
+  ActiveUsers?: string[];
 }
 
 

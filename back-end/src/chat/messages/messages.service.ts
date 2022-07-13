@@ -12,7 +12,11 @@ export class MessagesService {
   ) {}
   create(createMessageDto: CreateMessageDto) {
     console.log("message : ", createMessageDto);
-    const newMessage = this.messagesRepository.create(createMessageDto);
+    let newMessage : Message; 
+    if (createMessageDto.isChannel)
+      newMessage = this.messagesRepository.create({...createMessageDto ,roomId: createMessageDto.receiverId}); 
+    else
+      newMessage = this.messagesRepository.create(createMessageDto);
     this.messagesRepository.save(newMessage);
     return 'This action adds a new message';
   }
@@ -21,7 +25,11 @@ export class MessagesService {
     return await this.messagesRepository.find();
   }
 
-  async findOne(receiverId: string, user_id : string) {
+  async findOne(receiverId: string, user_id : string,isChannel : boolean ) {
+    if (isChannel)
+    {
+      return await this.messagesRepository.find({roomId: receiverId});
+    }
     return await this.messagesRepository.find({
       where: [
           { receiverId: receiverId , senderId: user_id },

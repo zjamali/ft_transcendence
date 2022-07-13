@@ -6,6 +6,7 @@ import { ChatContext } from '../../context/chatContext'
 import Channel from './Channel'
 import Modal from 'react-modal'
 import { CreateChannel } from './createChannel'
+import axios from 'axios'
 
 
 
@@ -20,6 +21,8 @@ function NoChannels(props: { message: string }) {
 export default function Channels() {
   const { state } = useContext(ChatContext)
   const [modalIsOpen, setIsOpen] = React.useState(false)
+
+
   return (
     <>
       <div className={chatStyles.roomsList}>
@@ -64,7 +67,7 @@ export default function Channels() {
               marginRight: '-50%',
               transform: 'translate(-50%, -50%)',
               minWidth: '400px',
-              height: '700px',
+              height: '500px',
               border: 'none',
               borderRadius: '20px',
               backgroundColor: '#212B36',

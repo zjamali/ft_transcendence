@@ -2,7 +2,8 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum RoomType {
   PRIVATE = 'private',
-  PUBLIC = 'bublic',
+  PUBLIC = 'public',
+  PROTECTED = 'Protected'
 }
 
 @Entity()

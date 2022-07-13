@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import channel from '../../styles/Chat.module.css'
 import {ChannelComponentProps} from '../../utils/interfaces'
-import  Avatar from './avatar'
+import Avatar from 'react-avatar';
 import { ChatContext } from '../../context/chatContext'
 
 export default function Channel(props: ChannelComponentProps) {
@@ -10,10 +10,10 @@ export default function Channel(props: ChannelComponentProps) {
     <div className={props.channel.id === props.receiver?.id
       ? channel.contact + ' ' + channel.selected_contact
       : channel.contact} 
-      /*onClick={() => setReceiver(props.channel)}*/ >
+      onClick={() => setReceiver(props.channel)} >
       <div className={channel.contact_avatar}>
-        <Avatar image={props.channel.image} />
-        <h4>{props.channel.channel_name}</h4>
+      <Avatar name={props.channel.roomName} size="50" round={true}/>
+        <h4>{props.channel.roomName}</h4>
       </div>
     </div>
   )

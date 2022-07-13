@@ -16,6 +16,7 @@ import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 import { JwtService } from '@nestjs/jwt';
+import { CreateRoomDto } from './rooms/dto/create-room.dto';
 
 export type JwtPayload = { id: string; username: string };
 
@@ -39,6 +40,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly eventsService : EventsService,
     private readonly jwtService: JwtService,
     ) {}
+    
+  @UseGuards(JwtAuthGuard)
+  @SubscribeMessage('CREATE_CHANNEL')
+  async createChannel(@MessageBody() createChannel : CreateRoomDto) {
+    console.log("create room: ", createChannel);
+    
+  }
   
   @SubscribeMessage('SEND_MESSAGE')
   async create(@MessageBody() createMessageDto: CreateMessageDto ) {

@@ -2,8 +2,6 @@ import React, { useContext, useState } from 'react'
 import { useRef, useEffect } from 'react'
 import chatPannelStyle from '../../styles/Chat.module.css'
 import uniqid from 'uniqid'
-import { isContact } from '../../utils/utils'
-import ChannelManagement from './ChannelManagemet'
 import MessageComponent from './message'
 import Reciever from './reciever'
 import { ChatContext } from '../../context/chatContext'
@@ -13,6 +11,8 @@ import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { InputMessage } from './inputMessage'
+import NoReceiver from './noReceiver'
+import { isContact } from '../../utils/utils'
 
 export default function ChatPannel() {
   //chat socket if a reciver is set
@@ -40,15 +40,33 @@ export default function ChatPannel() {
     try {
       messagesList.current = []
       setMessages([])
-      setMessageinput('');
-      axios
-        .get(`http://localhost:5000/messages/${state.receiver.id}`, {
-          withCredentials: true,
-        })
-        .then((responce) => {
-          messagesList.current = [...responce.data]
-          setMessages([...messagesList.current])
-        })
+      setMessageinput('')
+      if (isContact(state.receiver)) {
+        axios
+          .get(`http://localhost:5000/messages/${state.receiver.id}`, {
+            withCredentials: true,
+          })
+          .then((responce) => {
+            if (responce.data.length) {
+              messagesList.current = [...responce.data]
+              setMessages([...messagesList.current])
+            }
+          })
+      } else {
+        axios
+          .get(
+            `http://localhost:5000/messages/${state.receiver.id}?isChannel=true`,
+            {
+              withCredentials: true,
+            },
+          )
+          .then((responce) => {
+            if (responce.data.length) {
+              messagesList.current = [...responce.data]
+              setMessages([...messagesList.current])
+            }
+          })
+      }
     } catch (error) {
       console.log('get messages history error : ', error)
     }
@@ -82,8 +100,9 @@ export default function ChatPannel() {
       console.log('reciever : ', state.receiver)
       console.log('new message : ', newMessage)
       if (
-        state.receiver.id === newMessage.senderId ||
-        newMessage.senderId === state.mainUser.id
+        state.receiver &&
+        (state.receiver.id === newMessage.senderId ||
+          newMessage.senderId === state.mainUser.id)
       ) {
         console.log('all messages: ', messages)
         messagesList.current = [...messagesList.current, newMessage]
@@ -105,40 +124,45 @@ export default function ChatPannel() {
       receiverId: state.receiver.id,
       createdAt: Date(),
       content: messageInput,
-      isChannel: false,
+      isChannel: !isContact(state.receiver),
     }
     chatSocket.current.emit('SEND_MESSAGE', { ...message })
     setMessageinput('')
   }
 
   return (
-    <div className={chatPannelStyle.message}>
-      <div className={chatPannelStyle.message_head}>
-        <div className={chatPannelStyle.reciverInfo}>
-          <Reciever />
+    <>
+      {state.receiver === null ? (
+        <NoReceiver />
+      ) : (
+        <div className={chatPannelStyle.message}>
+          <div className={chatPannelStyle.message_head}>
+            <div className={chatPannelStyle.reciverInfo}>
+              <Reciever />
+            </div>
+            {/*  */}
+          </div>
+          <div className={chatPannelStyle.message_body}>
+            <div ref={chatContainer} className={chatPannelStyle.messages_list}>
+              {messages &&
+                messages.map((message: any) => {
+                  return (
+                    <MessageComponent
+                      key={uniqid()}
+                      message={message}
+                      mainUser={state.mainUser}
+                    />
+                  )
+                })}
+            </div>
+            <InputMessage
+              sendMessage={sendMessage}
+              messageInput={messageInput}
+              setMessageinput={setMessageinput}
+            />
+          </div>
         </div>
-        {state.receiver &&
-          (isContact(state.receiver) ? '' : <ChannelManagement />)}
-      </div>
-      <div className={chatPannelStyle.message_body}>
-        <div ref={chatContainer} className={chatPannelStyle.messages_list}>
-          {/* {state.messages &&
-            state.messages.map((message : any) => {
-              return <MessageComponent key={uniqid()} message={message} mainUser={state.mainUser} />
-            })} */}
-          {messages &&
-            messages.map((message: any) => {
-              return (
-                <MessageComponent
-                  key={uniqid()}
-                  message={message}
-                  mainUser={state.mainUser}
-                />
-              )
-            })}
-        </div>
-        <InputMessage sendMessage={sendMessage} messageInput={messageInput} setMessageinput={setMessageinput} />
-      </div>
+      )}
       <ToastContainer
         position="top-right"
         autoClose={2000}
@@ -150,6 +174,6 @@ export default function ChatPannel() {
         draggable
         pauseOnHover
       />
-    </div>
+    </>
   )
 }

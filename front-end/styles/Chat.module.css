@@ -132,6 +132,13 @@
   padding-left: 30px;
   padding-top: 10px;
 }
+.main_user .receiverInfo
+{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+}
 
 .avatar {
   width: 60px;
@@ -246,7 +253,7 @@
 }
 
 .room_management {
-  width: 100%;
+  /* width: 100%; */
   height: 100%;
   display: flex;
   flex-direction: row;
@@ -254,6 +261,7 @@
   align-items: center;
   gap: 15px;
   padding: 20px;
+  margin-left: 100px;
 }
 
 .room_button {
@@ -442,6 +450,7 @@
   height: 50px;
   font-size: large;
 }
+/* room button */
 .create_room {
   display: flex;
   justify-content: center;
@@ -475,18 +484,85 @@
   height: 100%;
   color: whitesmoke;
 }
-.new_room .create_room_input
+.new_room .channelType
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.new_room .channelType button
+{
+  width: 120px;
+  height: 80px;
+  display: flex;
+  background-color: #1acaff;
+  color: #212b36;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  border: 2px solid #1acaff;
+}
+
+.new_room .channelType .selected
+{
+  background-color: #212b36;
+  color: #1acaff;
+
+}
+.new_room input
 {
   width: 100%;
   height: 50px;
   font-size: 16px;
+  border-radius: 10px;
+  border: none;
+  margin: 10px;
 }
 
-.new_room .roomtype label
+.new_room label
 {
-  margin-right: 30px;
-  margin-left: 10px;
+  font-size: 18px;
 }
+.create_Channel
+{
+  margin-top: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.create_Channel_button
+{
+  background-color: #212b36;
+  color: #1acaff;
+  padding: 10px 20px;
+  font-size: 18px;
+  border-radius: 10px;
+  margin-top: 10px;
+  border: 2px solid #1acaff;
+  
+}
+.create_Channel_button:hover
+{
+  background-color: #1acaff;
+  cursor: pointer;
+  color: white;
+}
+.input_error
+{
+  color: #ff3030;
+}
+.input_error h5
+{
+  margin: 0;
+  padding: 5px;
+  font-weight: 400;
+}
+
 
 @media only screen and (max-width: 800px) {
   .chatComponentStyle {

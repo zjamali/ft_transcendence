@@ -13,7 +13,7 @@ export const ChatProvider = (props: any) => {
   // const [contacts, setContacts] = useState<ContactProps[]>([])
   const [contacts, setContacts] = useState<User[]>([])
   //const [channels, setChannels] = useState<Channel[]>([])
-  const [channels, setChannels] = useState<Channel[]>([...api_rooms])
+  const [channels, setChannels] = useState<Channel[]>([])
   const [receiver, setReceiver] = useState<User | Channel | null>(null)
   return (
     <ChatContext.Provider

@@ -37,19 +37,19 @@ export class MessagesController {
   @Get(':receiverId')
   findOne(@Req() req: Request, @Param('receiverId') receiverId: string) {
     
+    const decodedJwtAccessToken: any = this.jwtService.decode(
+      req.cookies['access_token'],
+    );
+    const jwtPayload: JwtPayload = { ...decodedJwtAccessToken };
+    console.log('messages user id:  ', jwtPayload.id);
+
     console.log('queries : ', req.query['isChannel']);
     if (req.query['isChannel']) {
-      
-      return "get channel messages";
+      return this.messagesService.findOne(receiverId,jwtPayload.id, true);
     } 
     else 
     {
-      const decodedJwtAccessToken: any = this.jwtService.decode(
-        req.cookies['access_token'],
-      );
-      const jwtPayload: JwtPayload = { ...decodedJwtAccessToken };
-      console.log('messages user id:  ', jwtPayload.id);
-      return this.messagesService.findOne(receiverId, jwtPayload.id);
+      return this.messagesService.findOne(receiverId, jwtPayload.id, false);
     }
   }
 
