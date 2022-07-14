@@ -15,6 +15,9 @@ export const ChatProvider = (props: any) => {
   //const [channels, setChannels] = useState<Channel[]>([])
   const [channels, setChannels] = useState<Channel[]>([])
   const [receiver, setReceiver] = useState<User | Channel | null>(null)
+
+  const [isUserJoinedChannel, setIsUserJoinedChannel] = useState<boolean>(false);
+
   return (
     <ChatContext.Provider
       value={{
@@ -25,6 +28,7 @@ export const ChatProvider = (props: any) => {
           contacts,
           channels,
           receiver,
+          isUserJoinedChannel
         },
         setMessages,
         setContacts,
@@ -32,6 +36,7 @@ export const ChatProvider = (props: any) => {
         setReceiver,
         setMainUser,
         setSession,
+        setIsUserJoinedChannel
       }}
     >
       {props.children}

@@ -20,9 +20,9 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
 
   const notify = (message: string) => toast(message)
   /// automatic scroll message
-  const { state } = useContext(ChatContext)
+  const { state, setIsUserJoinedChannel } = useContext(ChatContext)
   const chatContainer = useRef<HTMLDivElement>(null)
-  const [messageInput, setMessageinput] = useState<string>('')
+
   const messagesList = useRef<any>([])
   const [messages, setMessages] = useState<any[]>([])
   const [newMessage, setNewMessage] = useState<null | Message>(null)
@@ -40,7 +40,6 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
     try {
       messagesList.current = []
       setMessages([])
-      setMessageinput('')
       if (state.receiver && isContact(state.receiver)) {
         axios
           .get(`http://localhost:5000/messages/${state.receiver.id}`, {
@@ -114,7 +113,7 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
     }
   }, [newMessage])
 
-  const sendMessage = (e: any) => {
+  const sendMessage = (e: any, messageInput: string) => {
     e.preventDefault()
     console.log('send message')
     const message = {
@@ -126,11 +125,10 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
       isChannel: !isContact(state.receiver),
     }
     chatSocket.current.emit('SEND_MESSAGE', { ...message })
-    setMessageinput('')
   }
 
   return (
-    <>
+    <div className={chatPannelStyle.chatPannel}>
       {state.receiver === null ? (
         <NoReceiver />
       ) : (
@@ -154,14 +152,10 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
                   )
                 })}
             </div>
-            <InputMessage
-              sendMessage={sendMessage}
-              messageInput={messageInput}
-              setMessageinput={setMessageinput}
-            />
           </div>
         </div>
       )}
+      {(state.receiver && (isContact(state.receiver)? true : state.isUserJoinedChannel )  )&& <InputMessage sendMessage={sendMessage} />}
       <ToastContainer
         position="top-right"
         autoClose={2000}
@@ -173,6 +167,6 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
         draggable
         pauseOnHover
       />
-    </>
+    </div>
   )
 }

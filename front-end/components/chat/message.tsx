@@ -1,39 +1,46 @@
 import { useContext, useEffect, useState } from 'react'
-import { ChatContext } from '../../context/chatContext';
+import { ChatContext } from '../../context/chatContext'
 import messageStyles from '../../styles/Chat.module.css'
 import { MessageComponentProps } from '../../utils/interfaces'
-import { isContact } from '../../utils/utils';
+import { isContact } from '../../utils/utils'
 
 export default function MessageComponent(props: MessageComponentProps) {
+  const { state } = useContext(ChatContext)
+  const [isChannel, setIsChannel] = useState<boolean>(false)
 
-  const {state} = useContext(ChatContext)
-  const [isChannel, setIsChannel] = useState<boolean>(false);
-  
   useEffect(() => {
-    setIsChannel(!isContact(state.receiver));
-  }, [])
-  
+    setIsChannel(!isContact(state.receiver))
+  }, [state.receiver])
+
   return (
     <>
-      { props.mainUser?.id === props.message?.senderId ? (
-        <div
-          className={
-            messageStyles.message_content +
-            ' ' +
-            messageStyles.message_main_user
-          }
-        >
-          <p>{props.message?.content}</p>
-        </div>
+      {props.mainUser?.id === props.message?.senderId ? (
+        <>
+          <div
+            className={
+              messageStyles.message_content +
+              ' ' +
+              messageStyles.message_main_user
+            }
+          >
+            <p>{props.message?.content}</p>
+          </div>
+          <p className={messageStyles.Channel_senderName}>{`   `}</p>
+        </>
       ) : (
-        <div className={messageStyles.message_content}>
-          <p>{props.message?.content}</p>
-        </div>
+        <>
+          <div className={messageStyles.message_content}>
+            <p>{props.message?.content}</p>
+          </div>
+          {isChannel ? (
+            <p className={messageStyles.Channel_senderName}>
+              {props.message.senderName}
+            </p>
+          ) : (
+            <p className={messageStyles.Channel_senderName}>{`   `}</p>
+          )}
+        </>
       )}
-      {
-        isChannel &&
-        <p>${props.message.senderName}</p>
-      }
     </>
   )
 }

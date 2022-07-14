@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { ChatContext } from '../../context/chatContext'
 import reciverStyle from '../../styles/Chat.module.css'
 import Avatar from './avatar'
@@ -8,7 +8,15 @@ import { isContact } from '../../utils/utils'
 import ChannelManagement from './ChannelManagemet'
 
 export default function Reciever() {
-  const { state } = useContext(ChatContext)
+  const { state , setIsUserJoinedChannel } = useContext(ChatContext);
+  
+  useEffect(() => {
+    if (!isContact(state.receiver))
+    {
+      setIsUserJoinedChannel(state.receiver.ActiveUsers.includes(state.mainUser.id));
+    }
+  }, [state.receiver])
+  
   return (
     <>
       {isContact(state.receiver) ? (
@@ -34,7 +42,7 @@ export default function Reciever() {
                 <h3>{state.receiver.roomName}</h3>
               </div>
             </div>
-            <ChannelManagement />
+            {!state.isUserJoinedChannel && <ChannelManagement />}
           </div>
         </>
       )}

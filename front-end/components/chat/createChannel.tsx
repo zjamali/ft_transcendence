@@ -35,8 +35,7 @@ export function CreateChannel({
 
   function validateRoom(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    const typeOfRoom =
-      roomType.indexOf('Public') !== -1 ? 'Protected' : 'Public'
+    const typeOfRoom = roomType.indexOf('Public') !== -1 ? 'Public' : 'Private'
 
     if (validateName.test(roomName)) {
       setValidateRoomName(true)

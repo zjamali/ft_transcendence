@@ -3,11 +3,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { RoomsService } from './rooms.service';
 import { RoomsController } from './rooms.controller';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Room])],
   controllers: [RoomsController],
-  providers: [RoomsService],
-  exports : [RoomsService, TypeOrmModule]
+  providers: [RoomsService, JwtService],
+  exports: [RoomsService, TypeOrmModule],
 })
 export class RoomsModule {}

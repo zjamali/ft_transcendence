@@ -10,9 +10,15 @@ import { MessagesModule } from './messages/messages.module';
 import { JwtService } from '@nestjs/jwt';
 import { RoomsService } from './rooms/rooms.service';
 
-
 @Module({
   imports: [UsersModule, MessagesModule, EventsModule, RoomsModule],
-  providers: [ChatGateway, ChatService, MessagesService, EventsService, JwtService, RoomsService]
+  providers: [
+    ChatGateway,
+    ChatService,
+    MessagesService,
+    EventsService,
+    JwtService,
+    RoomsService,
+  ],
 })
 export class ChatModule {}

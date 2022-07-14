@@ -1,5 +1,5 @@
 import { RoomsService } from './rooms/rooms.service';
-import { Server ,Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { GlobalService } from 'src/utils/Global.service';
 import {
   WebSocketGateway,
@@ -7,7 +7,7 @@ import {
   MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
-  WebSocketServer
+  WebSocketServer,
 } from '@nestjs/websockets';
 import { ChatService } from './chat.service';
 import { CreateMessageDto } from './messages/dto/create-message.dto';
@@ -29,53 +29,56 @@ export type JwtPayload = { id: string; username: string };
   namespace: 'chat',
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  
   @WebSocketServer()
   server: Server;
-  
 
   constructor(
-    private readonly chatService: ChatService ,
+    private readonly chatService: ChatService,
     private readonly messagesService: MessagesService,
     // private readonly eventsService : EventsService,
     private readonly jwtService: JwtService,
-    private readonly roomsService : RoomsService,
-    ) {}
-    
+    private readonly roomsService: RoomsService,
+  ) {}
+
   // @UseGuards(JwtAuthGuard)
   @SubscribeMessage('CREATE_CHANNEL')
-  async createChannel(@MessageBody() createChannel : CreateRoomDto) {
-    console.log("create room: ", createChannel);
+  async createChannel(@MessageBody() createChannel: CreateRoomDto) {
+    console.log('create room: ', createChannel);
     this.roomsService.create(createChannel);
-    this.server.emit('A_CHANNELS_STATUS_UPDATED');
+    if (createChannel.roomType.indexOf('Public') != -1)
+      this.server.emit('A_CHANNELS_STATUS_UPDATED');
   }
-  
+
   @SubscribeMessage('SEND_MESSAGE')
-  async create(@MessageBody() createMessageDto: CreateMessageDto ) {
-    console.log(" ✉ message : ",  createMessageDto);
-    
+  async create(@MessageBody() createMessageDto: CreateMessageDto) {
+    console.log(' ✉ message : ', createMessageDto);
+
     // save message in db
     this.messagesService.create(createMessageDto);
-    
-    const receiverSockets = GlobalService.UsersChatSockets.get(createMessageDto.receiverId);
-    let  targetUserSockets = [...GlobalService.UsersChatSockets.get(createMessageDto.senderId)];
+
+    const receiverSockets = GlobalService.UsersChatSockets.get(
+      createMessageDto.receiverId,
+    );
+    let targetUserSockets = [
+      ...GlobalService.UsersChatSockets.get(createMessageDto.senderId),
+    ];
     if (receiverSockets)
-       targetUserSockets = [...targetUserSockets, ...receiverSockets];
-    console.log("target to send it message :  ", targetUserSockets);
-    targetUserSockets.forEach(socket => {
-      this.server.to(socket).emit("NEW_MESSAGE", {...createMessageDto});
+      targetUserSockets = [...targetUserSockets, ...receiverSockets];
+    console.log('target to send it message :  ', targetUserSockets);
+    targetUserSockets.forEach((socket) => {
+      this.server.to(socket).emit('NEW_MESSAGE', { ...createMessageDto });
     });
   }
   @UseGuards(JwtAuthGuard)
   async handleConnection(client: Socket) {
     const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
-    this.chatService.addUserChatSocket(user_id,client.id);
+    this.chatService.addUserChatSocket(user_id, client.id);
   }
 
   @UseGuards(JwtAuthGuard)
   async handleDisconnect(client: Socket) {
     const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
-    this.chatService.removeUserChatSocket(user_id, client.id)
+    this.chatService.removeUserChatSocket(user_id, client.id);
   }
 
   public getUserIdFromJWT(cookies: string): string {
@@ -88,13 +91,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   parseCookie(cookies: any) {
     cookies = cookies.split('; ');
     const result = {};
-    for (let i in cookies) {
+    for (const i in cookies) {
       const cur = cookies[i].split('=');
       result[cur[0]] = cur[1];
     }
     return result;
   }
-
 
   /*
   @SubscribeMessage('findAllChat')

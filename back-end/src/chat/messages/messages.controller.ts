@@ -1,3 +1,4 @@
+import { RoomsService } from './../rooms/rooms.service';
 import {
   Controller,
   Get,
@@ -21,6 +22,7 @@ export class MessagesController {
   constructor(
     private readonly messagesService: MessagesService,
     private readonly jwtService: JwtService,
+    private readonly roomsService: RoomsService,
   ) {}
 
   @Post()
@@ -35,8 +37,7 @@ export class MessagesController {
 
   @UseGuards(JwtService)
   @Get(':receiverId')
-  findOne(@Req() req: Request, @Param('receiverId') receiverId: string) {
-    
+  async findOne(@Req() req: Request, @Param('receiverId') receiverId: string) {
     const decodedJwtAccessToken: any = this.jwtService.decode(
       req.cookies['access_token'],
     );
@@ -45,10 +46,12 @@ export class MessagesController {
 
     console.log('queries : ', req.query['isChannel']);
     if (req.query['isChannel']) {
-      return this.messagesService.findOne(receiverId,jwtPayload.id, true);
-    } 
-    else 
-    {
+      const roomData = await this.roomsService.findOne(Number(receiverId));
+      console.log('room data : ', roomData);
+      if (roomData[0].ActiveUsers.includes(jwtPayload.id))
+        return this.messagesService.findOne(receiverId, jwtPayload.id, true);
+      return;
+    } else {
       return this.messagesService.findOne(receiverId, jwtPayload.id, false);
     }
   }

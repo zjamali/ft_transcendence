@@ -12,18 +12,18 @@ export class RoomsService {
     private readonly roomRepository: Repository<Room>,
   ) {}
   async create(createRoomDto: CreateRoomDto) {
-    console.log("room :", createRoomDto);
+    console.log('room :', createRoomDto);
     const newRoom = this.roomRepository.create(createRoomDto);
     await this.roomRepository.save(newRoom);
     return 'This action adds a new room';
   }
 
   async findAll() {
-    return this.roomRepository.find();
+    return this.roomRepository.find({ where: { roomType: 'Public' } });
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} room`;
+    return this.roomRepository.find({ where: { id: id } });
   }
 
   update(id: number, updateRoomDto: UpdateRoomDto) {
