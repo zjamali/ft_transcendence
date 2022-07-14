@@ -16,8 +16,4 @@ export class GlobalService {
   constructor(
     private readonly jwtService: JwtService,
   ) {}
-
-
-  
-
 }

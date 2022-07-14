@@ -14,9 +14,9 @@ import { InputMessage } from './inputMessage'
 import NoReceiver from './noReceiver'
 import { isContact } from '../../utils/utils'
 
-export default function ChatPannel() {
+export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
   //chat socket if a reciver is set
-  const chatSocket = useRef<any>(null)
+  //const chatSocket = useRef<any>(null)
 
   const notify = (message: string) => toast(message)
   /// automatic scroll message
@@ -41,7 +41,7 @@ export default function ChatPannel() {
       messagesList.current = []
       setMessages([])
       setMessageinput('')
-      if (isContact(state.receiver)) {
+      if (state.receiver && isContact(state.receiver)) {
         axios
           .get(`http://localhost:5000/messages/${state.receiver.id}`, {
             withCredentials: true,
@@ -55,7 +55,7 @@ export default function ChatPannel() {
       } else {
         axios
           .get(
-            `http://localhost:5000/messages/${state.receiver.id}?isChannel=true`,
+            `http://localhost:5000/messages/${state.receiver?.id}?isChannel=true`,
             {
               withCredentials: true,
             },
@@ -79,7 +79,6 @@ export default function ChatPannel() {
       chatSocket.current = io('http://localhost:5000/chat', {
         withCredentials: true,
       })
-
     try {
       chatSocket.current.on('NEW_MESSAGE', (newMessage: any) => {
         console.log('wa message : ', newMessage)

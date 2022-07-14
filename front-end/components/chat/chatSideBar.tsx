@@ -5,7 +5,7 @@ import ChatContacts from './chatContacts'
 import ChatRooms from './channelsChat'
 import {ChatContext} from '../../context/chatContext'
 
-export default function ChatSideBar(props: any) {
+export default function ChatSideBar({chatSocket} : {chatSocket:any}) {
   const [buttonState, setButtonState] = useState(0)
   const hangleToogle = (e: any) => {
     if (e.target.id === 'contacts') {
@@ -47,7 +47,7 @@ export default function ChatSideBar(props: any) {
           </button>
         </div>
         {buttonState === 0 && <ChatContacts  />}
-        {buttonState === 1 && <ChatRooms />}
+        {buttonState === 1 && <ChatRooms chatSocket={chatSocket} />}
       </div>
     </div>
   )

@@ -1,11 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-export enum RoomType {
-  PRIVATE = 'private',
-  PUBLIC = 'public',
-  PROTECTED = 'Protected'
-}
-
 @Entity()
 export class Room {
   @PrimaryGeneratedColumn()
@@ -30,17 +24,15 @@ export class Room {
   admins: string[];
 
   @Column({
-    type: 'enum',
-    enum: RoomType,
-    default: RoomType.PUBLIC,
+    default: 'public',
   })
-  roomType: RoomType;
+  roomType: string;
 
-  @Column({default: false})
-  isProtected : boolean;
+  @Column({ default: false })
+  isProtected: boolean;
 
-  @Column( {nullable: true})
-  password : string;
+  @Column({ nullable: true })
+  password: string;
 }
 
 export default Room;

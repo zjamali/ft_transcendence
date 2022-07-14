@@ -18,9 +18,9 @@ function NoChannels(props: { message: string }) {
   )
 }
 
-export default function Channels() {
+export default function Channels({chatSocket} : {chatSocket:any}) {
   const { state } = useContext(ChatContext)
-  const [modalIsOpen, setIsOpen] = React.useState(false)
+  const [modalIsOpen, setModalIsOpen] = React.useState(false)
 
 
   return (
@@ -40,7 +40,7 @@ export default function Channels() {
         <div className={chatStyles.create_room}>
           <button
             className={chatStyles.create_room_button}
-            onClick={() => setIsOpen(true)}
+            onClick={() => setModalIsOpen(true)}
           >
             {' '}
             + Room
@@ -49,7 +49,7 @@ export default function Channels() {
         <Modal
           isOpen={modalIsOpen}
           // onAfterOpen={afterOpenModal}
-          onRequestClose={()=> setIsOpen(false)}
+          onRequestClose={()=> setModalIsOpen(false)}
           style={{
             overlay: {
               position: 'fixed',
@@ -75,7 +75,7 @@ export default function Channels() {
           }}
           contentLabel="Example Modal"
         >
-          <CreateChannel />
+          <CreateChannel chatSocket={chatSocket} setModalIsOpen={setModalIsOpen}/>
         </Modal>
       </div>
     </>

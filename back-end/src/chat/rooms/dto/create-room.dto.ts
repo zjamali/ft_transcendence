@@ -1,4 +1,3 @@
-import { RoomType } from '../entities/room.entity';
 export class CreateRoomDto {
   id?: string;
   roomName: string;
@@ -7,7 +6,7 @@ export class CreateRoomDto {
   mutedUsers?: string[];
   owner: string;
   admins?: string[];
-  roomType: RoomType;
+  roomType: string;
   isProtected: boolean;
   password?: string;
 }

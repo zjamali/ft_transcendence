@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import styles from '../styles/Chat.module.css'
 import ChatPannel from '../components/chat/chatPannel'
@@ -10,9 +11,15 @@ import { Channel } from '../utils/interfaces'
 
 export default function Chat() {
   const { state, setContacts, setChannels } = useContext(ChatContext)
+  // event socket
   const eventsSocket = useRef<any>(null)
+  //chat socket if a reciver is set
+  const chatSocket = useRef<any>(null)
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const [showContacts, setShowContacts] = useState(windowWidth === 800)
+
+  /*  Event Sockets namespace  */
+
   useEffect(() => {
     //////
     /* creation Sockets start */
@@ -22,10 +29,13 @@ export default function Chat() {
       })
 
     try {
-      fetchAllusers();
-      fetchAllChannels();
+      fetchAllusers()
+      fetchAllChannels()
       eventsSocket.current.on('A_USER_STATUS_UPDATED', (user: any) => {
         setContactStatus(user.isOnline, user)
+      })
+      chatSocket.current.on('A_CHANNELS_STATUS_UPDATED', (channel: Channel) => {
+        setChannelsStatus(channel)
       })
     } catch (error) {
       console.log('sockets error', error)
@@ -53,6 +63,7 @@ export default function Chat() {
       console.log('CANT GET ALL USERS')
     }
   }
+
   function fetchAllChannels() {
     try {
       axios
@@ -85,8 +96,21 @@ export default function Chat() {
     } else fetchAllusers()
   }
   function setChannelsStatus(channel: Channel) {
+    console.log('set Channels ')
     let channels = [...state.channels]
-    /// if channel is updated or created
+    // if (
+    //   // contacts.filter((contact) => {
+    //   //   contact.id === user.id
+    //   // }).length === 1
+    // ) {
+    //   contacts.map((user) => {
+    //     if (user.id === user.id) {
+    //       user.isOnline = status
+    //     }
+    //   })
+    //   setContacts([...contacts])
+    // } else
+    fetchAllChannels()
   }
 
   useEffect(() => {
@@ -98,6 +122,20 @@ export default function Chat() {
     }
   }, [state.messages])
 
+  /*****  end events */
+
+  useEffect(() => {
+    //////
+    /* creation Sockets start */
+    if (!chatSocket.current)
+      chatSocket.current = io('http://localhost:5000/chat', {
+        withCredentials: true,
+      })
+  }, [])
+
+  /*** chat sockets  */
+
+  /**** end chat sockets  */
   const updateDimensions = () => {
     setWindowWidth(window.innerWidth)
   }
@@ -130,8 +168,8 @@ export default function Chat() {
             />{' '}
           </button>
         )}
-        {showContacts && <ChatSideBar />}
-        <ChatPannel />
+        {showContacts && <ChatSideBar chatSocket={chatSocket} />}
+        <ChatPannel chatSocket={chatSocket} />
       </div>
     </>
   )

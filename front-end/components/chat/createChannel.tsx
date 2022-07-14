@@ -1,8 +1,8 @@
-import React, { ReactChild, useContext, useEffect, useState } from 'react'
+import React, { ReactChild, Ref, useContext, useEffect, useState } from 'react'
 import { ChatContext } from '../../context/chatContext'
 import craeteChannelStyle from '../../styles/Chat.module.css'
-import { channelType } from '../../utils/interfaces'
 import { validateName, validatePassword } from '../../regex/createChannelRegex'
+import { Channel } from '../../utils/interfaces'
 
 function InputError(props: { message: string }) {
   return (
@@ -12,42 +12,63 @@ function InputError(props: { message: string }) {
   )
 }
 
-export function CreateChannel({}) {
+export function CreateChannel({
+  chatSocket,
+  setModalIsOpen,
+}: {
+  chatSocket: any
+  setModalIsOpen: any
+}) {
   const { state } = useContext(ChatContext)
   const [roomName, setRoomName] = useState<string>('')
   const [validateRoomName, setValidateRoomName] = useState<boolean>(true)
   const [roomType, setRoomType] = useState<string>('Public')
   const [roomPassword, setRoomPassword] = useState<string>('')
-  const [ValidateRoomPassword, setValidateRoomPassword] = useState<boolean>(true)
-  const [isProtected, setIsProtected] = useState(false)
-  const [Admins, setAdmins] = useState(null)
+  const [ValidateRoomPassword, setValidateRoomPassword] = useState<boolean>(
+    true,
+  )
 
-  // useEffect(() => {
+  function createRoom(newRoom: Channel) {
+    chatSocket.current.emit('CREATE_CHANNEL', newRoom)
+    setModalIsOpen(false)
+  }
 
-  // }, [roomName, roomPassword])
-
-  function createRoom(e: React.FormEvent<HTMLFormElement>) {
+  function validateRoom(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    if (validateName.test(roomName))
-    {
-      setValidateRoomName(true);
-      if(roomType.indexOf('Protected') != -1)
-      {
-        if(validatePassword.test(roomPassword))
-        {
-          setValidateRoomPassword(true);
-          console.log('create room protected');
-        }
-        else
-          setValidateRoomPassword(false);
+    const typeOfRoom =
+      roomType.indexOf('Public') !== -1 ? 'Protected' : 'Public'
+
+    if (validateName.test(roomName)) {
+      setValidateRoomName(true)
+      if (roomType.indexOf('Protected') != -1) {
+        if (validatePassword.test(roomPassword)) {
+          setValidateRoomPassword(true)
+          // setIsProtected(true);
+          createRoom({
+            roomName: roomName,
+            owner: state.mainUser.id,
+            admins: [state.mainUser.id],
+            isProtected: true,
+            password: roomPassword,
+            created_at: Date(),
+            roomType: typeOfRoom,
+            ActiveUsers: [state.mainUser.id],
+          })
+          console.log('create room protected')
+        } else setValidateRoomPassword(false)
+      } else {
+        console.log('create room not protected')
+        createRoom({
+          roomName: roomName,
+          owner: state.mainUser.id,
+          admins: [state.mainUser.id],
+          isProtected: false,
+          created_at: Date(),
+          roomType: typeOfRoom,
+          ActiveUsers: [state.mainUser.id],
+        })
       }
-      else
-      {
-        console.log('create room not protected');
-      }
-    }
-    else
-      setValidateRoomName(false);
+    } else setValidateRoomName(false)
   }
 
   function handleRoomName(e: React.ChangeEvent<HTMLInputElement>) {
@@ -59,7 +80,7 @@ export function CreateChannel({}) {
 
   return (
     <div className={craeteChannelStyle.new_room}>
-      <form onSubmit={(e) => createRoom(e)}>
+      <form onSubmit={(e) => validateRoom(e)}>
         <label htmlFor="ChannelName">Channel Room</label>
         <div>
           <input
@@ -67,7 +88,7 @@ export function CreateChannel({}) {
             name="ChannelName"
             id="ChannelName"
             value={roomName}
-            placeholder='Channel Name'
+            placeholder="Channel Name"
             onChange={(e) => handleRoomName(e)}
           />
         </div>
@@ -135,7 +156,7 @@ export function CreateChannel({}) {
                 name="roomPassword"
                 id="roomPassword"
                 value={roomPassword}
-                placeholder='password'
+                placeholder="password"
                 onChange={(e) => handleRoomPassword(e)}
               />
             </div>
@@ -147,7 +168,12 @@ export function CreateChannel({}) {
           </div>
         )}
         <div className={craeteChannelStyle.create_Channel}>
-        <button type="submit" className={craeteChannelStyle.create_Channel_button}>create Channel</button>
+          <button
+            type="submit"
+            className={craeteChannelStyle.create_Channel_button}
+          >
+            create Channel
+          </button>
         </div>
       </form>
     </div>

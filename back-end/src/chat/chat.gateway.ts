@@ -1,3 +1,4 @@
+import { RoomsService } from './rooms/rooms.service';
 import { Server ,Socket } from 'socket.io';
 import { GlobalService } from 'src/utils/Global.service';
 import {
@@ -10,7 +11,6 @@ import {
 } from '@nestjs/websockets';
 import { ChatService } from './chat.service';
 import { CreateMessageDto } from './messages/dto/create-message.dto';
-import { EventsService } from 'src/events/events.service';
 import { MessagesService } from './messages/messages.service';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -37,15 +37,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly chatService: ChatService ,
     private readonly messagesService: MessagesService,
-    private readonly eventsService : EventsService,
+    // private readonly eventsService : EventsService,
     private readonly jwtService: JwtService,
+    private readonly roomsService : RoomsService,
     ) {}
     
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @SubscribeMessage('CREATE_CHANNEL')
   async createChannel(@MessageBody() createChannel : CreateRoomDto) {
     console.log("create room: ", createChannel);
-    
+    this.roomsService.create(createChannel);
+    this.server.emit('A_CHANNELS_STATUS_UPDATED');
   }
   
   @SubscribeMessage('SEND_MESSAGE')
