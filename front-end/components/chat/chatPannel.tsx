@@ -20,7 +20,7 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
 
   const notify = (message: string) => toast(message)
   /// automatic scroll message
-  const { state, setIsUserJoinedChannel } = useContext(ChatContext)
+  const { state, setIsUserJoinedChannel, setReceiver } = useContext(ChatContext)
   const chatContainer = useRef<HTMLDivElement>(null)
 
   const messagesList = useRef<any>([])
@@ -60,22 +60,8 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
             'active users: ',
             state.receiver.ActiveUsers.includes(state.mainUser.id),
           )
-          // join room
           console.log('axios : get data')
           joinRoom()
-          // axios
-          //   .get(
-          //     `http://localhost:5000/messages/${state.receiver?.id}?isChannel=true`,
-          //     {
-          //       withCredentials: true,
-          //     },
-          //   )
-          //   .then((responce) => {
-          //     if (responce.data.length) {
-          //       messagesList.current = [...responce.data]
-          //       setMessages([...messagesList.current])
-          //     }
-          //   })
         }
       }
     } catch (error) {
@@ -148,6 +134,19 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
     chatSocket.current.emit('SEND_MESSAGE', { ...message })
   }
 
+  function leaveRoom() {
+    console.log('leave room ')
+    if (chatSocket.current) {
+      chatSocket.current.emit('LEAVE_ROOM', {
+        user_id: state.mainUser.id,
+        room_id: state.receiver.id,
+      })
+
+      setIsUserJoinedChannel(false)
+      setReceiver(null)
+    }
+  }
+
   function joinRoom() {
     console.log('join room :::')
     if (chatSocket.current) {
@@ -179,7 +178,7 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
         <div className={chatPannelStyle.message}>
           <div className={chatPannelStyle.message_head}>
             <div className={chatPannelStyle.reciverInfo}>
-              <Reciever joinRoom={joinRoom} />
+              <Reciever joinRoom={joinRoom} leaveRoom={leaveRoom} />
             </div>
             {/*  */}
           </div>

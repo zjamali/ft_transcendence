@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { Injectable, Param } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateRoomDto } from './dto/create-room.dto';
 import Room from './entities/room.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -27,14 +27,20 @@ export class RoomsService {
   async addUser(id: number, user_id: string) {
     const roomToUpdate = await this.roomRepository.findOne(id);
     if (roomToUpdate.ActiveUsers.includes(user_id)) {
-      return false;
+      return;
     }
     roomToUpdate.ActiveUsers = [...roomToUpdate.ActiveUsers, user_id];
     await this.roomRepository.save(roomToUpdate);
-    return true;
+    return;
   }
-  deleteUser(id: number, user_id: string) {
-    return `This action updates a #${id} room`;
+  async deleteUser(id: number, user_id: string) {
+    const roomToUpdate = await this.roomRepository.findOne(id);
+    roomToUpdate.ActiveUsers = roomToUpdate.ActiveUsers.filter(
+      (ActiveUserid) => {
+        return ActiveUserid !== user_id;
+      },
+    );
+    await this.roomRepository.save(roomToUpdate);
   }
 
   remove(id: number) {

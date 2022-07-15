@@ -70,11 +70,33 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       ' this room : ',
       roomToJoin,
     );
-    await this.roomsService
+    this.roomsService
       .addUser(Number(newUserToJoin.room_id), newUserToJoin.user_id)
       .then(() => {
         const targetUserSockets = GlobalService.UsersChatSockets.get(
           newUserToJoin.user_id,
+        );
+        targetUserSockets.forEach((socket) => {
+          this.server.to(socket).emit('A_CHANNELS_STATUS_UPDATED');
+        });
+      });
+  }
+
+  @SubscribeMessage('LEAVE_ROOM')
+  async leaveRoom(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() UserToLeaveRoom: { user_id: string; room_id: string },
+  ) {
+    const roomToLeave = await this.roomsService.findOne(
+      Number(UserToLeaveRoom.room_id),
+    );
+    console.log('leave room ', roomToLeave);
+    client.leave(UserToLeaveRoom.room_id);
+    this.roomsService
+      .deleteUser(Number(UserToLeaveRoom.room_id), UserToLeaveRoom.user_id)
+      .then(() => {
+        const targetUserSockets = GlobalService.UsersChatSockets.get(
+          UserToLeaveRoom.user_id,
         );
         targetUserSockets.forEach((socket) => {
           this.server.to(socket).emit('A_CHANNELS_STATUS_UPDATED');

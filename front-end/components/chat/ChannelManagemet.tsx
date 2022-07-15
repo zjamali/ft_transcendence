@@ -4,8 +4,10 @@ import channelManagemetStyle from '../../styles/Chat.module.css'
 
 export default function ChannelManagement({
   joinRoom,
+  leaveRoom
 }: {
-  joinRoom: () => void
+  joinRoom: () => void,
+  leaveRoom: ()=>void
 }) {
   const { state, setIsUserJoinedChannel } = useContext(ChatContext)
   console.log('room state :', state.receiver)
@@ -32,6 +34,7 @@ export default function ChannelManagement({
             ' ' +
             channelManagemetStyle.leave_room
           }
+          onClick={leaveRoom}
         >
           leave
         </button>

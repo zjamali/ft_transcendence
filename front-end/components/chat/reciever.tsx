@@ -7,7 +7,7 @@ import RoomAvatar from 'react-avatar'
 import { isContact } from '../../utils/utils'
 import ChannelManagement from './ChannelManagemet'
 
-export default function Reciever({ joinRoom }: { joinRoom: () => void }) {
+export default function Reciever({ joinRoom, leaveRoom }: { joinRoom: () => void , leaveRoom:()=>void}) {
   const { state, setIsUserJoinedChannel } = useContext(ChatContext)
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function Reciever({ joinRoom }: { joinRoom: () => void }) {
                 <h3>{state.receiver.roomName}</h3>
               </div>
             </div>
-            {<ChannelManagement joinRoom={joinRoom} />}
+            {<ChannelManagement joinRoom={joinRoom} leaveRoom={leaveRoom}/>}
           </div>
         </>
       )}
