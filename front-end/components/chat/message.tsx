@@ -25,20 +25,21 @@ export default function MessageComponent(props: MessageComponentProps) {
           >
             <p>{props.message?.content}</p>
           </div>
-          <p className={messageStyles.Channel_senderName}>{`   `}</p>
+          {/* <p className={messageStyles.Channel_senderName}>{`   `}</p> */}
         </>
       ) : (
         <>
           <div className={messageStyles.message_content}>
             <p>{props.message?.content}</p>
+            {isChannel && <h5 className={messageStyles.Channel_senderName}> ➦ {props.message.senderName}</h5>}
           </div>
-          {isChannel ? (
+          {/* {isChannel ? (
             <p className={messageStyles.Channel_senderName}>
               {props.message.senderName}
             </p>
           ) : (
             <p className={messageStyles.Channel_senderName}>{`   `}</p>
-          )}
+          )} */}
         </>
       )}
     </>

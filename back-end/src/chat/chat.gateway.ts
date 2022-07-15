@@ -8,6 +8,7 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   WebSocketServer,
+  ConnectedSocket,
 } from '@nestjs/websockets';
 import { ChatService } from './chat.service';
 import { CreateMessageDto } from './messages/dto/create-message.dto';
@@ -40,34 +41,73 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly roomsService: RoomsService,
   ) {}
 
-  // @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuar0d)
   @SubscribeMessage('CREATE_CHANNEL')
-  async createChannel(@MessageBody() createChannel: CreateRoomDto) {
-    console.log('create room: ', createChannel);
-    this.roomsService.create(createChannel);
+  async createChannel(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() createChannel: CreateRoomDto,
+  ) {
+    console.log('create room: ', createChannel, ' socket : ', client);
+    const room = await this.roomsService.create(createChannel);
+    client.join(room.id);
     if (createChannel.roomType.indexOf('Public') != -1)
       this.server.emit('A_CHANNELS_STATUS_UPDATED');
   }
 
+  @SubscribeMessage('JOIN_ROOM')
+  async joinRoom(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() newUserToJoin: { user_id: string; room_id: string },
+  ) {
+    const roomToJoin = await this.roomsService.findOne(
+      Number(newUserToJoin.room_id),
+    );
+    console.log('join room: ', roomToJoin);
+    client.join(newUserToJoin.room_id);
+    console.log(
+      'someOne is joined : id ',
+      newUserToJoin.user_id,
+      ' this room : ',
+      roomToJoin,
+    );
+    await this.roomsService
+      .addUser(Number(newUserToJoin.room_id), newUserToJoin.user_id)
+      .then(() => {
+        const targetUserSockets = GlobalService.UsersChatSockets.get(
+          newUserToJoin.user_id,
+        );
+        targetUserSockets.forEach((socket) => {
+          this.server.to(socket).emit('A_CHANNELS_STATUS_UPDATED');
+        });
+      });
+  }
+
   @SubscribeMessage('SEND_MESSAGE')
   async create(@MessageBody() createMessageDto: CreateMessageDto) {
-    console.log(' ✉ message : ', createMessageDto);
+    if (createMessageDto.isChannel === false) {
+      console.log(' ✉ message : ', createMessageDto);
+      // save message in db
+      this.messagesService.create(createMessageDto);
 
-    // save message in db
-    this.messagesService.create(createMessageDto);
-
-    const receiverSockets = GlobalService.UsersChatSockets.get(
-      createMessageDto.receiverId,
-    );
-    let targetUserSockets = [
-      ...GlobalService.UsersChatSockets.get(createMessageDto.senderId),
-    ];
-    if (receiverSockets)
-      targetUserSockets = [...targetUserSockets, ...receiverSockets];
-    console.log('target to send it message :  ', targetUserSockets);
-    targetUserSockets.forEach((socket) => {
-      this.server.to(socket).emit('NEW_MESSAGE', { ...createMessageDto });
-    });
+      const receiverSockets = GlobalService.UsersChatSockets.get(
+        createMessageDto.receiverId,
+      );
+      let targetUserSockets = [
+        ...GlobalService.UsersChatSockets.get(createMessageDto.senderId),
+      ];
+      if (receiverSockets)
+        targetUserSockets = [...targetUserSockets, ...receiverSockets];
+      console.log('target to send it message :  ', targetUserSockets);
+      targetUserSockets.forEach((socket) => {
+        this.server.to(socket).emit('NEW_MESSAGE', { ...createMessageDto });
+      });
+    } else {
+      console.log('the message is for a channel ', createMessageDto);
+      this.messagesService.create(createMessageDto);
+      this.server
+        .to(createMessageDto.receiverId)
+        .emit('NEW_MESSAGE', { ...createMessageDto });
+    }
   }
   @UseGuards(JwtAuthGuard)
   async handleConnection(client: Socket) {

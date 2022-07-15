@@ -132,7 +132,28 @@
   padding-left: 30px;
   padding-top: 10px;
 }
-.main_user .receiverInfo
+
+.receiver_Channel
+{
+  min-width: 100.5%;
+  height: 100px;
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  color: #d0d6dc;
+  text-align: left;
+  text-transform: capitalize;
+  font-weight: 400;
+  border-bottom: 2px solid #3e4751;
+  padding-bottom: 20px;
+  padding-left: 30px;
+  padding-top: 10px;
+}
+
+.receiverInfo
 {
   display: flex;
   justify-content: flex-start;
@@ -240,7 +261,12 @@
 {
   align-self: flex-start;
   margin: 0 0px 15px 20px;
+  position: absolute;
+  top: -16px;
+  left: -20px;
+  color: #d0d6dc;
 }
+
 .message_head {
   border-bottom: 2px solid #3e4751;
   width: 100%;
@@ -272,7 +298,6 @@
   align-items: center;
   gap: 15px;
   padding: 20px;
-  margin-left: 100px;
 }
 
 .room_button {
@@ -363,11 +388,12 @@
 }
 .message_input form {
   display: grid;
-  grid-template-columns: 9fr 1fr;
+  grid-template-columns: 9fr 2fr;
   height: 100%;
   justify-items: center;
   align-items: center;
   gap: 10px;
+  padding-left: 30px;
   /* padding-right: 5%; */
 }
 
@@ -405,23 +431,24 @@
 
 .message_content {
   background-color: #d0d6dc;
-  min-width: 100px;
+  min-width: 200px;
   color: #212b36;
   /* min-height: 50px; */
   border-radius: 50px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 20px;
-  margin: 0px 0;
+  padding: 15px 20px;
+  margin: 15px 0;
   display: grid;
   grid-template-rows: 1fr;
   align-self: flex-start;
+  position: relative;
 }
 .message_content p {
   min-width: 100px;
-  font-size: 1rem;
-  height: 100%;
+  font-size: 16px;
+  /* height: 100%; */
   font-weight: 500;
   overflow-wrap: break-word;
 }
@@ -429,6 +456,7 @@
 .message_main_user {
   align-self: flex-end;
   background-color: #1acaff;
+  margin: 10px 0;
 }
 
 .noreceiver {
@@ -604,5 +632,9 @@
 
   .chatSideBar {
     border-right: none;
+  }
+  .room_management
+  {
+    margin-right: 100px;
   }
 }

@@ -52,19 +52,31 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
             }
           })
       } else {
-        axios
-          .get(
-            `http://localhost:5000/messages/${state.receiver?.id}?isChannel=true`,
-            {
-              withCredentials: true,
-            },
+        if (
+          state.receiver &&
+          state.receiver.ActiveUsers.includes(state.mainUser.id)
+        ) {
+          console.log(
+            'active users: ',
+            state.receiver.ActiveUsers.includes(state.mainUser.id),
           )
-          .then((responce) => {
-            if (responce.data.length) {
-              messagesList.current = [...responce.data]
-              setMessages([...messagesList.current])
-            }
-          })
+          // join room
+          console.log('axios : get data')
+          joinRoom()
+          // axios
+          //   .get(
+          //     `http://localhost:5000/messages/${state.receiver?.id}?isChannel=true`,
+          //     {
+          //       withCredentials: true,
+          //     },
+          //   )
+          //   .then((responce) => {
+          //     if (responce.data.length) {
+          //       messagesList.current = [...responce.data]
+          //       setMessages([...messagesList.current])
+          //     }
+          //   })
+        }
       }
     } catch (error) {
       console.log('get messages history error : ', error)
@@ -94,9 +106,18 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
   }, [])
 
   useEffect(() => {
+    // one to one
+    console.log('a new message from server')
     if (newMessage) {
       console.log('reciever : ', state.receiver)
       console.log('new message : ', newMessage)
+      if (newMessage.isChannel) {
+        if (newMessage.receiverId === state.receiver.id) {
+          messagesList.current = [...messagesList.current, newMessage]
+          setMessages([...messagesList.current])
+        }
+        return
+      }
       if (
         state.receiver &&
         (state.receiver.id === newMessage.senderId ||
@@ -115,7 +136,6 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
 
   const sendMessage = (e: any, messageInput: string) => {
     e.preventDefault()
-    console.log('send message')
     const message = {
       senderId: state.mainUser.id,
       senderName: `${state.mainUser.firstName} ${state.mainUser.lastName}`,
@@ -124,7 +144,31 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
       content: messageInput,
       isChannel: !isContact(state.receiver),
     }
+    console.log('send message : ', message)
     chatSocket.current.emit('SEND_MESSAGE', { ...message })
+  }
+
+  function joinRoom() {
+    console.log('join room :::')
+    if (chatSocket.current) {
+      chatSocket.current.emit('JOIN_ROOM', {
+        user_id: state.mainUser.id,
+        room_id: state.receiver.id,
+      })
+      axios
+        .get(
+          `http://localhost:5000/messages/${state.receiver?.id}?isChannel=true`,
+          {
+            withCredentials: true,
+          },
+        )
+        .then((responce) => {
+          if (responce.data.length) {
+            messagesList.current = [...responce.data]
+            setMessages([...messagesList.current])
+          }
+        })
+    }
   }
 
   return (
@@ -135,7 +179,7 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
         <div className={chatPannelStyle.message}>
           <div className={chatPannelStyle.message_head}>
             <div className={chatPannelStyle.reciverInfo}>
-              <Reciever />
+              <Reciever joinRoom={joinRoom} />
             </div>
             {/*  */}
           </div>
@@ -155,7 +199,10 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
           </div>
         </div>
       )}
-      {(state.receiver && (isContact(state.receiver)? true : state.isUserJoinedChannel )  )&& <InputMessage sendMessage={sendMessage} />}
+      {state.receiver &&
+        (isContact(state.receiver) ? true : state.isUserJoinedChannel) && (
+          <InputMessage sendMessage={sendMessage} />
+        )}
       <ToastContainer
         position="top-right"
         autoClose={2000}

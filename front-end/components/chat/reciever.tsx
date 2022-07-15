@@ -7,31 +7,30 @@ import RoomAvatar from 'react-avatar'
 import { isContact } from '../../utils/utils'
 import ChannelManagement from './ChannelManagemet'
 
-export default function Reciever() {
-  const { state , setIsUserJoinedChannel } = useContext(ChatContext);
-  
+export default function Reciever({ joinRoom }: { joinRoom: () => void }) {
+  const { state, setIsUserJoinedChannel } = useContext(ChatContext)
+
   useEffect(() => {
-    if (!isContact(state.receiver))
-    {
-      setIsUserJoinedChannel(state.receiver.ActiveUsers.includes(state.mainUser.id));
+    if (!isContact(state.receiver)) {
+      setIsUserJoinedChannel(
+        state.receiver.ActiveUsers.includes(state.mainUser.id),
+      )
     }
-  }, [state.receiver])
-  
+  }, [state.receiver, state.Channels])
+
   return (
     <>
       {isContact(state.receiver) ? (
         <div className={reciverStyle.main_user}>
-          
-            <Avatar image={state.receiver.image} />
-            <div>
-              <h3>{`${state.receiver.firstName} ${state.receiver.lastName}`}</h3>
-              <p>@{state.receiver.userName}</p>
-            </div>
-          
+          <Avatar image={state.receiver.image} />
+          <div>
+            <h3>{`${state.receiver.firstName} ${state.receiver.lastName}`}</h3>
+            <p>@{state.receiver.userName}</p>
+          </div>
         </div>
       ) : (
         <>
-          <div className={reciverStyle.main_user}>
+          <div className={reciverStyle.receiver_Channel}>
             <div className={reciverStyle.receiverInfo}>
               <RoomAvatar
                 name={state.receiver.roomName}
@@ -42,7 +41,7 @@ export default function Reciever() {
                 <h3>{state.receiver.roomName}</h3>
               </div>
             </div>
-            {!state.isUserJoinedChannel && <ChannelManagement />}
+            {<ChannelManagement joinRoom={joinRoom} />}
           </div>
         </>
       )}

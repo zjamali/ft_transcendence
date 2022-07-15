@@ -1,15 +1,5 @@
-import {
-  Controller,
-  Get,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  Req,
-} from '@nestjs/common';
+import { Controller, Get, Param, UseGuards, Req } from '@nestjs/common';
 import { RoomsService } from './rooms.service';
-import { UpdateRoomDto } from './dto/update-room.dto';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../chat.gateway';
 
@@ -40,13 +30,13 @@ export class RoomsController {
     return this.roomsService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRoomDto: UpdateRoomDto) {
-    return this.roomsService.update(+id, updateRoomDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateRoomDto: UpdateRoomDto) {
+  //   return this.roomsService.update(+id, updateRoomDto);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.roomsService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.roomsService.remove(+id);
+  // }
 }
