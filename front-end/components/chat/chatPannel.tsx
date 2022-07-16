@@ -15,14 +15,9 @@ import NoReceiver from './noReceiver'
 import { isContact } from '../../utils/utils'
 
 export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
-  //chat socket if a reciver is set
-  //const chatSocket = useRef<any>(null)
-
   const notify = (message: string) => toast(message)
-  /// automatic scroll message
   const { state, setIsUserJoinedChannel, setReceiver } = useContext(ChatContext)
   const chatContainer = useRef<HTMLDivElement>(null)
-
   const messagesList = useRef<any>([])
   const [messages, setMessages] = useState<any[]>([])
   const [newMessage, setNewMessage] = useState<null | Message>(null)
@@ -154,6 +149,7 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
         user_id: state.mainUser.id,
         room_id: state.receiver.id,
       })
+      console.log('get messages : ')
       axios
         .get(
           `http://localhost:5000/messages/${state.receiver?.id}?isChannel=true`,
@@ -178,7 +174,11 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
         <div className={chatPannelStyle.message}>
           <div className={chatPannelStyle.message_head}>
             <div className={chatPannelStyle.reciverInfo}>
-              <Reciever joinRoom={joinRoom} leaveRoom={leaveRoom} />
+              <Reciever
+                chatSocket={chatSocket}
+                joinRoom={joinRoom}
+                leaveRoom={leaveRoom}
+              />
             </div>
             {/*  */}
           </div>

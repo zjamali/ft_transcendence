@@ -35,7 +35,7 @@ export default function Chat() {
         setContactStatus(user.isOnline, user)
       })
       chatSocket.current.on('A_CHANNELS_STATUS_UPDATED', () => {
-        fetchAllChannels();
+        fetchAllChannels()
       })
     } catch (error) {
       console.log('sockets error', error)
@@ -65,7 +65,7 @@ export default function Chat() {
   }
 
   function fetchAllChannels() {
-    console.log("fetch channels");
+    console.log('fetch channels')
     try {
       axios
         .get('http://localhost:5000/rooms', { withCredentials: true })
@@ -96,7 +96,7 @@ export default function Chat() {
       setContacts([...contacts])
     } else fetchAllusers()
   }
-  
+
   function setChannelsStatus(channel: Channel) {
     console.log('set Channels ')
     // fetchAllChannels()

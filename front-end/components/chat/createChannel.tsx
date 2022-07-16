@@ -4,7 +4,7 @@ import craeteChannelStyle from '../../styles/Chat.module.css'
 import { validateName, validatePassword } from '../../regex/createChannelRegex'
 import { Channel } from '../../utils/interfaces'
 
-function InputError(props: { message: string }) {
+export function InputError(props: { message: string }) {
   return (
     <div className={craeteChannelStyle.input_error}>
       <h5>{props.message}</h5>

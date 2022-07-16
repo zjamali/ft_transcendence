@@ -7,14 +7,22 @@ import RoomAvatar from 'react-avatar'
 import { isContact } from '../../utils/utils'
 import ChannelManagement from './ChannelManagemet'
 
-export default function Reciever({ joinRoom, leaveRoom }: { joinRoom: () => void , leaveRoom:()=>void}) {
+export default function Reciever({
+  joinRoom,
+  leaveRoom,
+  chatSocket
+}: {
+  joinRoom: () => void
+  leaveRoom: () => void,
+  chatSocket : any
+}) {
   const { state, setIsUserJoinedChannel } = useContext(ChatContext)
 
   useEffect(() => {
     if (!isContact(state.receiver)) {
-      setIsUserJoinedChannel(
-        state.receiver.ActiveUsers.includes(state.mainUser.id),
-      )
+        setIsUserJoinedChannel(
+          state.receiver.ActiveUsers.includes(state.mainUser.id),
+        )
     }
   }, [state.receiver, state.Channels])
 
@@ -41,7 +49,7 @@ export default function Reciever({ joinRoom, leaveRoom }: { joinRoom: () => void
                 <h3>{state.receiver.roomName}</h3>
               </div>
             </div>
-            {<ChannelManagement joinRoom={joinRoom} leaveRoom={leaveRoom}/>}
+            {<ChannelManagement chatSocket={chatSocket} joinRoom={joinRoom} leaveRoom={leaveRoom} />}
           </div>
         </>
       )}

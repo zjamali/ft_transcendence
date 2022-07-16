@@ -1,4 +1,4 @@
-import { JwtService } from '@nestjs/jwt';
+// import { JwtService } from '@nestjs/jwt';
 // import { Server, Socket } from 'socket.io';
 
 // type JwtPayload = { id: string; username: string };
@@ -11,5 +11,5 @@ export class GlobalService {
   static UsersEventsSockets: Map<string, string[]> = new Map();
   static UsersChatSockets: Map<string, string[]> = new Map();
 
-  constructor(private readonly jwtService: JwtService) {}
+  // constructor(private readonly jwtService: JwtService) {}
 }

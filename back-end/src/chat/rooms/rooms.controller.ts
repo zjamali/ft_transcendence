@@ -22,7 +22,7 @@ export class RoomsController {
     );
     const jwtPayload: JwtPayload = { ...decodedJwtAccessToken };
     console.log('user id:', jwtPayload.id);
-    return this.roomsService.findAll();
+    if (jwtPayload.id) return this.roomsService.findAll(jwtPayload.id);
   }
 
   @Get(':id')

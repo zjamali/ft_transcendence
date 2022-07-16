@@ -48,10 +48,29 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() createChannel: CreateRoomDto,
   ) {
     console.log('create room: ', createChannel, ' socket : ', client);
-    const room = await this.roomsService.create(createChannel);
+    const imageLink = createChannel.roomType.includes('Private')
+      ? '/images/icons/channel_protected.png'
+      : '/images/icons/channel_icon.png';
+    const room = await this.roomsService.create({
+      ...createChannel,
+      image: imageLink,
+    });
     client.join(room.id);
-    if (createChannel.roomType.indexOf('Public') != -1)
-      this.server.emit('A_CHANNELS_STATUS_UPDATED');
+    this.server.emit('A_CHANNELS_STATUS_UPDATED');
+  }
+
+  @SubscribeMessage('CHECK_ROOM_PASSWORD')
+  async checkRoomPassword(
+    @MessageBody() data: { room_id: string; password: string },
+  ) {
+    const roomToJoin = await this.roomsService.findOne(Number(data.room_id));
+    if (roomToJoin[0].password === data.password) {
+      console.log('the password is correct ');
+      return true;
+    } else {
+      console.log('password is incorrect');
+      return false;
+    }
   }
 
   @SubscribeMessage('JOIN_ROOM')

@@ -16,8 +16,14 @@ export class RoomsService {
     return await this.roomRepository.save(newRoom);
   }
 
-  async findAll() {
-    return this.roomRepository.find({ where: { roomType: 'Public' } });
+  async findAll(user_id: string) {
+    return (
+      await this.roomRepository
+        .createQueryBuilder('room')
+        .where('room.ActiveUsers like :id', { id: '%' + user_id + '%' })
+        .orWhere('room.roomType like :roomtype', { roomtype: '%Public%' })
+        .getMany()
+    ).sort((a, b) => Number(a.id) - Number(b.id));
   }
 
   findOne(id: number) {

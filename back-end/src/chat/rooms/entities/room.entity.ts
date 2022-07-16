@@ -33,6 +33,9 @@ export class Room {
 
   @Column({ nullable: true })
   password: string;
+
+  @Column({ nullable: true })
+  image: string;
 }
 
 export default Room;

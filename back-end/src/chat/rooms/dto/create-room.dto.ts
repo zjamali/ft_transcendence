@@ -9,4 +9,5 @@ export class CreateRoomDto {
   roomType: string;
   isProtected: boolean;
   password?: string;
+  image?: string;
 }
