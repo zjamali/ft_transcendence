@@ -1,8 +1,6 @@
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
 import {
   WebSocketGateway,
-  SubscribeMessage,
-  MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
   WebSocketServer,
@@ -44,10 +42,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     );
     if (response) {
       const { user, userSockets } = response;
-      if (userSockets.length === 1)
-      {
+      if (userSockets.length === 1) {
         console.log('✅ user : connected : ', response);
-        this.Server.emit('A_USER_STATUS_UPDATED', { ...user});
+        this.Server.emit('A_USER_STATUS_UPDATED', { ...user });
         // client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user});
         await this.eventsService.setUserOnlineInDb(user_id);
       }
@@ -56,7 +53,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
   @UseGuards(JwtAuthGuard)
   async handleDisconnect(client: any) {
-    const cookies = client.handshake.headers.cookie;
+    // const cookies = client.handshake.headers.cookie;
     const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
     this.allgetwaySockets = this.allgetwaySockets.filter(
       (socketid) => socketid != client.id,
@@ -66,15 +63,13 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.id,
     );
     const { user, userSockets } = response;
-    if (userSockets.length === 0)
-    {
-      console.log("user: disconnect ❌", response);
+    if (userSockets.length === 0) {
+      console.log('user: disconnect ❌', response);
       // this.Server.emit('A_USER_STATUS_UPDATED', { ...user});
-      client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user});
+      client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user });
       await this.eventsService.setUserOfflineInDb(user_id);
     }
   }
-
 
   getUserIdFromJWT(cookies: string): string {
     const decodedJwtAccessToken: any = this.jwtService.decode(
@@ -86,7 +81,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   parseCookie(cookies: any) {
     cookies = cookies.split('; ');
     const result = {};
-    for (let i in cookies) {
+    for (const i in cookies) {
       const cur = cookies[i].split('=');
       result[cur[0]] = cur[1];
     }

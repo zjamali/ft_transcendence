@@ -33,13 +33,12 @@ export function CreateChannel({
     setModalIsOpen(false)
   }
 
-  function validateRoom(e: React.FormEvent<HTMLFormElement>) {
+  function validateRoom(e: any) {
     e.preventDefault()
-    const typeOfRoom = roomType.indexOf('Public') !== -1 ? 'Public' : 'Private'
 
     if (validateName.test(roomName)) {
       setValidateRoomName(true)
-      if (roomType.indexOf('Protected') != -1) {
+      if (roomPassword.length > 0) {
         if (validatePassword.test(roomPassword)) {
           setValidateRoomPassword(true)
           // setIsProtected(true);
@@ -50,7 +49,7 @@ export function CreateChannel({
             isProtected: true,
             password: roomPassword,
             created_at: Date(),
-            roomType: typeOfRoom,
+            roomType: roomType,
             ActiveUsers: [state.mainUser.id],
           })
           console.log('create room protected')
@@ -63,7 +62,7 @@ export function CreateChannel({
           admins: [state.mainUser.id],
           isProtected: false,
           created_at: Date(),
-          roomType: typeOfRoom,
+          roomType: roomType,
           ActiveUsers: [state.mainUser.id],
         })
       }
@@ -97,58 +96,39 @@ export function CreateChannel({
           <InputError message="‎" />
         )}
         <div className={craeteChannelStyle.channelType}>
-          {roomType === 'Public' && (
+          {roomType === 'Public' ? (
             <>
-              <button className={craeteChannelStyle.selected}>Public</button>
-              <button onClick={(e) => setRoomType('Public-Protected')}>
-                Public-Protected
+              <button className={craeteChannelStyle.selected} disabled={true}>
+                Public
               </button>
-              <button onClick={(e) => setRoomType('Private')}>Private</button>
-              <button onClick={(e) => setRoomType('Private-Protected')}>
-                Private-Protected
+              <button
+                onClick={(e) => {
+                  e.preventDefault()
+                  setRoomType('Private')
+                }}
+              >
+                Private
               </button>
             </>
-          )}
-          {roomType === 'Private' && (
+          ) : (
             <>
-              <button onClick={(e) => setRoomType('Public')}>Public</button>
-              <button onClick={(e) => setRoomType('Public-Protected')}>
-                Public-Protected
+              <button
+                onClick={(e) => {
+                  e.preventDefault()
+                  setRoomType('Public')
+                }}
+              >
+                Public
               </button>
-              <button className={craeteChannelStyle.selected}>Private</button>
-              <button onClick={(e) => setRoomType('Private-Protected')}>
-                Private-Protected
-              </button>
-            </>
-          )}
-          {roomType === 'Public-Protected' && (
-            <>
-              <button onClick={(e) => setRoomType('Public')}>Public</button>
-              <button className={craeteChannelStyle.selected}>
-                Public-Protected
-              </button>
-              <button onClick={(e) => setRoomType('Private')}>Private</button>
-              <button onClick={(e) => setRoomType('Private-Protected')}>
-                Private-Protected
-              </button>
-            </>
-          )}
-          {roomType === 'Private-Protected' && (
-            <>
-              <button onClick={(e) => setRoomType('Public')}>Public</button>
-              <button onClick={(e) => setRoomType('Public-Protected')}>
-                Public-Protected
-              </button>
-              <button onClick={(e) => setRoomType('Private')}>Private</button>
-              <button className={craeteChannelStyle.selected}>
-                Private-Protected
+              <button className={craeteChannelStyle.selected} disabled={true}>
+                Private
               </button>
             </>
           )}
         </div>
-        {roomType.indexOf('Protected') != -1 && (
+        {roomType === 'Public' && (
           <div>
-            <label htmlFor="ChannelPassword">Password</label>
+            <label htmlFor="ChannelPassword">Password <span>(optional)</span></label>
             <div>
               <input
                 type="password"
@@ -166,6 +146,7 @@ export function CreateChannel({
             )}
           </div>
         )}
+
         <div className={craeteChannelStyle.create_Channel}>
           <button
             type="submit"

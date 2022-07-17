@@ -1,15 +1,17 @@
-// import { JwtService } from '@nestjs/jwt';
-// import { Server, Socket } from 'socket.io';
-
-// type JwtPayload = { id: string; username: string };
-
+import * as bcrypt from 'bcrypt';
 export class GlobalService {
-  // static OnlineUsers: Map<string, string[]> = new Map();
   static AllOpnedSockets: string[] = [];
   static Users: any;
 
   static UsersEventsSockets: Map<string, string[]> = new Map();
   static UsersChatSockets: Map<string, string[]> = new Map();
 
-  // constructor(private readonly jwtService: JwtService) {}
+  static async hashPassword(password: string) {
+    const saltOrRounds = 10;
+    return await bcrypt.hash(password, saltOrRounds);
+  }
+
+  static async CheckPassword(password: string, hash: string) {
+    return await bcrypt.compare(password, hash);
+  }
 }

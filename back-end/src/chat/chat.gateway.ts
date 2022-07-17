@@ -49,12 +49,24 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     console.log('create room: ', createChannel, ' socket : ', client);
     const imageLink = createChannel.roomType.includes('Private')
-      ? '/images/icons/channel_protected.png'
+      ? '/images/icons/channel_private.png'
       : '/images/icons/channel_icon.png';
-    const room = await this.roomsService.create({
-      ...createChannel,
-      image: imageLink,
-    });
+    let room;
+    if (createChannel.isProtected) {
+      const hashedPassword = await GlobalService.hashPassword(
+        createChannel.password,
+      );
+      room = await this.roomsService.create({
+        ...createChannel,
+        image: imageLink,
+        password: hashedPassword,
+      });
+    } else {
+      room = await this.roomsService.create({
+        ...createChannel,
+        image: imageLink,
+      });
+    }
     client.join(room.id);
     this.server.emit('A_CHANNELS_STATUS_UPDATED');
   }
@@ -64,7 +76,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: { room_id: string; password: string },
   ) {
     const roomToJoin = await this.roomsService.findOne(Number(data.room_id));
-    if (roomToJoin[0].password === data.password) {
+    const isMatch = await GlobalService.CheckPassword(
+      data.password,
+      roomToJoin[0].password,
+    );
+    if (isMatch) {
       console.log('the password is correct ');
       return true;
     } else {
