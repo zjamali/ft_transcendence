@@ -4,11 +4,68 @@ import channelManagemetStyle from '../../styles/Chat.module.css'
 import Modal from 'react-modal'
 import { InputError } from './createChannel'
 
+function ChannelSettings(props: any) {
+  const [openSettingModal, setOpenSettingModal] = useState(false)
+
+  return (
+    <div className={channelManagemetStyle.channleSettings}>
+      <button
+        className={channelManagemetStyle.room_button}
+        onClick={ ()=> setOpenSettingModal(true)}
+      >
+        settings
+      </button>
+      {openSettingModal && (
+        <Modal
+          isOpen={openSettingModal}
+          // onAfterOpen={afterOpenModal}
+          onRequestClose={() => setOpenSettingModal(false)}
+          style={{
+            overlay: {
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(22, 28, 36, 0.5)',
+            },
+            content: {
+              top: '50%',
+              left: '50%',
+              right: 'auto',
+              bottom: 'auto',
+              marginRight: '-50%',
+              transform: 'translate(-50%, -50%)',
+              minWidth: '400px',
+              height: '250px',
+              border: 'none',
+              borderRadius: '20px',
+              backgroundColor: '#212B36',
+            },
+          }}
+          contentLabel="Example Modal"
+        >
+          <button
+            className={
+              channelManagemetStyle.room_button +
+              ' ' +
+              channelManagemetStyle.leave_room
+            }
+            onClick={props.leaveRoom}
+          >
+            leave
+          </button>
+        </Modal>
+      )}
+    </div>
+  )
+}
+
 function JoinProtectedRoom(props: any) {
   const [password, setPassword] = useState<string>('')
   const [validatePasswordState, setValidatePasswordState] = useState(false)
   const [passwordIsWrong, setPasswordIsWrong] = useState(false)
-  const {setIsUserJoinedChannel } = useContext(ChatContext)
+  const { setIsUserJoinedChannel } = useContext(ChatContext)
 
   function handleForm(e: any) {
     e.preventDefault()
@@ -23,7 +80,7 @@ function JoinProtectedRoom(props: any) {
             setPasswordIsWrong(true)
           } else {
             setPasswordIsWrong(false)
-            setIsUserJoinedChannel(true);
+            setIsUserJoinedChannel(true)
             props.joinRoom()
             props.setOpenPasswordModal(false)
           }
@@ -92,16 +149,7 @@ export default function ChannelManagement({
             join
           </button>
         ) : (
-          <button
-            className={
-              channelManagemetStyle.room_button +
-              ' ' +
-              channelManagemetStyle.leave_room
-            }
-            onClick={leaveRoom}
-          >
-            leave
-          </button>
+          <ChannelSettings leaveRoom={leaveRoom} />
         )}
       </div>
       <Modal
