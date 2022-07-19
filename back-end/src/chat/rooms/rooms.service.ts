@@ -16,14 +16,17 @@ export class RoomsService {
     return await this.roomRepository.save(newRoom);
   }
 
-  async findAll(user_id: string) {
+  async findAll() {
     return (
-      await this.roomRepository
-        .createQueryBuilder('room')
-        .where('room.ActiveUsers like :id', { id: '%' + user_id + '%' })
-        .orWhere('room.roomType like :roomtype', { roomtype: '%Public%' })
-        .getMany()
-    ).sort((a, b) => Number(a.id) - Number(b.id));
+      //await this.roomRepository
+      //  .createQueryBuilder('room')
+      //  .where('room.ActiveUsers like :id', { id: '%' + user_id + '%' })
+      //  .orWhere('room.roomType like :roomtype', { roomtype: '%Public%' })
+      //  .getMany()
+      (await this.roomRepository.find()).sort(
+        (a, b) => Number(a.id) - Number(b.id),
+      )
+    );
   }
 
   findOne(id: number) {

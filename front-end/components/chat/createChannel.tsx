@@ -38,7 +38,7 @@ export function CreateChannel({
 
     if (validateName.test(roomName)) {
       setValidateRoomName(true)
-      if (roomPassword.length > 0) {
+      if (roomType === 'Private') {
         if (validatePassword.test(roomPassword)) {
           setValidateRoomPassword(true)
           // setIsProtected(true);
@@ -126,9 +126,9 @@ export function CreateChannel({
             </>
           )}
         </div>
-        {roomType === 'Public' && (
+        {roomType === 'Private' && (
           <div>
-            <label htmlFor="ChannelPassword">Password <span>(optional)</span></label>
+            <label htmlFor="ChannelPassword">Password</label>
             <div>
               <input
                 type="password"

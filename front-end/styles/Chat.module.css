@@ -576,6 +576,8 @@
   color: white;
 }
 .input_error {
+  width: 300px;
+  overflow-wrap: break-word;
   color: #ff3030;
 }
 .input_error h5 {
@@ -598,6 +600,35 @@
   border-radius: 10px;
   border: none;
   margin: 5px 0 10px 0;
+  padding-left: 10px;
+}
+.manageMembers
+{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.manageMembers form
+{
+  color: #d0d6dc;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.manageMembers form .input
+{
+  width: 100%;
+  height: 40px;
+  font-size: 18px;
+  margin-top: 5px;
+  margin-right: 10px;
+  border-radius: 3px;
+  border: none;
   padding-left: 10px;
 }
 

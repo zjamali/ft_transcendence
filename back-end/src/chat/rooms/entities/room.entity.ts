@@ -24,7 +24,7 @@ export class Room {
   admins: string[];
 
   @Column({
-    default: 'public',
+    default: 'Public',
   })
   roomType: string;
 
