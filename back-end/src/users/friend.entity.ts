@@ -1,22 +1,19 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
-import User from './user.entity';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 export enum State {
+  NO_RECORD = 'no_record',
+  PENDING = 'pending',
   FRIENDS = 'friends',
   BLOCKED = 'blocked',
-  DIGITAL = 'digital',
-  NO_RECORD = 'no_record',
-  PENDING_FIRST_SECOND = 'pending_first_second',
-  PENDING_SECOND_FIRST = 'pending_second_first',
 }
 
 @Entity()
 class Friend {
-  @Column()
-  public firstId: User;
+  @PrimaryColumn()
+  public relatingUserID: string;
 
-  @Column()
-  public secondId: User;
+  @PrimaryColumn()
+  public relatedUserID: string;
 
   @Column()
   public state: State;
