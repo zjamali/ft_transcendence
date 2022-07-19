@@ -13,10 +13,18 @@ function ManageMembers(props: any) {
   const [banned, setBanned] = useState<[{}]>([{}])
   const [kickedUser, setKickedUser] = useState<[{}]>([{}])
   const [mutedUsers, setMutedUsers] = useState<[{}]>([{}])
-  const [selectedAdminsOption, setSelectedAdminsOption] = useState(null)
-  const [selectedBannedsOption, setSelectedBannedsOption] = useState(null)
-  const [selectedMutedusersOption, setSelectedMutedusersOption] = useState(null)
-  const [selectedKickedUserOption, setSelectedKickedUserOption] = useState(null)
+  const [selectedAdminsOption, setSelectedAdminsOption] = useState<[] | null>(
+    null,
+  )
+  const [selectedBannedsOption, setSelectedBannedsOption] = useState<[] | null>(
+    null,
+  )
+  const [selectedMutedusersOption, setSelectedMutedusersOption] = useState<
+    [] | null
+  >(null)
+  const [selectedKickedUserOption, setSelectedKickedUserOption] = useState<
+    [] | null
+  >(null)
   const [isFormCorrects, setIsFormCorrects] = useState(true)
   const [isPasswordCorrects, setIsPasswordCorrect] = useState(true)
   const [updatePassword, setUpdatePassword] = useState('')
@@ -138,20 +146,22 @@ function ManageMembers(props: any) {
 
   function handleChannelSetting(e: any) {
     e.preventDefault()
-    let punishedUser = [
-      ...selectedBannedsOption,
-      ...selectedMutedusersOption,
-      ...selectedKickedUserOption,
-    ]
+    if (loadingRoomDataIsDone) {
+      const punishedUser = [
+        ...selectedBannedsOption,
+        ...selectedMutedusersOption,
+        ...selectedKickedUserOption,
+      ]
 
-    if (props.room.owner != props.mainUser.id)
-      selectedAdminsOption.forEach((admin) => {
-        if (punishedUser.includes(admin)) {
-          setIsFormCorrects(false)
-        }
-      })
-    if (updatePassword.length > 0) {
-      setIsPasswordCorrect(false)
+      if (props.room.owner != props.mainUser.id)
+        selectedAdminsOption?.forEach((admin) => {
+          if (punishedUser.includes(admin)) {
+            setIsFormCorrects(false)
+          }
+        })
+      if (updatePassword.length > 0) {
+        setIsPasswordCorrect(false)
+      }
     }
   }
 
