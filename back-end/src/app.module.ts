@@ -1,3 +1,4 @@
+import { ChatModule } from './chat/chat.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -5,6 +6,9 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { JwtAuthModule } from './auth/jwt-auth.module';
 import entities from 'src';
+import { EventsModule } from './events/events.module';
+import { MessagesModule } from './chat/messages/messages.module';
+import { RoomsModule } from './chat/rooms/rooms.module';
 
 @Module({
   imports: [
@@ -26,6 +30,10 @@ import entities from 'src';
     AuthModule,
     UsersModule,
     JwtAuthModule,
+    EventsModule,
+    MessagesModule,
+    RoomsModule,
+    ChatModule,
   ],
 })
 export class AppModule {}

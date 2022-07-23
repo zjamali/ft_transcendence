@@ -11,11 +11,13 @@ import RequestWithUser from 'src/users/requestWithUser.interface';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { TwoFactorAuthenticationService } from './twoFactorAuthentication.service';
 import { Response } from 'express';
+import { UsersService } from 'src/users/users.service';
 
 @Controller('2fa')
 export class TwoFactorAuthenticationController {
   constructor(
     private readonly twoFactorAuthService: TwoFactorAuthenticationService,
+    private readonly usersService: UsersService,
   ) {}
 
   @Post('generate')
@@ -46,5 +48,20 @@ export class TwoFactorAuthenticationController {
       throw new UnauthorizedException('Wrong two factor authentication');
     }
     return req.user;
+  }
+
+  async turnOnTwoFactorAuthentication(
+    @Req() req: RequestWithUser,
+    @Body() { twoFactorAuthenticationCode },
+  ) {
+    const isCodeValid =
+      this.twoFactorAuthService.isTwoFactorAuthenticationCodeValid(
+        twoFactorAuthenticationCode,
+        req.user,
+      );
+    if (!isCodeValid) {
+      throw new UnauthorizedException('Wrong two factor authentication');
+    }
+    await this.usersService.turnOnTwoFactorAuthentication(req.user.id);
   }
 }

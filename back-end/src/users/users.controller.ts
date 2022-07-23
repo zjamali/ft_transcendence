@@ -38,7 +38,7 @@ export class UsersController {
   getme(@Req() req: Request) {
     console.log('uWu');
     // console.log(req);
-    return req.user;
+    return { ...req.user, isOnline: true };
   }
 
   @Post('send')

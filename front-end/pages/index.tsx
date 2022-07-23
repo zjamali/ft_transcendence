@@ -10,28 +10,19 @@ import axios from 'axios'
 
 const Home: NextPage = () => {
   const [login, setLogin] = useState<boolean>(false)
-  const {state, setMainUser} = useContext(ChatContext);
+  const { state, setMainUser } = useContext(ChatContext)
 
-    useEffect(() => {
-      axios
-        .get('http://localhost:5000/users/me', { withCredentials: true })
-        .then((res) => {
-          if (res.status === 200)
-          { 
-            setMainUser({...res.data});
-            // setLogin(true);
-          }
-          else setLogin(false);
-        })
-    }, [])
+  useEffect(() => {
+    axios.get('http://localhost:5000/users/me', { withCredentials: true }).then((res) =>{ if (res.status === 200) {
+      setMainUser({ ...res.data })}
+    }).catch(() => {
+      setLogin(false);
+    }); 
+  }, [])
 
-    useEffect(() => {
-      console.log("state : ", state);
-      if (state.mainUser)
-        setLogin(true);
-    }, [state])
-    
-
+  useEffect(() => {
+    if (state.mainUser) setLogin(true)
+  }, [state])
 
   return (
     <div className={styles.container}>
@@ -41,8 +32,8 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-          {!login && <Login login={login} setLogin={setLogin} />}
-          {login && <Chat />}
+        {!login && <Login login={login} setLogin={setLogin} />}
+        {login && <Chat />}
       </main>
     </div>
   )
