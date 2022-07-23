@@ -66,7 +66,7 @@ export class UsersService {
         { relatingUserID: relatedUserID, relatedUserID: relatingUserID },
         { state: State.FRIENDS },
       );
-      console.log("meow");
+      console.log('meow');
     }
     return relatedUser;
   }
@@ -187,5 +187,17 @@ export class UsersService {
 
     const receivedRequests = this.connection.query(sql, [userId]);
     return receivedRequests;
+  }
+
+  async setTwoFactorAuthenticationSecret(userId: string, secret: string) {
+    return this.usersRepository.update(userId, {
+      twoFactorAuthenticationSecret: secret,
+    });
+  }
+
+  async turnOnTwoFactorAuthentication(userId: string) {
+    return this.usersRepository.update(userId, {
+      isTwoFactorAuthenticationEnabled: true,
+    });
   }
 }
