@@ -10,19 +10,19 @@ import ChannelManagement from './ChannelManagemet'
 export default function Reciever({
   joinRoom,
   leaveRoom,
-  chatSocket
+  chatSocket,
 }: {
   joinRoom: () => void
-  leaveRoom: () => void,
-  chatSocket : any
+  leaveRoom: () => void
+  chatSocket: any
 }) {
   const { state, setIsUserJoinedChannel } = useContext(ChatContext)
 
   useEffect(() => {
     if (!isContact(state.receiver)) {
-        setIsUserJoinedChannel(
-          state.receiver.ActiveUsers.includes(state.mainUser.id),
-        )
+      setIsUserJoinedChannel(
+        state.receiver.ActiveUsers?.includes(state.mainUser.id),
+      )
     }
   }, [state.receiver, state.Channels])
 
@@ -49,7 +49,13 @@ export default function Reciever({
                 <h3>{state.receiver.roomName}</h3>
               </div>
             </div>
-            {<ChannelManagement chatSocket={chatSocket} joinRoom={joinRoom} leaveRoom={leaveRoom} />}
+            {
+              <ChannelManagement
+                chatSocket={chatSocket}
+                joinRoom={joinRoom}
+                leaveRoom={leaveRoom}
+              />
+            }
           </div>
         </>
       )}

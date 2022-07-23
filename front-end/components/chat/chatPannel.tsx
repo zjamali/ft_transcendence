@@ -93,7 +93,7 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
       console.log('reciever : ', state.receiver)
       console.log('new message : ', newMessage)
       if (newMessage.isChannel) {
-        if (newMessage.receiverId === state.receiver.id) {
+        if (newMessage.receiverId === state.receiver?.id) {
           messagesList.current = [...messagesList.current, newMessage]
           setMessages([...messagesList.current])
         }
@@ -199,7 +199,10 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
         </div>
       )}
       {state.receiver &&
-        (isContact(state.receiver) ? true : state.isUserJoinedChannel) && (
+        (isContact(state.receiver)
+          ? true
+          : state.isUserJoinedChannel &&
+            !state.receiver.mutedUsers?.includes(state.mainUser.id)) && (
           <InputMessage sendMessage={sendMessage} />
         )}
       <ToastContainer

@@ -606,15 +606,22 @@
 {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  flex-direction: column;
 }
-
+.manageMembers > div
+{
+  color: #d0d6dc;
+  width: 100%;
+  margin-bottom: 10px;
+}
 
 .manageMembers form
 {
   color: #d0d6dc;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   gap: 20px;
   margin-bottom: 20px;
   width: 100%;
@@ -630,6 +637,12 @@
   border-radius: 3px;
   border: none;
   padding-left: 10px;
+  margin-bottom: 20px;
+}
+
+.manageMembers form .leave_room
+{
+  width: 100%;
 }
 
 @media only screen and (max-width: 800px) {

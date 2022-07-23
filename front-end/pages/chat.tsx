@@ -10,7 +10,13 @@ import axios from 'axios'
 import { Channel } from '../utils/interfaces'
 
 export default function Chat() {
-  const { state, setContacts, setChannels } = useContext(ChatContext)
+  const {
+    state,
+    setContacts,
+    setChannels,
+    setReceiver,
+    setIsUserJoinedChannel,
+  } = useContext(ChatContext)
   // event socket
   const eventsSocket = useRef<any>(null)
   //chat socket if a reciver is set
@@ -29,12 +35,28 @@ export default function Chat() {
       })
 
     try {
-      fetchAllusers()
+      fetchFriends()
       fetchAllChannels()
       eventsSocket.current.on('A_USER_STATUS_UPDATED', (user: any) => {
         setContactStatus(user.isOnline, user)
       })
       chatSocket.current.on('A_CHANNELS_STATUS_UPDATED', () => {
+        fetchAllChannels()
+      })
+      chatSocket.current.on('USER_GET_MUTED', (room_data) => {
+        if (state.receiver?.id === room_data.id) {
+          // fetchAllChannels()
+          setReceiver({ ...room_data })
+        }
+      })
+      chatSocket.current.on('A_CHANNELS_YOU_KICKED', () => {
+        setIsUserJoinedChannel(false)
+        setReceiver(null)
+        fetchAllChannels()
+      })
+      chatSocket.current.on('A_CHANNELS_YOU_BANNED', () => {
+        setIsUserJoinedChannel(false)
+        setReceiver(null)
         fetchAllChannels()
       })
     } catch (error) {
@@ -47,17 +69,15 @@ export default function Chat() {
     }
   }, [])
 
-  function fetchAllusers() {
+  function fetchFriends() {
     try {
       axios
-        .get('http://localhost:5000/users', { withCredentials: true })
+        .get(`http://localhost:5000/users/id/${state.mainUser.id}/friends`, {
+          withCredentials: true,
+        })
         .then((res) => {
           console.log('all users :', res.data)
-          const userContacts = res.data.filter(
-            (user: any) => user.id != state.mainUser.id,
-          )
-          console.log('new contacts : ', userContacts)
-          setContacts([...userContacts])
+          setContacts([...res.data])
         })
     } catch {
       console.log('CANT GET ALL USERS')
@@ -71,7 +91,7 @@ export default function Chat() {
         .get('http://localhost:5000/rooms', { withCredentials: true })
         .then((res) => {
           console.log('all channels :', res.data)
-          if (res.data.length) {
+          if (res.data) {
             setChannels([...res.data])
           }
         })
@@ -94,12 +114,7 @@ export default function Chat() {
         }
       })
       setContacts([...contacts])
-    } else fetchAllusers()
-  }
-
-  function setChannelsStatus(channel: Channel) {
-    console.log('set Channels ')
-    // fetchAllChannels()
+    } else fetchFriends()
   }
 
   useEffect(() => {

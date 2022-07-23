@@ -14,7 +14,7 @@ import { JwtModule } from '@nestjs/jwt';
           secret: 'meow', //configService.get<string>('JWT_SECRET'),
           signOptions: {
             // expiresIn: configService.get<string>('JWT_EXPIERS_IN'),
-            expiresIn: '240s',
+            expiresIn: '24000s',
           },
         };
       },

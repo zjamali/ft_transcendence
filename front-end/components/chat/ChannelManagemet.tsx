@@ -9,6 +9,8 @@ import { User } from '../../utils/interfaces'
 import ReactLoading from 'react-loading'
 
 function ManageMembers(props: any) {
+  const { state } = useContext(ChatContext)
+  const [timetoMute, setTimetoMute] = useState(0)
   const [Admins, setAdmins] = useState<[{}]>([{}])
   const [banned, setBanned] = useState<[{}]>([{}])
   const [kickedUser, setKickedUser] = useState<[{}]>([{}])
@@ -32,6 +34,25 @@ function ManageMembers(props: any) {
   const [loadingRoomDataIsDone, setLoadingRoomDataIsDone] = useState<boolean>(
     false,
   )
+
+  const [roomSettingOption, setRoomSettingOption] = useState({
+    value: 'default',
+    label: 'default',
+  })
+  const roomSettingAllOption =
+    props.room.owner === state.mainUser.id
+      ? [
+          { value: 'admins', label: 'set / unset admins' },
+          { value: 'password', label: 'add / edit-delete password' },
+          { value: 'muted', label: 'mute / umute  users' },
+          { value: 'banned', label: 'ban / unban a user' },
+          { value: 'kick', label: 'kick a user' },
+        ]
+      : [
+          { value: 'muted', label: 'mute / umute  users' },
+          { value: 'banned', label: 'ban / unban a user' },
+          { value: 'kick', label: 'kick a user' },
+        ]
 
   async function getRoomMembers(roomid: string) {
     try {
@@ -71,6 +92,15 @@ function ManageMembers(props: any) {
     }
   }
 
+  function removeChannelPassword(e: any) {
+    e.preventDefault()
+    props.chatSocket.current.emit('ROOM_REMOVE_PASSWORD', {
+      admin_id: `${state.mainUser.id}`,
+      room_id: `${props.room.id}`,
+    })
+    props.setOpenSettingModal(false)
+  }
+
   useEffect(() => {
     console.log('active users : ', props.room.ActiveUsers)
 
@@ -95,9 +125,11 @@ function ManageMembers(props: any) {
 
     getRoomAdmins(props.room.id).then((admins) => {
       const adminAsOption = admins?.data.map((admin: User) => {
-        return {
-          value: admin.id,
-          label: `${admin.firstName} ${admin.lastName}`,
+        if (admin.id != state.mainUser.id) {
+          return {
+            value: admin.id,
+            label: `${admin.firstName} ${admin.lastName}`,
+          }
         }
       })
       console.log('get admins  : ', adminAsOption)
@@ -146,100 +178,173 @@ function ManageMembers(props: any) {
 
   function handleChannelSetting(e: any) {
     e.preventDefault()
-    if (loadingRoomDataIsDone) {
-      const punishedUser = [
-        ...selectedBannedsOption,
-        ...selectedMutedusersOption,
-        ...selectedKickedUserOption,
-      ]
-
-      if (props.room.owner != props.mainUser.id)
-        selectedAdminsOption?.forEach((admin) => {
-          if (punishedUser.includes(admin)) {
-            setIsFormCorrects(false)
-          }
-        })
-      if (updatePassword.length > 0) {
-        setIsPasswordCorrect(false)
-      }
+    // 'admins', 'muted'
+    // 'banned'
+    // 'password'
+    // 'kick'
+    if (
+      roomSettingOption.value === 'kick' &&
+      loadingRoomDataIsDone &&
+      selectedKickedUserOption
+    ) {
+      /// 'ROOM_KICKED_USER';
+      props.chatSocket.current.emit('ROOM_KICKED_USER', {
+        admin_id: `${state.mainUser.id}`,
+        room_id: `${props.room.id}`,
+        new_kicked: selectedKickedUserOption,
+      })
     }
+    if (
+      roomSettingOption.value === 'banned' &&
+      loadingRoomDataIsDone &&
+      selectedBannedsOption
+    ) {
+      /// 'ROOM_banne_USER';
+      props.chatSocket.current.emit('ROOM_BAN_A_USER', {
+        admin_id: `${state.mainUser.id}`,
+        room_id: `${props.room.id}`,
+        banned: selectedBannedsOption,
+      })
+    }
+    if (roomSettingOption.value === 'muted' && loadingRoomDataIsDone) {
+      console.log("mute a user 77777777777");
+      props.chatSocket.current.emit('ROOM_MUTE_USERS', {
+        admin_id: `${state.mainUser.id}`,
+        room_id: `${props.room.id}`,
+        muted_user: selectedMutedusersOption,
+        timeToMute: timetoMute,
+      })
+    }
+    if (
+      roomSettingOption.value === 'admins' &&
+      loadingRoomDataIsDone &&
+      selectedAdminsOption
+    ) {
+      /// 'ROOM_SET_ADMIN';
+      props.chatSocket.current.emit('ROOM_ADMINS_STATUS', {
+        admin_id: `${state.mainUser.id}`,
+        room_id: `${props.room.id}`,
+        new_admins: [...selectedAdminsOption],
+      })
+    }
+    if (updatePassword.length > 0) {
+      setIsPasswordCorrect(false)
+    }
+    props.setOpenSettingModal(false)
   }
 
   return (
     <div className={channelManagemetStyle.manageMembers}>
+      <div>
+        <h3>selection option : </h3>
+        <Select
+          styles={customStyles}
+          onChange={setRoomSettingOption}
+          options={roomSettingAllOption}
+        />
+      </div>
       {loadingRoomDataIsDone ? (
         <form onSubmit={(e) => handleChannelSetting(e)}>
-          <div>
-            <h3>Admis : </h3>
-            <Select
-              styles={customStyles}
-              isMulti
-              defaultValue={selectedAdminsOption}
-              onChange={setSelectedAdminsOption}
-              options={Admins}
-            />
-          </div>
-          <div>
-            <h3> banned User : </h3>
-            <Select
-              styles={customStyles}
-              isMulti
-              defaultValue={selectedBannedsOption}
-              onChange={setSelectedBannedsOption}
-              options={banned}
-            />
-          </div>
-          <div>
-            <h3> muted User : </h3>
-            <Select
-              styles={customStyles}
-              isMulti
-              defaultValue={selectedMutedusersOption}
-              onChange={setSelectedMutedusersOption}
-              options={mutedUsers}
-            />
-            <input
-              className={channelManagemetStyle.input}
-              type="number"
-              name="mutedTime"
-              id="mutedTime"
-              min={0}
-              max={60}
-              placeholder="in minutes"
-            />
-          </div>
-          <div>
-            <h3> kick a User : </h3>
-            <Select
-              styles={customStyles}
-              isMulti
-              defaultValue={selectedKickedUserOption}
-              onChange={setSelectedKickedUserOption}
-              options={kickedUser}
-            />
-          </div>
-          <div>
-            <h3>
-              {props.room.isProtected ? 'update Password' : 'add password'}
-            </h3>
-            <input
-              className={channelManagemetStyle.input}
-              type="password"
-              name="update password"
-              id="password"
-              placeholder="new password"
-              value={updatePassword}
-              onChange={(e) => {
-                setUpdatePassword(e.target.value)
-              }}
-            />
-          </div>
+          {roomSettingOption.value === 'admins' && (
+            <div>
+              <h3>Admis : </h3>
+              <Select
+                styles={customStyles}
+                isMulti
+                defaultValue={selectedAdminsOption}
+                onChange={setSelectedAdminsOption}
+                options={Admins}
+              />
+            </div>
+          )}
+          {roomSettingOption.value === 'banned' && (
+            <div>
+              <h3> banned User : </h3>
+              <Select
+                styles={customStyles}
+                isMulti
+                defaultValue={selectedBannedsOption}
+                onChange={setSelectedBannedsOption}
+                options={banned}
+              />
+            </div>
+          )}
+          {roomSettingOption.value === 'muted' && (
+            <div>
+              <h3> muted User : </h3>
+              <Select
+                styles={customStyles}
+                isMulti
+                defaultValue={selectedMutedusersOption}
+                onChange={setSelectedMutedusersOption}
+                options={mutedUsers}
+              />
+              <input
+                className={channelManagemetStyle.input}
+                type="number"
+                name="mutedTime"
+                id="mutedTime"
+                min={0}
+                max={60}
+                value={timetoMute}
+                onChange={(e) => setTimetoMute(e.target.value)}
+                placeholder="in minutes"
+              />
+            </div>
+          )}
+          {roomSettingOption.value === 'kick' && (
+            <div>
+              <h3> kick a User : </h3>
+              <Select
+                styles={customStyles}
+                // isMulti
+                defaultValue={selectedKickedUserOption}
+                onChange={setSelectedKickedUserOption}
+                options={kickedUser}
+              />
+            </div>
+          )}
+          {roomSettingOption.value === 'password' &&
+            state.receiver.owner === state.mainUser.id && (
+              <div>
+                <h3>
+                  {props.room.isProtected ? 'update Password' : 'add password'}
+                </h3>
+
+                <input
+                  className={channelManagemetStyle.input}
+                  type="password"
+                  name="update password"
+                  id="password"
+                  placeholder="new password"
+                  value={updatePassword}
+                  onChange={(e) => {
+                    setUpdatePassword(e.target.value)
+                  }}
+                />
+                {props.room.isProtected ? (
+                  <button
+                    className={
+                      channelManagemetStyle.room_button +
+                      ' ' +
+                      channelManagemetStyle.leave_room
+                    }
+                    onClick={(e) => removeChannelPassword(e)}
+                  >
+                    remove Password
+                  </button>
+                ) : (
+                  ''
+                )}
+              </div>
+            )}
           {!isPasswordCorrects && (
             <InputError message=" enter password between 8 - 16" />
           )}
           {!isFormCorrects && (
             <InputError message=" you can't banne,mute or kick  an admin" />
           )}
+
           <button className={channelManagemetStyle.room_button} type="submit">
             save
           </button>
@@ -283,22 +388,27 @@ function ChannelSettings(props: any) {
               bottom: 'auto',
               marginRight: '-50%',
               transform: 'translate(-50%, -50%)',
-              minWidth: '400px',
-              // height: '500px',
+              width: '400px',
+              height: '400px',
               border: 'none',
               borderRadius: '20px',
               backgroundColor: '#212B36',
               display: 'flex',
               flexDirection: 'column',
               alignContent: 'center',
-              justifyContent: 'center',
+              justifyContent: 'flex-start',
             },
           }}
           contentLabel="Example Modal"
         >
           {(state.receiver.admins.includes(state.mainUser.id) ||
             state.receiver.owner === state.mainUser.id) && (
-            <ManageMembers room={state.receiver} mainUser={state.mainUser} />
+            <ManageMembers
+              room={state.receiver}
+              mainUser={state.mainUser}
+              chatSocket={props.chatSocket}
+              setOpenSettingModal={setOpenSettingModal}
+            />
           )}
           <button
             className={
@@ -404,7 +514,7 @@ export default function ChannelManagement({
             join
           </button>
         ) : (
-          <ChannelSettings leaveRoom={leaveRoom} />
+          <ChannelSettings leaveRoom={leaveRoom} chatSocket={chatSocket} />
         )}
       </div>
       <Modal

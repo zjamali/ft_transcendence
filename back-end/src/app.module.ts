@@ -9,6 +9,7 @@ import entities from 'src';
 import { EventsModule } from './events/events.module';
 import { MessagesModule } from './chat/messages/messages.module';
 import { RoomsModule } from './chat/rooms/rooms.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { RoomsModule } from './chat/rooms/rooms.module';
     MessagesModule,
     RoomsModule,
     ChatModule,
+    ScheduleModule.forRoot(),
   ],
 })
 export class AppModule {}

@@ -1,7 +1,10 @@
 import * as bcrypt from 'bcrypt';
+import { Socket } from 'socket.io';
 export class GlobalService {
   static AllOpnedSockets: string[] = [];
   static Users: any;
+
+  static Sockets: Map<string, Socket> = new Map(); // socket with id : socket
 
   static UsersEventsSockets: Map<string, string[]> = new Map();
   static UsersChatSockets: Map<string, string[]> = new Map();
