@@ -16,7 +16,6 @@ export interface User {
   firstName: string;
   isOnline: boolean;
   playing: boolean;
-  peer_to_peer_room_id?: string;
 }
 export interface Profile {
   id: string;
@@ -28,54 +27,45 @@ export interface Profile {
 }
 
 export interface Message {
-  id?: string;
+  roomId?: string;
+  senderId: string;
+  senderName: string;
+  receiverId: string;
+  createdAt: Date;
   content: string;
-  created_at: string;
-  creator: string;
-  chat_room_id: string;
+  isChannel: boolean;
 }
 
 
 export interface ContactComponentProps
 {
   contact: User;
-  receiver: User | Room;
+  receiver: User | Channel;
 }
-export interface RoomComponentProps
+export interface ChannelComponentProps
 {
-  room: Room;
-  receiver: User | Room;
+  channel: Channel;
+  receiver: User | Channel;
 }
 
-// export interface Contact {
-//   id?: string;
-//   image? : string;
-//   user_name?: string;
-//   first_name?: string;
-//   last_name?: string;
-//   is_online?: boolean;
-//   is_playing?: boolean;
-//   peer_to_peer_room_id?: string;
+// export enum channelType {
+//   private,
+//   public,
 // }
-
-enum roomType {
-  private,
-  public,
-  protected,
-}
-export interface Room {
+export interface Channel {
   id?: string;
   image? : string;
-  room_name?: string;
-  owner_id?: string;
-  admins?: User[];
-  protected?: boolean;
+  roomName?: string;
+  owner: string;
+  admins?: string[];
+  isProtected?: boolean;
   password?: string;
   avtar?: string;
-  room_type?: roomType;
+  roomType?: string;
   created_at?: string;
-  banned_users?: User[];
-  muted_users?: User[];
+  bannedUser?: string[];
+  mutedUsers?: string[];
+  ActiveUsers?: string[];
 }
 
 
@@ -86,7 +76,7 @@ export interface ChatProps {
 export interface ChatLeftSideProps {
   mainUser?: User;
   user_contacts? : User[];
-  user_rooms?: Room[];
-  receiver? : User | Room;
-  handleSelectReceiver: (receiver: User | Room)=> void;
+  user_channels?: Channel[];
+  receiver? : User | Channel;
+  handleSelectReceiver: (receiver: User | Channel)=> void;
 }

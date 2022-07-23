@@ -1,5 +1,5 @@
 import React, { ReactNode, createContext, useState } from 'react'
-import { Message, Room , User} from '../components/chat/interfaces'
+import { Message, Channel , User} from '../utils/interfaces'
 import {v4 as uuidv4} from 'uuid'
 
 import { api_contacts } from '../pages/api/contacts'
@@ -8,16 +8,16 @@ export const ChatContext = createContext<any>({});
 
 export const ChatProvider = (props: any) => {
   const [session, setSession] = useState<any>(null);
-  const [mainUser, setMainUser] = useState<any>(null);
+  const [mainUser, setMainUser] = useState<User | null>(null);
   const [messages, setMessages] = useState<Message[]>([])
-  const [messageInput, setMessageinput] = useState<string>('')
   // const [contacts, setContacts] = useState<ContactProps[]>([])
   const [contacts, setContacts] = useState<User[]>([])
-  // const [rooms, setRomms] = useState<Room[]>([])
-  const [rooms, setRomms] = useState<Room[]>([])
-  const [receiver, setReceiver] = useState<User | Room | null>(null)
-  const [chatSockets, setsChatSockets] = useState<any>(null);
-  const [alertSockets, setsAlertSockets] = useState<any>(null);
+  //const [channels, setChannels] = useState<Channel[]>([])
+  const [channels, setChannels] = useState<Channel[]>([])
+  const [receiver, setReceiver] = useState<User | Channel | null>(null)
+
+  const [isUserJoinedChannel, setIsUserJoinedChannel] = useState<boolean>(false);
+
   return (
     <ChatContext.Provider
       value={{
@@ -25,24 +25,18 @@ export const ChatProvider = (props: any) => {
           session,
           mainUser,
           messages,
-          messageInput,
           contacts,
-          rooms,
+          channels,
           receiver,
-        },
-        sockets:{
-          chat :chatSockets,
-          alerts: alertSockets,
+          isUserJoinedChannel
         },
         setMessages,
-        setMessageinput,
         setContacts,
-        setRomms,
+        setChannels,
         setReceiver,
         setMainUser,
-        setsChatSockets,
-        setsAlertSockets,
         setSession,
+        setIsUserJoinedChannel
       }}
     >
       {props.children}

@@ -1,7 +1,7 @@
-import {User, Room} from '../components/chat/interfaces'
+import {User, Channel} from './interfaces'
 
 export function isContact(
-  reciever: User | Room
+  reciever: User | Channel
 ): reciever is User {
   return (reciever as User).userName !== undefined;
 }
