@@ -21,6 +21,6 @@ export class AuthController {
     // console.log(req.user);
     // return req.user;
 
-    return  this.authService.intraLogin(req, res);
+    return this.authService.intraLogin(req, res);
   }
 }

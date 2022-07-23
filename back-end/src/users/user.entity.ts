@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn } from 'typeorm';
 
 @Entity()
 class User {
@@ -23,8 +23,6 @@ class User {
   @Column({ default: false })
   public isPlaying: boolean;
 
-  @Column('simple-array', { nullable: true })
-  public sockets: string[];
 }
 
 export default User;

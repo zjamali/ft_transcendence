@@ -1,6 +1,7 @@
+import Friend from './users/friend.entity';
 import User from './users/user.entity';
 
-const entities = [User];
+const entities = [User, Friend];
 
-export { User };
+export { User, Friend };
 export default entities;

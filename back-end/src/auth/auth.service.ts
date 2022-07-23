@@ -5,12 +5,15 @@ import { Request, Response } from 'express';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly usersService: UsersService, private readonly jwtAuthService: JwtAuthService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtAuthService: JwtAuthService,
+  ) {}
 
   intraLogin(@Req() req: Request, @Res() res: Response) {
     console.log('Now I am in intraLogin(req)');
-    // console.log(req.user); 
-  
+    // console.log(req.user);
+
     if (!req.user) {
       console.log('No user from 42 Intra');
       throw new BadRequestException();
