@@ -6,11 +6,20 @@ import {
   Param,
   Post,
   Req,
+  // UploadedFile,
   UseGuards,
+  // UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Request } from 'express';
-import { get } from 'http';
+// import { of } from 'rxjs';
+// import { FileInterceptor } from '@nestjs/platform-express';
+// import { diskStorage } from 'multer';
+// import path from 'path';
+// import * as path from 'path';
+// import { Express } from 'express';
+import RequestWithUser from './requestWithUser.interface';
+// import * as fs from 'fs';
 
 @Controller('users')
 export class UsersController {
@@ -60,6 +69,12 @@ export class UsersController {
     return this.usersService.getFriends(id);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('blocked')
+  getBolckedUsers(@Req() req: RequestWithUser) {
+    return this.usersService.getBolckedUsers(req.user.id);
+  }
+
   @Get('id/:id/sentrequests')
   getSentRequests(@Param('id') id: string) {
     return this.usersService.getSentRequests(id);
@@ -69,4 +84,26 @@ export class UsersController {
   getRecievedRequests(@Param('id') id: string) {
     return this.usersService.getReceivedRequests(id);
   }
+
+  // @UseGuards(JwtAuthGuard)
+  // @Post('upload')
+  // @UseInterceptors(
+  //   FileInterceptor('file', {
+  //     storage: diskStorage({
+  //       destination: './uploads',
+  //       filename: (req: RequestWithUser, file, cb) => {
+  //         const filename: string = req.user.id;
+  //         // path.parse(file.originalname).name.replace(/\s/g, '') + 'meow';
+  //         const extension: string = path.parse(file.originalname).ext;
+  //         // fs.unlinkSync(req.user.image);
+  //         cb(null, `${filename}${extension}`);
+  //       },
+  //     }),
+  //   }),
+  // )
+  // updateProfile(@UploadedFile() file: Express.Multer.File) {
+  //   console.log('meow');
+  //   console.log(file);
+  //   return of({ imagePath: file.path });
+  // }
 }

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
 class User {
@@ -23,6 +23,11 @@ class User {
   @Column({ default: false })
   public isPlaying: boolean;
 
+  @Column({ nullable: true })
+  public twoFactorAuthenticationSecret?: string;
+
+  @Column({ default: false })
+  public isTwoFactorAuthenticationEnabled: boolean;
 }
 
 export default User;

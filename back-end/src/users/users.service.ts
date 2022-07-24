@@ -66,7 +66,7 @@ export class UsersService {
         { relatingUserID: relatedUserID, relatedUserID: relatingUserID },
         { state: State.FRIENDS },
       );
-      console.log("meow");
+      console.log('meow');
     }
     return relatedUser;
   }
@@ -78,6 +78,13 @@ export class UsersService {
 
     const friends = this.connection.query(sql, [userId]);
     return friends;
+  }
+
+  async getBolckedUsers(userId: string): Promise<User[]> {
+    const sql = `SELECT * FROM public.User WHERE id IN (SELECT "relatedUserID" FROM Friend where "relatingUserID" = $1 and "state" = 'blocked')`;
+
+    const blockedUsers = this.connection.query(sql, [userId]);
+    return blockedUsers;
   }
 
   async removeRelation(relatingUserID: string, relatedUserID: string) {
@@ -187,5 +194,17 @@ export class UsersService {
 
     const receivedRequests = this.connection.query(sql, [userId]);
     return receivedRequests;
+  }
+
+  async setTwoFactorAuthenticationSecret(userId: string, secret: string) {
+    return this.usersRepository.update(userId, {
+      twoFactorAuthenticationSecret: secret,
+    });
+  }
+
+  async turnOnTwoFactorAuthentication(userId: string) {
+    return this.usersRepository.update(userId, {
+      isTwoFactorAuthenticationEnabled: true,
+    });
   }
 }
