@@ -23,7 +23,7 @@ export default function MessageComponent(props: MessageComponentProps) {
               messageStyles.message_main_user
             }
           >
-            <p>{props.message?.content}</p>
+            <pre>{props.message?.content}</pre>
           </div>
           {/* <p className={messageStyles.Channel_senderName}>{`   `}</p> */}
         </>
@@ -31,7 +31,12 @@ export default function MessageComponent(props: MessageComponentProps) {
         <>
           <div className={messageStyles.message_content}>
             <p>{props.message?.content}</p>
-            {isChannel && <h5 className={messageStyles.Channel_senderName}> ➦ {props.message.senderName}</h5>}
+            {isChannel && (
+              <h5 className={messageStyles.Channel_senderName}>
+                {' '}
+                ➦ {props.message.senderName}
+              </h5>
+            )}
           </div>
           {/* {isChannel ? (
             <p className={messageStyles.Channel_senderName}>

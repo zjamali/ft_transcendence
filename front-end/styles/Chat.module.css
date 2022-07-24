@@ -11,6 +11,7 @@
 	--animation-timing-curve: ease-in-out;
 
 } */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 .ChatContainer {
   width: 100vw;
@@ -439,12 +440,15 @@
   align-self: flex-start;
   position: relative;
 }
-.message_content p {
+.message_content pre {
   min-width: 100px;
   font-size: 16px;
   /* height: 100%; */
   font-weight: 500;
   overflow-wrap: break-word;
+  padding: 0;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
 }
 
 .message_main_user {
@@ -602,22 +606,19 @@
   margin: 5px 0 10px 0;
   padding-left: 10px;
 }
-.manageMembers
-{
+.manageMembers {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   flex-direction: column;
 }
-.manageMembers > div
-{
+.manageMembers > div {
   color: #d0d6dc;
   width: 100%;
   margin-bottom: 10px;
 }
 
-.manageMembers form
-{
+.manageMembers form {
   color: #d0d6dc;
   display: flex;
   flex-direction: column;
@@ -627,8 +628,7 @@
   width: 100%;
 }
 
-.manageMembers form .input
-{
+.manageMembers form .input {
   width: 100%;
   height: 40px;
   font-size: 18px;
@@ -640,8 +640,7 @@
   margin-bottom: 20px;
 }
 
-.manageMembers form .leave_room
-{
+.manageMembers form .leave_room {
   width: 100%;
 }
 
