@@ -122,6 +122,7 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
 
   const sendMessage = (e: any, messageInput: string) => {
     e.preventDefault()
+    console.log('messaglsklksf :', messageInput)
     const message = {
       senderId: state.mainUser.id,
       senderName: `${state.mainUser.firstName} ${state.mainUser.lastName}`,

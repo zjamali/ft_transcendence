@@ -1,33 +1,39 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useContext, useEffect, useState } from 'react'
-import { ChatContext } from '../../context/chatContext';
+import { ChatContext } from '../../context/chatContext'
 import inputMessageStyle from '../../styles/Chat.module.css'
 interface InputMessageInterface {
-  sendMessage: (e: any, inputMessage : string) => void
+  sendMessage: (e: any, inputMessage: string) => void
   // messageInput: string
   // setMessageinput: (e: any) => void
 }
 
 export function InputMessage({
   sendMessage,
-  // messageInput,
-  // setMessageinput,
-}: InputMessageInterface) {
-
-  const {state} = useContext(ChatContext);
+}: // messageInput,
+// setMessageinput,
+InputMessageInterface) {
+  const { state } = useContext(ChatContext)
 
   useEffect(() => {
     // just the receiver changed
   }, [state.receiver])
-  
+
+  const handleMessage = (e: any) => {
+    e.preventDefault()
+    if (!/^\s+$/g.test(messageInput)) {
+      sendMessage(e, messageInput)
+      setMessageinput('')
+    }
+  }
 
   const [messageInput, setMessageinput] = useState<string>('')
+
   return (
     <div className={inputMessageStyle.message_input}>
       <form
         onSubmit={(e) => {
-          sendMessage(e,messageInput);
-          setMessageinput('');
+          handleMessage(e)
         }}
       >
         <input
