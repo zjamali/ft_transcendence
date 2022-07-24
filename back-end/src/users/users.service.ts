@@ -87,6 +87,13 @@ export class UsersService {
     return blockedUsers;
   }
 
+  async getBlockedByUsers(userId: string): Promise<User[]> {
+    const sql = `SELECT * FROM public.User WHERE id IN (SELECT "relatingUserID" FROM Friend where "relatedUserID" = $1 and "state" = 'blocked')`;
+
+    const blockedByUsers = this.connection.query(sql, [userId]);
+    return blockedByUsers;
+  }
+
   async removeRelation(relatingUserID: string, relatedUserID: string) {
     const relation = await this.friendsRepository.findOne({
       where: [
