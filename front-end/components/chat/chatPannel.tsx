@@ -130,7 +130,7 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
       createdAt: Date(),
       content: messageInput,
       isChannel: !isContact(state.receiver),
-    }
+    } 
     console.log('send message : ', message)
     chatSocket.current.emit('SEND_MESSAGE', { ...message })
   }
