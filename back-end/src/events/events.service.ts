@@ -6,7 +6,6 @@ import { GlobalService } from 'src/utils/Global.service';
 
 @Injectable()
 export class EventsService {
-
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
   ) {
@@ -21,7 +20,10 @@ export class EventsService {
     //get already opened sockets of user if exist
     const opened_sockets = GlobalService.UsersEventsSockets.get(user_id);
     if (opened_sockets)
-    GlobalService.UsersEventsSockets.set(user_id, [...opened_sockets, socket_id]);
+      GlobalService.UsersEventsSockets.set(user_id, [
+        ...opened_sockets,
+        socket_id,
+      ]);
     else GlobalService.UsersEventsSockets.set(user_id, [socket_id]);
     return {
       user: {
@@ -40,7 +42,9 @@ export class EventsService {
     const user = GlobalService.Users.filter((user: User) => user.id == user_id);
     GlobalService.UsersEventsSockets.set(
       user_id,
-      GlobalService.UsersEventsSockets.get(user_id).filter((socket) => socket != socket_id),
+      GlobalService.UsersEventsSockets.get(user_id).filter(
+        (socket) => socket != socket_id,
+      ),
     );
     return {
       user: { ...user, isOnline: false },

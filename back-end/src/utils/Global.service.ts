@@ -4,6 +4,9 @@ export class GlobalService {
   static AllOpnedSockets: string[] = [];
   static Users: any;
 
+  static blockedAndBlockerUser: string[] = [];
+  static UserBlockedMap: Map<string, string[]> = new Map();
+
   static Sockets: Map<string, Socket> = new Map(); // socket with id : socket
 
   static UsersEventsSockets: Map<string, string[]> = new Map();

@@ -191,11 +191,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       console.log('new unmuted users :', unMutedUSers);
       unMutedUSers.forEach((newUnMutedUSer) => {
         this.deleteUnmuteUserTime(`${newUnMutedUSer}`, roomUpdate.room_id);
-        // const userSocketsIds =
-        //   GlobalService.UsersChatSockets.get(newUnMutedUSer);
-        // userSocketsIds.forEach((socketId) => {
-        //   this.server.to(socketId).emit('YOU_GET_UNMUTED');
-        // });
       });
     }
 
@@ -365,6 +360,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       );
       ////
       const targetUserOfRomm = room[0].ActiveUsers;
+
       let targetSockets;
       console.log('target users : ', targetUserOfRomm);
       targetUserOfRomm.forEach((user_is) => {
@@ -406,6 +402,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
     return result;
   }
+
 
   /*
   @SubscribeMessage('findAllChat')
