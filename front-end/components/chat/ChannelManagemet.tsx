@@ -207,7 +207,7 @@ function ManageMembers(props: any) {
       })
     }
     if (roomSettingOption.value === 'muted' && loadingRoomDataIsDone) {
-      console.log("mute a user 77777777777");
+      console.log('mute a user 77777777777')
       props.chatSocket.current.emit('ROOM_MUTE_USERS', {
         admin_id: `${state.mainUser.id}`,
         room_id: `${props.room.id}`,
@@ -489,7 +489,7 @@ export default function ChannelManagement({
   leaveRoom: () => void
   chatSocket: any
 }) {
-  const { state, setIsUserJoinedChannel } = useContext(ChatContext)
+  const { state, setIsUserJoinedChannel, setReceiver } = useContext(ChatContext)
   console.log('room state :', state.receiver)
   const [openPasswordModal, setOpenPasswordModal] = useState(false)
   function ChannalJoinHandle() {
@@ -502,6 +502,29 @@ export default function ChannelManagement({
       joinRoom()
     }
   }
+
+  useEffect(() => {
+    const receiver = state.receiver
+    const newReceiver = state.channels.filter(
+      (channel) => channel.id === receiver.id,
+    )
+    if (JSON.stringify(receiver.mutedUsers) !== JSON.stringify(newReceiver[0].mutedUsers)) {
+      console.log('reciever updated')
+      if (newReceiver[0].mutedUsers.includes(state.mainUser.id))
+      {
+      console.log("get muted set receiver")
+        setReceiver({ ...newReceiver[0] })
+      }
+      if (
+        receiver.mutedUsers?.includes(state.mainUser.id) &&
+        !newReceiver[0].mutedUsers.includes(state.mainUser.id)
+      )
+      {
+        console.log("get unmuted set receiver")
+        setReceiver({ ...newReceiver[0] })
+      }
+    }
+  }, [state.channels])
 
   return (
     <>

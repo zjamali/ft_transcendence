@@ -14,7 +14,8 @@ function Contact(props: ContactComponentProps) {
     console.log("contacts : ", contacts , "  receiver id : ", receiver_id);
     const receiver = contacts.filter((contact : User)=> contact.id === receiver_id); 
     console.log("new receiver : ", receiver[0]);
-    setReceiver({...receiver[0]});
+    if (state.receiver?.id != receiver[0].id )
+      setReceiver({...receiver[0]});
   }
 
   return (

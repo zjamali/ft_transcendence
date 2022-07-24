@@ -33,6 +33,11 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
 
   useEffect(() => {
     try {
+      ///
+      if (messagesList?.current[0]?.isChannel) {
+        if (state.receiver.id === messagesList.current[0].roomId) return
+      }
+      ///
       messagesList.current = []
       setMessages([])
       if (state.receiver && isContact(state.receiver)) {
@@ -158,10 +163,11 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
           },
         )
         .then((responce) => {
-          if (responce.data.length) {
-            messagesList.current = [...responce.data]
-            setMessages([...messagesList.current])
+          if (messagesList.current[0]?.roomId === responce.data[0]?.roomId) {
+            return
           }
+          messagesList.current = [...responce.data]
+          setMessages([...messagesList.current])
         })
     }
   }

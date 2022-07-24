@@ -15,7 +15,7 @@ import { CreateMessageDto } from './messages/dto/create-message.dto';
 import { MessagesService } from './messages/messages.service';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { SchedulerRegistry } from '@nestjs/schedule';
+import { Cron, SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob } from 'cron';
 import { JwtService } from '@nestjs/jwt';
 import { CreateRoomDto } from './rooms/dto/create-room.dto';
@@ -38,7 +38,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly chatService: ChatService,
     private readonly messagesService: MessagesService,
     // private readonly eventsService : EventsService,
-    private readonly schedulerRegistry: SchedulerRegistry,
+    private schedulerRegistry: SchedulerRegistry,
     private readonly jwtService: JwtService,
     private readonly roomsService: RoomsService,
   ) {}
@@ -161,13 +161,74 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
     const alreadyMutedUser = room[0].mutedUsers;
 
-    await this.roomsService.muteUsers(roomUpdate.room_id, mutedUser);
-    if (alreadyMutedUser?.length < mutedUser.length) {
-      console.log('some unmuted :');
+    ////////////
+
+    if (!alreadyMutedUser || mutedUser?.length > alreadyMutedUser.length) {
+      const newMutedUSers = mutedUser.filter(
+        (user) => !alreadyMutedUser?.includes(user),
+      );
+      if (roomUpdate.timeToMute > 0)
+        await this.roomsService.muteUsers(roomUpdate.room_id, mutedUser);
+      console.log('new muted users :', newMutedUSers);
+      newMutedUSers.forEach((newMutedUSer) => {
+        if (roomUpdate.timeToMute > 0) {
+          this.muteAUserForWhile(
+            `${newMutedUSer}`,
+            roomUpdate.room_id,
+            roomUpdate.timeToMute,
+          );
+          const userSocketsIds =
+            GlobalService.UsersChatSockets.get(newMutedUSer);
+          userSocketsIds.forEach((socketId) => {
+            this.server.to(socketId).emit('YOU_GET_MUTED');
+          });
+        }
+      });
+    } else {
+      const unMutedUSers = alreadyMutedUser.filter(
+        (user) => !mutedUser.includes(user),
+      );
+      console.log('new unmuted users :', unMutedUSers);
+      unMutedUSers.forEach((newUnMutedUSer) => {
+        this.deleteUnmuteUserTime(`${newUnMutedUSer}`, roomUpdate.room_id);
+        // const userSocketsIds =
+        //   GlobalService.UsersChatSockets.get(newUnMutedUSer);
+        // userSocketsIds.forEach((socketId) => {
+        //   this.server.to(socketId).emit('YOU_GET_UNMUTED');
+        // });
+      });
     }
-    const newRoom = await this.roomsService.findOne(Number(roomUpdate.room_id));
-    this.server.emit('USER_GET_MUTED', { ...newRoom[0] });
+
+    ////////
   }
+
+  muteAUserForWhile(jobName: string, room_id: string, time: number) {
+    const job = new CronJob(`*/${time} * * * *`, () => {
+      console.log('cron job deleteUser');
+      this.deleteUnmuteUserTime(jobName, room_id);
+    });
+    this.schedulerRegistry.addCronJob(jobName, job);
+    job.start();
+    console.log(
+      `********** Job for every seconds ${jobName} : ${room_id} : ${time}`,
+    );
+  }
+  deleteUnmuteUserTime(jobName: string, room_id: string) {
+    this.schedulerRegistry.deleteCronJob(jobName);
+    console.log(
+      `********** delete  Job for every seconds ${jobName} : ${room_id}`,
+    );
+    this.roomsService.unMuteUser(room_id, jobName).then(() => {
+      const userSocketsIds = GlobalService.UsersChatSockets.get(jobName);
+      userSocketsIds.forEach((socketId) => {
+        this.server.to(socketId).emit('YOU_GET_UNMUTED');
+        setTimeout(() => {
+          this.server.to(socketId).emit('YOU_GET_UNMUTED');
+        }, 100);
+      });
+    });
+  }
+
   @SubscribeMessage('ROOM_BAN_A_USER')
   async roomBannedUsers(
     @ConnectedSocket() client: Socket,

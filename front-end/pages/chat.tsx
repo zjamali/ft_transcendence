@@ -43,15 +43,20 @@ export default function Chat() {
       chatSocket.current.on('A_CHANNELS_STATUS_UPDATED', () => {
         fetchAllChannels()
       })
-      chatSocket.current.on('USER_GET_MUTED', (room_data) => {
-        if (state.receiver?.id === room_data.id) {
-          // fetchAllChannels()
-          setReceiver({ ...room_data })
-        }
-      })
+
       chatSocket.current.on('A_CHANNELS_YOU_KICKED', () => {
         setIsUserJoinedChannel(false)
         setReceiver(null)
+        fetchAllChannels()
+      })
+      chatSocket.current.on('YOU_GET_MUTED', () => {
+        // setReceiver(null)
+        // setReceiver({ ...room_data })
+        console.log('some  one get muted :::  999999')
+        fetchAllChannels()
+      })
+      chatSocket.current.on('YOU_GET_UNMUTED', () => {
+        console.log('some  one get unmuted :::  pppppp')
         fetchAllChannels()
       })
       chatSocket.current.on('A_CHANNELS_YOU_BANNED', () => {
@@ -69,7 +74,7 @@ export default function Chat() {
     }
   }, [])
 
-  function fetchFriends() {
+  async function fetchFriends() {
     try {
       axios
         .get(`http://localhost:5000/users/id/${state.mainUser.id}/friends`, {
@@ -84,7 +89,7 @@ export default function Chat() {
     }
   }
 
-  function fetchAllChannels() {
+  async function fetchAllChannels() {
     console.log('fetch channels')
     try {
       axios
@@ -92,6 +97,7 @@ export default function Chat() {
         .then((res) => {
           console.log('all channels :', res.data)
           if (res.data) {
+            console.log('receiver  ::: ', state.receiver)
             setChannels([...res.data])
           }
         })

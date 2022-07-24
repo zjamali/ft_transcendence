@@ -76,7 +76,7 @@ export class RoomsService {
     console.log('mute user db ');
     const roomToUpdate = await this.roomRepository.findOne(room_id);
     roomToUpdate.mutedUsers = [...muted_user];
-    this.roomRepository.save(roomToUpdate);
+    return await this.roomRepository.save(roomToUpdate);
   }
   async unMuteUser(room_id: string, unmuted_user: string) {
     const roomToUpdate = await this.roomRepository.findOne(room_id);
