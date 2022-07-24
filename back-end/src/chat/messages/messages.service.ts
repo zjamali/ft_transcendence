@@ -38,7 +38,6 @@ export class MessagesService {
         { receiverId: user_id, senderId: receiverId },
       ],
     });
-    return `This action returns a #${receiverId} message`;
   }
 
   update(id: number, updateMessageDto: UpdateMessageDto) {

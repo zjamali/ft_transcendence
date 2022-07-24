@@ -1,3 +1,4 @@
+import { UsersService } from 'src/users/users.service';
 import { RoomsService } from './rooms/rooms.service';
 import { Server, Socket } from 'socket.io';
 import { GlobalService } from 'src/utils/Global.service';
@@ -41,6 +42,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private schedulerRegistry: SchedulerRegistry,
     private readonly jwtService: JwtService,
     private readonly roomsService: RoomsService,
+    private readonly userService: UsersService,
   ) {}
 
   // @UseGuards(JwtAuthGuar0d)
@@ -358,14 +360,29 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const room = await this.roomsService.findOne(
         Number(createMessageDto.receiverId),
       );
+      // if sender is muted do nothings
+      if (room[0].mutedUsers?.includes(createMessageDto.senderId)) return;
       ////
-      const targetUserOfRomm = room[0].ActiveUsers;
-
+      const usersBlockedBy = await this.userService.getBlockedByUsers(
+        createMessageDto.senderId,
+      );
+      const usersBlocked = await this.userService.getBolckedUsers(
+        createMessageDto.senderId,
+      );
+      const forbiddenUserToSendMessage = [...usersBlockedBy, ...usersBlocked];
+      const forbiddenIds = forbiddenUserToSendMessage.map((user) => {
+        return user.id;
+      });
+      console.log('forbidded ids ', forbiddenIds);
+      const targetUserOfRomm = room[0].ActiveUsers.filter(
+        (ActiveUser) => !forbiddenIds.includes(ActiveUser),
+      );
+      ///
       let targetSockets;
       console.log('target users : ', targetUserOfRomm);
-      targetUserOfRomm.forEach((user_is) => {
+      targetUserOfRomm?.forEach((user_is) => {
         targetSockets = GlobalService.UsersChatSockets.get(user_is);
-        targetSockets.forEach((socket) => {
+        targetSockets?.forEach((socket) => {
           this.server.to(socket).emit('NEW_MESSAGE', { ...createMessageDto });
         });
       });
@@ -402,7 +419,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
     return result;
   }
-
 
   /*
   @SubscribeMessage('findAllChat')

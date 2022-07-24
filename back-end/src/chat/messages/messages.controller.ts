@@ -1,3 +1,4 @@
+import { UsersService } from 'src/users/users.service';
 import { RoomsService } from './../rooms/rooms.service';
 import {
   Controller,
@@ -23,6 +24,7 @@ export class MessagesController {
     private readonly messagesService: MessagesService,
     private readonly jwtService: JwtService,
     private readonly roomsService: RoomsService,
+    private readonly userService: UsersService,
   ) {}
 
   @Post()
@@ -48,8 +50,31 @@ export class MessagesController {
     if (req.query['isChannel']) {
       const roomData = await this.roomsService.findOne(Number(receiverId));
       console.log('room data : ', roomData);
-      if (roomData[0].ActiveUsers.includes(jwtPayload.id))
-        return this.messagesService.findOne(receiverId, jwtPayload.id, true);
+      if (roomData[0].ActiveUsers.includes(jwtPayload.id)) {
+        ////// filtre messages
+        const usersBlockedBy = await this.userService.getBlockedByUsers(
+          jwtPayload.id,
+        );
+        const usersBlocked = await this.userService.getBolckedUsers(
+          jwtPayload.id,
+        );
+        const forbiddenUserToSendMessage = [...usersBlockedBy, ...usersBlocked];
+        const forbiddenIds = forbiddenUserToSendMessage.map((user) => {
+          return user.id;
+        });
+        console.log('forbidded ids ', forbiddenIds);
+
+        ///
+        const messages = await this.messagesService.findOne(
+          receiverId,
+          jwtPayload.id,
+          true,
+        );
+        const flitredMessages = messages.filter(
+          (message) => !forbiddenIds.includes(message.senderId),
+        );
+        return flitredMessages;
+      }
       return;
     } else {
       return this.messagesService.findOne(receiverId, jwtPayload.id, false);
