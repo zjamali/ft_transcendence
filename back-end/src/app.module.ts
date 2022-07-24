@@ -10,6 +10,7 @@ import { EventsModule } from './events/events.module';
 import { MessagesModule } from './chat/messages/messages.module';
 import { RoomsModule } from './chat/rooms/rooms.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ShutDownModule } from './users/shutdown.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     RoomsModule,
     ChatModule,
     ScheduleModule.forRoot(),
+    ShutDownModule,
   ],
 })
 export class AppModule {}

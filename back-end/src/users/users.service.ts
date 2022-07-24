@@ -1,10 +1,18 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  // OnApplicationShutdown,
+  // OnModuleDestroy,
+} from '@nestjs/common';
 import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm/repository/Repository';
 import Friend, { State } from './friend.entity';
 import User from './user.entity';
 import { Connection } from 'typeorm';
+import { ShutdownService } from './shutdown.service';
+// import { Subject } from 'rxjs';
 
 @Injectable()
 export class UsersService {
@@ -203,6 +211,12 @@ export class UsersService {
     return receivedRequests;
   }
 
+  async updateAvatar(userId: string, imagePath: string) {
+    return this.usersRepository.update(userId, {
+      image: imagePath,
+    });
+  }
+
   async setTwoFactorAuthenticationSecret(userId: string, secret: string) {
     return this.usersRepository.update(userId, {
       twoFactorAuthenticationSecret: secret,
@@ -214,4 +228,41 @@ export class UsersService {
       isTwoFactorAuthenticationEnabled: true,
     });
   }
+
+  public async logOutFromAllUsers() {
+    // (await this.usersRepository.find()).map((user) => {
+    //   user.isOnline = false;
+    //   user.isPlaying = false;
+    //   this.usersRepository.save(user);
+    // });
+    // const id = '62225';
+    // await this.usersRepository.update({ id }, { isOnline: false });
+    console.log('logged out');
+    this.usersRepository
+      .createQueryBuilder()
+      .update()
+      .set({ isOnline: false, isPlaying: false })
+      // .where()
+      .execute();
+
+    // return true;
+  }
+
+  // onApplicationShutdown(signal: string) {
+  //   console.log(signal); // e.g. "SIGINT"
+  // }
+
+  // onModuleDestroy() {
+  //   console.log('blah');
+  // }
 }
+
+// @Injectable()
+// class ShutDown implements OnApplicationShutdown {
+//   onApplicationShutdown(signal: string) {
+//     console.log(signal); // e.g. "SIGINT"
+//   }
+//   onModuleDestroy(signal: string) {
+//     console.log(signal);
+//   }
+// }
