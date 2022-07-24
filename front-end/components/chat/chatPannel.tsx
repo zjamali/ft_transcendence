@@ -14,22 +14,43 @@ import { InputMessage } from './inputMessage'
 import NoReceiver from './noReceiver'
 import { isContact } from '../../utils/utils'
 
-export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
-  const notify = (message: string) => toast(message)
-  const { state, setIsUserJoinedChannel, setReceiver } = useContext(ChatContext)
+function MessagesContainer(props) {
   const chatContainer = useRef<HTMLDivElement>(null)
-  const messagesList = useRef<any>([])
-  const [messages, setMessages] = useState<any[]>([])
-  const [newMessage, setNewMessage] = useState<null | Message>(null)
-
-  console.log('channel pannel build')
-
+  const { state } = useContext(ChatContext)
   useEffect(() => {
     if (chatContainer.current) {
       chatContainer.current.scrollIntoView({ behavior: 'smooth' })
       chatContainer.current.scrollTop = chatContainer.current.scrollHeight
     }
-  }, [messages])
+  }, [props.messages])
+
+  return (
+    <div className={chatPannelStyle.message_body}>
+      <div ref={chatContainer} className={chatPannelStyle.messages_list}>
+        {props.messages &&
+          props.messages.map((message: any) => {
+            return (
+              <MessageComponent
+                key={uniqid()}
+                message={message}
+                mainUser={state.mainUser}
+              />
+            )
+          })}
+      </div>
+    </div>
+  )
+}
+
+export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
+  const notify = (message: string) => toast(message)
+  const { state, setIsUserJoinedChannel, setReceiver } = useContext(ChatContext)
+
+  const messagesList = useRef<any>([])
+  const [messages, setMessages] = useState<any[]>([])
+  const [newMessage, setNewMessage] = useState<null | Message>(null)
+
+  console.log('channel pannel build')
 
   useEffect(() => {
     try {
@@ -38,9 +59,9 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
         if (state.receiver.id === messagesList.current[0].roomId) return
       }
       ///
-      messagesList.current = []
-      setMessages([])
       if (state.receiver && isContact(state.receiver)) {
+        messagesList.current = []
+        setMessages([])
         axios
           .get(`http://localhost:5000/messages/${state.receiver.id}`, {
             withCredentials: true,
@@ -60,7 +81,6 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
             'active users: ',
             state.receiver.ActiveUsers.includes(state.mainUser.id),
           )
-          console.log('axios : get data')
           joinRoom()
         }
       }
@@ -130,7 +150,7 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
       createdAt: Date(),
       content: messageInput,
       isChannel: !isContact(state.receiver),
-    } 
+    }
     console.log('send message : ', message)
     chatSocket.current.emit('SEND_MESSAGE', { ...message })
   }
@@ -155,7 +175,6 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
         user_id: state.mainUser.id,
         room_id: state.receiver.id,
       })
-      console.log('get messages : ')
       axios
         .get(
           `http://localhost:5000/messages/${state.receiver?.id}?isChannel=true`,
@@ -165,8 +184,11 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
         )
         .then((responce) => {
           if (messagesList.current[0]?.roomId === responce.data[0]?.roomId) {
+            console.log('dont render =========.')
             return
           }
+          messagesList.current = []
+          setMessages([])
           messagesList.current = [...responce.data]
           setMessages([...messagesList.current])
         })
@@ -189,20 +211,7 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
             </div>
             {/*  */}
           </div>
-          <div className={chatPannelStyle.message_body}>
-            <div ref={chatContainer} className={chatPannelStyle.messages_list}>
-              {messages &&
-                messages.map((message: any) => {
-                  return (
-                    <MessageComponent
-                      key={uniqid()}
-                      message={message}
-                      mainUser={state.mainUser}
-                    />
-                  )
-                })}
-            </div>
-          </div>
+          <MessagesContainer messages={messages} />
         </div>
       )}
       {state.receiver &&

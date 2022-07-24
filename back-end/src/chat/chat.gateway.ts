@@ -126,9 +126,27 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async roomAdmins(
     @ConnectedSocket() client: Socket,
     @MessageBody()
-    roomUpdate: { admin_id: string; room_id: string; new_admins: string[] },
+    roomUpdate: { admin_id: string; room_id: string; new_admins: any[] },
   ) {
+    const admins = roomUpdate.new_admins.map((admin) => {
+      return admin.value;
+    });
     const room = await this.roomsService.findOne(Number(roomUpdate.room_id));
+    if (room[0].admins.includes(roomUpdate.admin_id)) {
+      await this.roomsService
+        .setAdmins(roomUpdate.room_id, [...admins])
+        .then(async () => {
+          const room = await this.roomsService.findOne(
+            Number(roomUpdate.room_id),
+          );
+          room[0].ActiveUsers.forEach((activeUser) => {
+            const userSockets = GlobalService.UsersChatSockets.get(activeUser);
+            userSockets.forEach((socketId) => {
+              this.server.to(socketId).emit('ADMINS_STATUS_UPDATED');
+            });
+          });
+        });
+    }
   }
   @SubscribeMessage('ROOM_REMOVE_PASSWORD')
   async removePassword(

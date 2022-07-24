@@ -37,7 +37,9 @@ export class RoomsController {
     const room = await this.roomsService.findOne(+id);
     console.log('room admins', room[0].admins);
     if (room[0].admins && room[0].admins.length > 0)
-      return await this.getUsersData(room[0].admins);
+      return (await this.getUsersData(room[0].admins)).filter(
+        (admin) => admin != room[0].owner,
+      );
     else return [];
   }
   @Get(':id/banned')
