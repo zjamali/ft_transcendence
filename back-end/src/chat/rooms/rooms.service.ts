@@ -1,9 +1,9 @@
+import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { CreateRoomDto } from './dto/create-room.dto';
 import Room from './entities/room.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RoutesMapper } from '@nestjs/core/middleware/routes-mapper';
 import { GlobalService } from 'src/utils/Global.service';
 
 @Injectable()
@@ -11,6 +11,7 @@ export class RoomsService {
   constructor(
     @InjectRepository(Room)
     private readonly roomRepository: Repository<Room>,
+    private readonly userService: UsersService,
   ) {}
   async create(createRoomDto: CreateRoomDto) {
     console.log('room :', createRoomDto);
@@ -21,10 +22,18 @@ export class RoomsService {
   async findAll(user_id: string) {
     const allRooms = await this.roomRepository.find();
 
+    const usersBlockedBy = await this.userService.getBlockedByUsers(user_id);
+    const usersBlocked = await this.userService.getBolckedUsers(user_id);
+
+    const forbiddenUsers = [...usersBlockedBy, ...usersBlocked];
+    const forbiddenUsersIds = forbiddenUsers.map((user) => user.id);
     const filtredRooms = allRooms.filter((room) => {
       return !room.bannedUser?.includes(user_id);
     });
-    return filtredRooms.sort((a, b) => Number(a.id) - Number(b.id));
+    const roomUserHaveAccess = filtredRooms.filter((room) => {
+      return !forbiddenUsersIds?.includes(room.owner);
+    });
+    return roomUserHaveAccess.sort((a, b) => Number(a.id) - Number(b.id));
   }
 
   findOne(id: number) {
@@ -33,7 +42,7 @@ export class RoomsService {
 
   async addUser(id: number, user_id: string) {
     const roomToUpdate = await this.roomRepository.findOne(id);
-    if (roomToUpdate.ActiveUsers.includes(user_id)) {
+    if (roomToUpdate.ActiveUsers?.includes(user_id)) {
       return;
     }
     roomToUpdate.ActiveUsers = [...roomToUpdate.ActiveUsers, user_id];
@@ -48,6 +57,16 @@ export class RoomsService {
         return ActiveUserid !== user_id;
       },
     );
+    if (user_id === roomToUpdate.owner) {
+      // set a first  admin a owner
+      if (roomToUpdate.admins[1]) {
+        console.log('set new admins');
+        roomToUpdate.owner = roomToUpdate.admins[1];
+      }
+    }
+    roomToUpdate.admins = roomToUpdate.admins.filter((admins) => {
+      return admins !== user_id;
+    });
     await this.roomRepository.save(roomToUpdate);
   }
 
@@ -75,6 +94,14 @@ export class RoomsService {
   async updatePassword(room_id: string, new_password: string) {
     const roomToUpdate = await this.roomRepository.findOne(room_id);
     roomToUpdate.password = await GlobalService.hashPassword(new_password);
+    this.roomRepository.save(roomToUpdate);
+  }
+  async addPassword(room_id: string, password: string) {
+    const roomToUpdate = await this.roomRepository.findOne(room_id);
+    roomToUpdate.password = await GlobalService.hashPassword(password);
+    roomToUpdate.roomType = 'Private';
+    roomToUpdate.image = '/images/icons/channel_private.png';
+    roomToUpdate.isProtected = true;
     this.roomRepository.save(roomToUpdate);
   }
 

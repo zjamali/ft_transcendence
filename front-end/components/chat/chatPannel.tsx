@@ -56,7 +56,7 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
     try {
       ///
       if (messagesList?.current[0]?.isChannel) {
-        if (state.receiver.id === messagesList.current[0].roomId) return
+        if (state.receiver?.id === messagesList.current[0].roomId) return
       }
       ///
       if (state.receiver && isContact(state.receiver)) {

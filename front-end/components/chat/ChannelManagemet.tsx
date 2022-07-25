@@ -270,7 +270,19 @@ function ManageMembers(props: any) {
     }
     if (roomSettingOption.value === 'password' && loadingRoomDataIsDone) {
       /// 'ROOM_Update_passord';
-
+      if (!props.room.isProtected) {
+        if (!validatePassword.test(updatePassword)) {
+          setIsNewPasswordCorrects(false)
+        } else {
+          props.chatSocket.current.emit('ROOM_ADD_PASSWORD', {
+            admin_id: `${state.mainUser.id}`,
+            room_id: `${props.room.id}`,
+            password: updatePassword,
+          })
+          props.setOpenSettingModal(false)
+        }
+        return
+      }
       props.chatSocket.current.emit(
         'CHECK_ROOM_PASSWORD',
         {
@@ -436,17 +448,22 @@ function ManageMembers(props: any) {
                     )}
                   </div>
                 ) : (
-                  <input
-                    className={channelManagemetStyle.input}
-                    type="password"
-                    name="new password"
-                    id="new password"
-                    placeholder="new password"
-                    value={updatePassword}
-                    onChange={(e) => {
-                      setUpdatePassword(e.target.value)
-                    }}
-                  />
+                  <div>
+                    <input
+                      className={channelManagemetStyle.input}
+                      type="password"
+                      name="new password"
+                      id="new password"
+                      placeholder="new password"
+                      value={updatePassword}
+                      onChange={(e) => {
+                        setUpdatePassword(e.target.value)
+                      }}
+                    />
+                    {!isNewPasswordCorrects && (
+                      <InputError message=" enter password between 8 - 16" />
+                    )}
+                  </div>
                 )}
               </div>
             )}
@@ -613,13 +630,7 @@ export default function ChannelManagement({
     const newReceiver = state.channels.filter(
       (channel) => channel.id === receiver.id,
     )
-    if (
-      JSON.stringify(receiver.mutedUsers) !==
-        JSON.stringify(newReceiver[0].mutedUsers) ||
-      JSON.stringify(receiver.admins) !==
-        JSON.stringify(newReceiver[0].admins) ||
-      receiver.isProtected != newReceiver[0].isProtected
-    ) {
+    if (JSON.stringify(receiver) !== JSON.stringify(newReceiver[0])) {
       console.log('reciever updated')
       setReceiver({ ...newReceiver[0] })
     }
