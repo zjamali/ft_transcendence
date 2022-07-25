@@ -6,18 +6,16 @@ import {
   Param,
   Post,
   Req,
-  // UploadedFile,
+  UploadedFile,
   UseGuards,
-  // UseInterceptors,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Request } from 'express';
-// import { of } from 'rxjs';
-// import { FileInterceptor } from '@nestjs/platform-express';
-// import { diskStorage } from 'multer';
-// import path from 'path';
-// import * as path from 'path';
-// import { Express } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import * as path from 'path';
+import { Express } from 'express';
 import RequestWithUser from './requestWithUser.interface';
 // import * as fs from 'fs';
 
@@ -69,6 +67,12 @@ export class UsersController {
     return this.usersService.getFriends(id);
   }
 
+  // @UseGuards(JwtAuthGuard)
+  // @Get('friends')
+  // getFriends(@Req() req: RequestWithUser) {
+  //   return this.usersService.getFriends(req.user.id);
+  // }
+
   @UseGuards(JwtAuthGuard)
   @Get('blocked')
   getBolckedUsers(@Req() req: RequestWithUser) {
@@ -85,25 +89,26 @@ export class UsersController {
     return this.usersService.getReceivedRequests(id);
   }
 
-  // @UseGuards(JwtAuthGuard)
-  // @Post('upload')
-  // @UseInterceptors(
-  //   FileInterceptor('file', {
-  //     storage: diskStorage({
-  //       destination: './uploads',
-  //       filename: (req: RequestWithUser, file, cb) => {
-  //         const filename: string = req.user.id;
-  //         // path.parse(file.originalname).name.replace(/\s/g, '') + 'meow';
-  //         const extension: string = path.parse(file.originalname).ext;
-  //         // fs.unlinkSync(req.user.image);
-  //         cb(null, `${filename}${extension}`);
-  //       },
-  //     }),
-  //   }),
-  // )
-  // updateProfile(@UploadedFile() file: Express.Multer.File) {
-  //   console.log('meow');
-  //   console.log(file);
-  //   return of({ imagePath: file.path });
-  // }
+  @UseGuards(JwtAuthGuard)
+  @Post('upload')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req: RequestWithUser, file, cb) => {
+          const filename: string = req.user.id;
+          // path.parse(file.originalname).name.replace(/\s/g, '') + 'meow';
+          const extension: string = path.parse(file.originalname).ext;
+          // fs.unlinkSync(req.user.image);
+          cb(null, `${filename}${extension}`);
+        },
+      }),
+    }),
+  )
+  updateProfile(
+    @Req() req: RequestWithUser,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.usersService.updateAvatar(req.user.id, file.path);
+  }
 }

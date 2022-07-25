@@ -11,6 +11,6 @@ import User from 'src/users/user.entity';
   imports: [UsersModule],
   providers: [EventsGateway, EventsService, UsersService, JwtService],
   controllers: [],
-  exports : [EventsService]
+  exports: [EventsService],
 })
 export class EventsModule {}
