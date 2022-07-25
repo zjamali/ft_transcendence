@@ -1,18 +1,9 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  // OnApplicationShutdown,
-  // OnModuleDestroy,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
-
 import { Repository } from 'typeorm/repository/Repository';
 import Friend, { State } from './friend.entity';
-import User from './user.entity';
 import { Connection } from 'typeorm';
-import { ShutdownService } from './shutdown.service';
-// import { Subject } from 'rxjs';
+import User from './user.entity';
 
 @Injectable()
 export class UsersService {
@@ -211,8 +202,21 @@ export class UsersService {
     return receivedRequests;
   }
 
-  async updateAvatar(userId: string, imagePath: string) {
+  async updateProfile(
+    userId: string,
+    givenUserName: string,
+    imagePath: string,
+  ) {
+    const user: User = await this.usersRepository.findOne(givenUserName);
+
+    if (user)
+      throw new HttpException(
+        'UserName is already taken',
+        HttpStatus.FORBIDDEN,
+      );
+
     return this.usersRepository.update(userId, {
+      userName: givenUserName,
       image: imagePath,
     });
   }
@@ -230,39 +234,11 @@ export class UsersService {
   }
 
   public async logOutFromAllUsers() {
-    // (await this.usersRepository.find()).map((user) => {
-    //   user.isOnline = false;
-    //   user.isPlaying = false;
-    //   this.usersRepository.save(user);
-    // });
-    // const id = '62225';
-    // await this.usersRepository.update({ id }, { isOnline: false });
     console.log('logged out');
     this.usersRepository
       .createQueryBuilder()
       .update()
       .set({ isOnline: false, isPlaying: false })
-      // .where()
       .execute();
-
-    // return true;
   }
-
-  // onApplicationShutdown(signal: string) {
-  //   console.log(signal); // e.g. "SIGINT"
-  // }
-
-  // onModuleDestroy() {
-  //   console.log('blah');
-  // }
 }
-
-// @Injectable()
-// class ShutDown implements OnApplicationShutdown {
-//   onApplicationShutdown(signal: string) {
-//     console.log(signal); // e.g. "SIGINT"
-//   }
-//   onModuleDestroy(signal: string) {
-//     console.log(signal);
-//   }
-// }

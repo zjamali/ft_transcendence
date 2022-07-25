@@ -3,6 +3,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Req,
@@ -17,7 +19,7 @@ import { diskStorage } from 'multer';
 import * as path from 'path';
 import { Express } from 'express';
 import RequestWithUser from './requestWithUser.interface';
-// import * as fs from 'fs';
+import { saveImageToStorage } from './helpers/image-storage';
 
 @Controller('users')
 export class UsersController {
@@ -84,31 +86,43 @@ export class UsersController {
     return this.usersService.getSentRequests(id);
   }
 
-  @Get('id/:id/recievedrequests')
+  // @UseGuards(JwtAuthGuard)
+  // @Get('sentrequests')
+  // getSentRequests(@Req() req: RequestWithUser) {
+  //   return this.usersService.getSentRequests(req.user.id);
+  // }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('recievedrequests')
   getRecievedRequests(@Param('id') id: string) {
     return this.usersService.getReceivedRequests(id);
   }
 
+  // @Get('recievedrequests')
+  // getRecievedRequests(@Req() req: RequestWithUser) {
+  //   return this.usersService.getReceivedRequests(req.user.id);
+  // }
+
   @UseGuards(JwtAuthGuard)
-  @Post('upload')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req: RequestWithUser, file, cb) => {
-          const filename: string = req.user.id;
-          // path.parse(file.originalname).name.replace(/\s/g, '') + 'meow';
-          const extension: string = path.parse(file.originalname).ext;
-          // fs.unlinkSync(req.user.image);
-          cb(null, `${filename}${extension}`);
-        },
-      }),
-    }),
-  )
+  @Post('updateProfile')
+  @UseInterceptors(FileInterceptor('file', saveImageToStorage))
   updateProfile(
     @Req() req: RequestWithUser,
     @UploadedFile() file: Express.Multer.File,
+    @Body() givenUserName: string,
   ) {
-    return this.usersService.updateAvatar(req.user.id, file.path);
+    console.log(file);
+    const fileName = file?.filename;
+    if (!fileName)
+      throw new HttpException(
+        'File extension must be one of [.png, .jpg, .jpeg]',
+        HttpStatus.FORBIDDEN,
+      );
+    return fileName;
+    // return this.usersService.updateProfile(
+    //   req.user.id,
+    //   givenUserName,
+    //   file.path,
+    // );
   }
 }

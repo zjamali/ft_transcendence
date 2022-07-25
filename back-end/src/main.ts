@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
-// import { ShutdownService } from './users/shutdown.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,7 +10,6 @@ async function bootstrap() {
   });
   app.use(cookieParser());
   app.enableShutdownHooks();
-  // app.get(ShutdownService).subscribeToShutdown(() => app.close());
   await app.listen(5000);
 }
 bootstrap();
