@@ -14,7 +14,7 @@ import { InputMessage } from './inputMessage'
 import NoReceiver from './noReceiver'
 import { isContact } from '../../utils/utils'
 
-function MessagesContainer(props) {
+function MessagesContainer(props: any) {
   const chatContainer = useRef<HTMLDivElement>(null)
   const { state } = useContext(ChatContext)
   useEffect(() => {
@@ -82,6 +82,9 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
             state.receiver.ActiveUsers.includes(state.mainUser.id),
           )
           joinRoom()
+        } else {
+          messagesList.current = []
+          setMessages([])
         }
       }
     } catch (error) {
@@ -92,11 +95,36 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
   useEffect(() => {
     //////
     /* creation Sockets start */
-    if (!chatSocket.current)
+    if (!chatSocket.current) {
       chatSocket.current = io('http://localhost:5000/chat', {
         withCredentials: true,
       })
+      chatSocket.current.on('connect_failed', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+      chatSocket.current.on('connect_error', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+      chatSocket.current.on('connect_failed', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+      chatSocket.current.on('disconnect', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+    }
     try {
+      chatSocket.current.on('connect_failed', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+      chatSocket.current.on('connect_error', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+      chatSocket.current.on('connect_failed', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+      chatSocket.current.on('disconnect', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
       chatSocket.current.on('NEW_MESSAGE', (newMessage: any) => {
         console.log('wa message : ', newMessage)
         setNewMessage({ ...newMessage })

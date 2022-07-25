@@ -45,7 +45,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly userService: UsersService,
   ) {}
 
-  // @UseGuards(JwtAuthGuar0d)
   @SubscribeMessage('CREATE_CHANNEL')
   async createChannel(
     @ConnectedSocket() client: Socket,
@@ -155,11 +154,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     roomUpdate: { admin_id: string; room_id: string },
   ) {
     const room = await this.roomsService.findOne(Number(roomUpdate.room_id));
-    if (room[0].owner !== roomUpdate.admin_id) {
+    if (room[0].owner === roomUpdate.admin_id) {
       await this.roomsService.removePassword(roomUpdate.room_id);
       setTimeout(() => {
         this.server.emit('A_CHANNELS_STATUS_UPDATED');
-      }, 500);
+      }, 100);
     }
   }
   @SubscribeMessage('ROOM_MUTE_USERS')
@@ -253,11 +252,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const room = await this.roomsService.findOne(Number(roomUpdate.room_id));
     // check if request owner is admin
     if (!room[0].admins.includes(roomUpdate.admin_id)) return;
-    console.log('ban: ', roomUpdate.banned);
 
     const bannedUserIds = roomUpdate.banned.map((user) => {
       return user.value;
     });
+    if (bannedUserIds.includes(room[0].owner)) return;
     /// if admin is not owner and wanna ban a other admin
     if (room[0].owner !== roomUpdate.admin_id) {
       room[0].admins.forEach((admin) => {
@@ -299,7 +298,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     roomUpdate: { admin_id: string; room_id: string; new_kicked: any },
   ) {
     console.log('user to kick :', roomUpdate.new_kicked);
-    // const room = await this.roomsService.findOne(Number(roomUpdate.room_id));
+    const room = await this.roomsService.findOne(Number(roomUpdate.room_id));
+    if (room[0].owner === roomUpdate.new_kicked.value) return;
     const userChatSocketsIds = GlobalService.UsersChatSockets.get(
       roomUpdate.new_kicked.value,
     );
@@ -323,13 +323,22 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
     });
   }
-  @SubscribeMessage('ROOM_PASSWORD_UPDATE')
+  @SubscribeMessage('ROOM_UPDATE_PASSWORD')
   async roomUpdatePassword(
     @ConnectedSocket() client: Socket,
     @MessageBody()
     roomUpdate: { admin_id: string; room_id: string; new_password: string },
   ) {
     const room = await this.roomsService.findOne(Number(roomUpdate.room_id));
+    if (room[0].owner === roomUpdate.admin_id) {
+      await this.roomsService.updatePassword(
+        roomUpdate.room_id,
+        roomUpdate.new_password,
+      );
+      setTimeout(() => {
+        this.server.emit('A_CHANNELS_STATUS_UPDATED');
+      }, 100);
+    }
   }
 
   @SubscribeMessage('LEAVE_ROOM')
@@ -408,14 +417,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       ///
     }
   }
-  @UseGuards(JwtAuthGuard)
   async handleConnection(client: Socket) {
     const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
     GlobalService.Sockets.set(client.id, client);
     this.chatService.addUserChatSocket(user_id, client.id);
   }
 
-  @UseGuards(JwtAuthGuard)
   async handleDisconnect(client: Socket) {
     const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
     this.chatService.removeUserChatSocket(user_id, client.id);
@@ -429,13 +436,15 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return jwtPayload.id;
   }
   parseCookie(cookies: any) {
-    cookies = cookies.split('; ');
-    const result = {};
-    for (const i in cookies) {
-      const cur = cookies[i].split('=');
-      result[cur[0]] = cur[1];
+    if (cookies) {
+      cookies = cookies.split('; ');
+      const result = {};
+      for (const i in cookies) {
+        const cur = cookies[i].split('=');
+        result[cur[0]] = cur[1];
+      }
+      return result;
     }
-    return result;
   }
 
   /*

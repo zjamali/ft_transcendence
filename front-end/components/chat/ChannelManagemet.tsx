@@ -7,6 +7,7 @@ import Select from 'react-select'
 import axios from 'axios'
 import { User } from '../../utils/interfaces'
 import ReactLoading from 'react-loading'
+import { validatePassword } from '../../regex/createChannelRegex'
 
 function ManageMembers(props: any) {
   const { state } = useContext(ChatContext)
@@ -27,9 +28,10 @@ function ManageMembers(props: any) {
   const [selectedKickedUserOption, setSelectedKickedUserOption] = useState<
     [] | null
   >(null)
-  const [isFormCorrects, setIsFormCorrects] = useState(true)
-  const [isPasswordCorrects, setIsPasswordCorrect] = useState(true)
+  const [isNewPasswordCorrects, setIsNewPasswordCorrects] = useState(true)
+  const [isCurrentPasswordCorrect, setIsCurrentPasswordCorrect] = useState(true)
   const [updatePassword, setUpdatePassword] = useState('')
+  const [currentPassword, setCurrentPassword] = useState('')
 
   const [loadingRoomDataIsDone, setLoadingRoomDataIsDone] = useState<boolean>(
     false,
@@ -95,11 +97,34 @@ function ManageMembers(props: any) {
 
   function removeChannelPassword(e: any) {
     e.preventDefault()
-    props.chatSocket.current.emit('ROOM_REMOVE_PASSWORD', {
-      admin_id: `${state.mainUser.id}`,
-      room_id: `${props.room.id}`,
-    })
-    props.setOpenSettingModal(false)
+    /// check current password is correct
+    props.chatSocket.current.emit(
+      'CHECK_ROOM_PASSWORD',
+      {
+        room_id: `${props.room.id}`,
+        password: `${currentPassword}`,
+      },
+      (checkPassword: boolean) => {
+        if (!checkPassword) {
+          setIsCurrentPasswordCorrect(false)
+          return
+        } else {
+          props.chatSocket.current.emit('ROOM_REMOVE_PASSWORD', {
+            admin_id: state.mainUser.id,
+            room_id: props.room.id,
+          })
+          props.setOpenSettingModal(false)
+        }
+      },
+    )
+    // if (isPasswordCorrect)
+    // {
+    //   props.chatSocket.current.emit('ROOM_REMOVE_PASSWORD', {
+    //     admin_id: `${state.mainUser.id}`,
+    //     room_id: `${props.room.id}`,
+    //   })
+    //   props.setOpenSettingModal(false)
+    // }
   }
 
   useEffect(() => {
@@ -194,10 +219,6 @@ function ManageMembers(props: any) {
 
   function handleChannelSetting(e: any) {
     e.preventDefault()
-    // 'admins', 'muted'
-    // 'banned'
-    // 'password'
-    // 'kick'
     if (
       roomSettingOption.value === 'kick' &&
       loadingRoomDataIsDone &&
@@ -209,6 +230,7 @@ function ManageMembers(props: any) {
         room_id: `${props.room.id}`,
         new_kicked: selectedKickedUserOption,
       })
+      props.setOpenSettingModal(false)
     }
     if (
       roomSettingOption.value === 'banned' &&
@@ -221,6 +243,7 @@ function ManageMembers(props: any) {
         room_id: `${props.room.id}`,
         banned: selectedBannedsOption,
       })
+      props.setOpenSettingModal(false)
     }
     if (roomSettingOption.value === 'muted' && loadingRoomDataIsDone) {
       console.log('mute a user 77777777777')
@@ -230,6 +253,7 @@ function ManageMembers(props: any) {
         muted_user: selectedMutedusersOption,
         timeToMute: timetoMute,
       })
+      props.setOpenSettingModal(false)
     }
     if (
       roomSettingOption.value === 'admins' &&
@@ -242,12 +266,54 @@ function ManageMembers(props: any) {
         room_id: `${props.room.id}`,
         new_admins: [...selectedAdminsOption],
       })
+      props.setOpenSettingModal(false)
     }
-    if (updatePassword.length > 0) {
-      setIsPasswordCorrect(false)
+    if (roomSettingOption.value === 'password' && loadingRoomDataIsDone) {
+      /// 'ROOM_Update_passord';
+
+      props.chatSocket.current.emit(
+        'CHECK_ROOM_PASSWORD',
+        {
+          room_id: `${props.room.id}`,
+          password: `${currentPassword}`,
+        },
+        (checkPassword: boolean) => {
+          if (!checkPassword) {
+            setIsCurrentPasswordCorrect(false)
+            return
+          } else {
+            if (!validatePassword.test(updatePassword)) {
+              setIsNewPasswordCorrects(false)
+            } else {
+              props.chatSocket.current.emit('ROOM_UPDATE_PASSWORD', {
+                admin_id: `${state.mainUser.id}`,
+                room_id: `${props.room.id}`,
+                new_password: updatePassword,
+              })
+              props.setOpenSettingModal(false)
+            }
+          }
+        },
+      )
     }
-    props.setOpenSettingModal(false)
   }
+
+  useEffect(() => {
+    props.chatSocket.current.on('connect_failed', () => {
+      console.log('Sorry, there seems to be an issue with the connection!')
+    })
+    props.chatSocket.current.on('connect_error', () => {
+      console.log('Sorry, there seems to be an issue with the connection!')
+    })
+    props.chatSocket.current.on('connect_failed', () => {
+      console.log('Sorry, there seems to be an issue with the connection!')
+    })
+    props.chatSocket.current.on('disconnect', () => {
+      console.log('Sorry, there seems to be an issue with the connection!')
+    })
+
+    return () => {}
+  }, [])
 
   return (
     <div className={channelManagemetStyle.manageMembers}>
@@ -326,41 +392,64 @@ function ManageMembers(props: any) {
                 <h3>
                   {props.room.isProtected ? 'update Password' : 'add password'}
                 </h3>
-
-                <input
-                  className={channelManagemetStyle.input}
-                  type="password"
-                  name="update password"
-                  id="password"
-                  placeholder="new password"
-                  value={updatePassword}
-                  onChange={(e) => {
-                    setUpdatePassword(e.target.value)
-                  }}
-                />
                 {props.room.isProtected ? (
-                  <button
-                    className={
-                      channelManagemetStyle.room_button +
-                      ' ' +
-                      channelManagemetStyle.leave_room
-                    }
-                    onClick={(e) => removeChannelPassword(e)}
-                  >
-                    remove Password
-                  </button>
+                  <div>
+                    <input
+                      className={channelManagemetStyle.input}
+                      type="password"
+                      name="current password"
+                      id="current password"
+                      placeholder="current password"
+                      value={currentPassword}
+                      onChange={(e) => {
+                        setCurrentPassword(e.target.value)
+                      }}
+                    />
+                    {!isCurrentPasswordCorrect && (
+                      <InputError message="wrong password" />
+                    )}
+                    <input
+                      className={channelManagemetStyle.input}
+                      type="password"
+                      name="update password"
+                      id="new password"
+                      placeholder="new password"
+                      value={updatePassword}
+                      onChange={(e) => {
+                        setUpdatePassword(e.target.value)
+                      }}
+                    />
+                    {!isNewPasswordCorrects && (
+                      <InputError message=" enter password between 8 - 16" />
+                    )}
+                    {updatePassword.length === 0 && (
+                      <button
+                        className={
+                          channelManagemetStyle.room_button +
+                          ' ' +
+                          channelManagemetStyle.leave_room
+                        }
+                        onClick={(e) => removeChannelPassword(e)}
+                      >
+                        remove Password
+                      </button>
+                    )}
+                  </div>
                 ) : (
-                  ''
+                  <input
+                    className={channelManagemetStyle.input}
+                    type="password"
+                    name="new password"
+                    id="new password"
+                    placeholder="new password"
+                    value={updatePassword}
+                    onChange={(e) => {
+                      setUpdatePassword(e.target.value)
+                    }}
+                  />
                 )}
               </div>
             )}
-          {!isPasswordCorrects && (
-            <InputError message=" enter password between 8 - 16" />
-          )}
-          {!isFormCorrects && (
-            <InputError message=" you can't banne,mute or kick  an admin" />
-          )}
-
           <button className={channelManagemetStyle.room_button} type="submit">
             save
           </button>
@@ -398,14 +487,14 @@ function ChannelSettings(props: any) {
               backgroundColor: 'rgba(22, 28, 36, 0.5)',
             },
             content: {
-              top: '50%',
+              top: '30%',
               left: '50%',
               right: 'auto',
               bottom: 'auto',
               marginRight: '-50%',
-              transform: 'translate(-50%, -50%)',
+              transform: 'translate(-50%, 0%)',
               width: '400px',
-              height: '400px',
+              minHeight: '300px',
               border: 'none',
               borderRadius: '20px',
               backgroundColor: '#212B36',
@@ -527,20 +616,11 @@ export default function ChannelManagement({
     if (
       JSON.stringify(receiver.mutedUsers) !==
         JSON.stringify(newReceiver[0].mutedUsers) ||
-      JSON.stringify(receiver.admins) !== JSON.stringify(newReceiver[0].admins)
+      JSON.stringify(receiver.admins) !==
+        JSON.stringify(newReceiver[0].admins) ||
+      receiver.isProtected != newReceiver[0].isProtected
     ) {
       console.log('reciever updated')
-      // if (newReceiver[0].mutedUsers?.includes(state.mainUser.id)) {
-      //   console.log('get muted set receiver')
-      //   setReceiver({ ...newReceiver[0] })
-      // }
-      // if (
-      //   receiver.mutedUsers?.includes(state.mainUser.id) &&
-      //   !newReceiver[0].mutedUsers.includes(state.mainUser.id)
-      // ) {
-      //   console.log('get unmuted set receiver')
-      //   setReceiver({ ...newReceiver[0] })
-      // }
       setReceiver({ ...newReceiver[0] })
     }
   }, [state.channels])

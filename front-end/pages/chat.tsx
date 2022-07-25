@@ -29,12 +29,49 @@ export default function Chat() {
   useEffect(() => {
     //////
     /* creation Sockets start */
-    if (!eventsSocket.current)
+    if (!eventsSocket.current) {
       eventsSocket.current = io('http://localhost:5000/events', {
         withCredentials: true,
       })
-
+      eventsSocket.current.on('connect_failed', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+      eventsSocket.current.on('connect_error', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+      eventsSocket.current.on('connect_failed', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+      eventsSocket.current.on('disconnect', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+    }
     try {
+      eventsSocket.current.on('connect_failed', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+      eventsSocket.current.on('connect_error', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+      eventsSocket.current.on('connect_failed', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+      eventsSocket.current.on('disconnect', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+      chatSocket.current.on('connect_failed', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+      chatSocket.current.on('connect_error', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+      chatSocket.current.on('connect_failed', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+      chatSocket.current.on('disconnect', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+
       fetchFriends()
       fetchAllChannels()
       eventsSocket.current.on('A_USER_STATUS_UPDATED', (user: any) => {
@@ -141,10 +178,24 @@ export default function Chat() {
   useEffect(() => {
     //////
     /* creation Sockets start */
-    if (!chatSocket.current)
+    if (!chatSocket.current) {
       chatSocket.current = io('http://localhost:5000/chat', {
         withCredentials: true,
+        
       })
+      chatSocket.current.on('connect_failed', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+      chatSocket.current.on('connect_error', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+      chatSocket.current.on('connect_failed', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+      chatSocket.current.on('disconnect', () => {
+        console.log('Sorry, there seems to be an issue with the connection!')
+      })
+    }
   }, [])
 
   /*** chat sockets  */
