@@ -15,8 +15,6 @@ import {
 import { UsersService } from './users.service';
 import { Request } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import * as path from 'path';
 import { Express } from 'express';
 import RequestWithUser from './requestWithUser.interface';
 import { saveImageToStorage } from './helpers/image-storage';
@@ -46,9 +44,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   getme(@Req() req: Request) {
-    console.log('uWu');
-    // console.log(req);
-    return { ...req.user, isOnline: true };
+    return { ...req.user };
   }
 
   @Post('send')
@@ -109,20 +105,19 @@ export class UsersController {
   updateProfile(
     @Req() req: RequestWithUser,
     @UploadedFile() file: Express.Multer.File,
-    @Body() givenUserName: string,
+    @Body() payload: { givenUserName: string },
   ) {
-    console.log(file);
     const fileName = file?.filename;
     if (!fileName)
       throw new HttpException(
         'File extension must be one of [.png, .jpg, .jpeg]',
         HttpStatus.FORBIDDEN,
       );
-    return fileName;
-    // return this.usersService.updateProfile(
-    //   req.user.id,
-    //   givenUserName,
-    //   file.path,
-    // );
+
+    return this.usersService.updateProfile(
+      req.user,
+      payload.givenUserName,
+      file.path,
+    );
   }
 }

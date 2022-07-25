@@ -203,19 +203,21 @@ export class UsersService {
   }
 
   async updateProfile(
-    userId: string,
+    currUser: User,
     givenUserName: string,
     imagePath: string,
   ) {
-    const user: User = await this.usersRepository.findOne(givenUserName);
+    const foundedUser: User = await this.usersRepository.findOne({
+      where: { userName: givenUserName },
+    });
 
-    if (user)
+    if (foundedUser && foundedUser.id != currUser.id)
       throw new HttpException(
         'UserName is already taken',
         HttpStatus.FORBIDDEN,
       );
 
-    return this.usersRepository.update(userId, {
+    return this.usersRepository.update(currUser.id, {
       userName: givenUserName,
       image: imagePath,
     });
@@ -232,6 +234,15 @@ export class UsersService {
       isTwoFactorAuthenticationEnabled: true,
     });
   }
+
+  async turnOffTwoFactorAuthentication(userId: string) {
+    return this.usersRepository.update(userId, {
+      isTwoFactorAuthenticationEnabled: false,
+      twoFactorAuthenticationSecret: null,
+    });
+  }
+
+  // public async logOut() {}
 
   public async logOutFromAllUsers() {
     console.log('logged out');

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   Req,
   Res,
@@ -20,7 +21,7 @@ export class TwoFactorAuthenticationController {
     private readonly usersService: UsersService,
   ) {}
 
-  @Post('generate')
+  @Get('generate')
   @UseGuards(JwtAuthGuard)
   async register(@Res() res: Response, @Req() req: RequestWithUser) {
     const { otpauthUrl } =
@@ -37,13 +38,12 @@ export class TwoFactorAuthenticationController {
     @Req() req: RequestWithUser,
     @Body() { twoFactorAuthenticaionCode },
   ) {
-    console.log(twoFactorAuthenticaionCode);
     const isCodeValid =
       await this.twoFactorAuthService.isTwoFactorAuthenticationCodeValid(
         twoFactorAuthenticaionCode,
         req.user,
       );
-    console.log(isCodeValid);
+
     if (!isCodeValid) {
       throw new UnauthorizedException('Wrong two factor authentication');
     }
@@ -51,6 +51,7 @@ export class TwoFactorAuthenticationController {
   }
 
   @Post('turnOn')
+  @UseGuards(JwtAuthGuard)
   async turnOnTwoFactorAuthentication(
     @Req() req: RequestWithUser,
     @Body() { twoFactorAuthenticationCode },
@@ -60,9 +61,15 @@ export class TwoFactorAuthenticationController {
         twoFactorAuthenticationCode,
         req.user,
       );
+
     if (!isCodeValid) {
       throw new UnauthorizedException('Wrong two factor authentication');
     }
     await this.usersService.turnOnTwoFactorAuthentication(req.user.id);
+  }
+
+  @Post('turnOff')
+  async turnOffTwoFactorAuthentication(@Req() req: RequestWithUser) {
+    await this.usersService.turnOffTwoFactorAuthentication(req.user.id);
   }
 }

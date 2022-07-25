@@ -1,15 +1,15 @@
 import { diskStorage } from 'multer';
 
-import * as fs from 'fs';
+// import * as fs from 'fs';
 import * as path from 'path';
-import * as FileType from 'file-type';
+// import * as FileType from 'file-type';
 import RequestWithUser from '../requestWithUser.interface';
-import { from, Observable, switchMap } from 'rxjs';
+// import { from, Observable, of, switchMap } from 'rxjs';
 
-type validFileExtension = 'png' | 'jpg' | 'jpeg';
+// type validFileExtension = 'png' | 'jpg' | 'jpeg';
 type validMimeType = 'image/png' | 'image/jpg' | 'image/jpeg';
 
-const validFileExtensions: validFileExtension[] = ['png', 'jpg', 'jpeg'];
+// const validFileExtensions: validFileExtension[] = ['png', 'jpg', 'jpeg'];
 const validMimeTypes: validMimeType[] = [
   'image/png',
   'image/jpg',
@@ -32,8 +32,17 @@ export const saveImageToStorage = {
   },
 };
 
-// export const isFileExtensionSafe = (fullFilePath: string) : Observable<boolean> => {
+// export const isFileExtensionSafe = (
+//   fullFilePath: string,
+// ): Observable<boolean> => {
 //   return from(FileType.fromFile(fullFilePath)).pipe(
-//     switchMap((_fileExtensionAndMimeType: { ext: validFileExtension, mime: validMimeType })
-//     ));
+//     switchMap(
+//       (_fileExtensionAndMimeType: {
+//         ext: validFileExtension;
+//         mime: validMimeType;
+//       }) => {
+//         if (!_fileExtensionAndMimeType) return of(false);
+//       },
+//     ),
+//   );
 // };
