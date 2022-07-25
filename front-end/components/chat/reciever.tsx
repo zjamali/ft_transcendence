@@ -49,13 +49,13 @@ export default function Reciever({
                 <h3>{state.receiver.roomName}</h3>
               </div>
             </div>
-            {
+            {state.receiver && (
               <ChannelManagement
                 chatSocket={chatSocket}
                 joinRoom={joinRoom}
                 leaveRoom={leaveRoom}
               />
-            }
+            )}
           </div>
         </>
       )}

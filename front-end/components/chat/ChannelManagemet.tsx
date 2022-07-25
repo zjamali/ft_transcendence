@@ -49,6 +49,7 @@ function ManageMembers(props: any) {
           { value: 'kick', label: 'kick a user' },
         ]
       : [
+          { value: 'admins', label: 'set / unset admins' },
           { value: 'muted', label: 'mute / umute  users' },
           { value: 'banned', label: 'ban / unban a user' },
           { value: 'kick', label: 'kick a user' },
@@ -106,9 +107,7 @@ function ManageMembers(props: any) {
 
     getRoomMembers(props.room.id)
       .then((Allmembers) => {
-        return Allmembers?.data.filter((user: User) => {
-          return user.id !== props.mainUser.id
-        })
+        return Allmembers?.data
       })
       .then((members) => {
         const membersAsOption = members.map((member: User) => {
@@ -117,15 +116,32 @@ function ManageMembers(props: any) {
             label: `${member.firstName} ${member.lastName}`,
           }
         })
-        setAdmins(membersAsOption)
-        setBanned(membersAsOption)
-        setKickedUser(membersAsOption)
-        setMutedUsers(membersAsOption)
+
+        setBanned(
+          membersAsOption.filter(
+            (member: any) => member.value != state.mainUser.id,
+          ),
+        )
+        setKickedUser(
+          membersAsOption.filter(
+            (member: any) => member.value != state.mainUser.id,
+          ),
+        )
+        setMutedUsers(
+          membersAsOption.filter(
+            (member: any) => member.value != state.mainUser.id,
+          ),
+        )
+        setAdmins(
+          membersAsOption.filter((member: any) => {
+            return member.value != props.room.owner
+          }),
+        )
       })
 
     getRoomAdmins(props.room.id).then((admins) => {
       const adminAsOption = admins?.data.map((admin: User) => {
-        if (admin.id != state.mainUser.id) {
+        if (admin.id != props.room.owner) {
           return {
             value: admin.id,
             label: `${admin.firstName} ${admin.lastName}`,
@@ -508,21 +524,24 @@ export default function ChannelManagement({
     const newReceiver = state.channels.filter(
       (channel) => channel.id === receiver.id,
     )
-    if (JSON.stringify(receiver.mutedUsers) !== JSON.stringify(newReceiver[0].mutedUsers)) {
+    if (
+      JSON.stringify(receiver.mutedUsers) !==
+        JSON.stringify(newReceiver[0].mutedUsers) ||
+      JSON.stringify(receiver.admins) !== JSON.stringify(newReceiver[0].admins)
+    ) {
       console.log('reciever updated')
-      if (newReceiver[0].mutedUsers.includes(state.mainUser.id))
-      {
-      console.log("get muted set receiver")
-        setReceiver({ ...newReceiver[0] })
-      }
-      if (
-        receiver.mutedUsers?.includes(state.mainUser.id) &&
-        !newReceiver[0].mutedUsers.includes(state.mainUser.id)
-      )
-      {
-        console.log("get unmuted set receiver")
-        setReceiver({ ...newReceiver[0] })
-      }
+      // if (newReceiver[0].mutedUsers?.includes(state.mainUser.id)) {
+      //   console.log('get muted set receiver')
+      //   setReceiver({ ...newReceiver[0] })
+      // }
+      // if (
+      //   receiver.mutedUsers?.includes(state.mainUser.id) &&
+      //   !newReceiver[0].mutedUsers.includes(state.mainUser.id)
+      // ) {
+      //   console.log('get unmuted set receiver')
+      //   setReceiver({ ...newReceiver[0] })
+      // }
+      setReceiver({ ...newReceiver[0] })
     }
   }, [state.channels])
 

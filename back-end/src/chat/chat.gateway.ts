@@ -1,3 +1,4 @@
+import { UsersService } from 'src/users/users.service';
 import { RoomsService } from './rooms/rooms.service';
 import { Server, Socket } from 'socket.io';
 import { GlobalService } from 'src/utils/Global.service';
@@ -41,6 +42,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private schedulerRegistry: SchedulerRegistry,
     private readonly jwtService: JwtService,
     private readonly roomsService: RoomsService,
+    private readonly userService: UsersService,
   ) {}
 
   // @UseGuards(JwtAuthGuar0d)
@@ -124,9 +126,27 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async roomAdmins(
     @ConnectedSocket() client: Socket,
     @MessageBody()
-    roomUpdate: { admin_id: string; room_id: string; new_admins: string[] },
+    roomUpdate: { admin_id: string; room_id: string; new_admins: any[] },
   ) {
+    const admins = roomUpdate.new_admins.map((admin) => {
+      return admin.value;
+    });
     const room = await this.roomsService.findOne(Number(roomUpdate.room_id));
+    if (room[0].admins.includes(roomUpdate.admin_id)) {
+      await this.roomsService
+        .setAdmins(roomUpdate.room_id, [...admins])
+        .then(async () => {
+          const room = await this.roomsService.findOne(
+            Number(roomUpdate.room_id),
+          );
+          room[0].ActiveUsers.forEach((activeUser) => {
+            const userSockets = GlobalService.UsersChatSockets.get(activeUser);
+            userSockets.forEach((socketId) => {
+              this.server.to(socketId).emit('ADMINS_STATUS_UPDATED');
+            });
+          });
+        });
+    }
   }
   @SubscribeMessage('ROOM_REMOVE_PASSWORD')
   async removePassword(
@@ -191,11 +211,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       console.log('new unmuted users :', unMutedUSers);
       unMutedUSers.forEach((newUnMutedUSer) => {
         this.deleteUnmuteUserTime(`${newUnMutedUSer}`, roomUpdate.room_id);
-        // const userSocketsIds =
-        //   GlobalService.UsersChatSockets.get(newUnMutedUSer);
-        // userSocketsIds.forEach((socketId) => {
-        //   this.server.to(socketId).emit('YOU_GET_UNMUTED');
-        // });
       });
     }
 
@@ -363,13 +378,29 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const room = await this.roomsService.findOne(
         Number(createMessageDto.receiverId),
       );
+      // if sender is muted do nothings
+      if (room[0].mutedUsers?.includes(createMessageDto.senderId)) return;
       ////
-      const targetUserOfRomm = room[0].ActiveUsers;
+      const usersBlockedBy = await this.userService.getBlockedByUsers(
+        createMessageDto.senderId,
+      );
+      const usersBlocked = await this.userService.getBolckedUsers(
+        createMessageDto.senderId,
+      );
+      const forbiddenUserToSendMessage = [...usersBlockedBy, ...usersBlocked];
+      const forbiddenIds = forbiddenUserToSendMessage.map((user) => {
+        return user.id;
+      });
+      console.log('forbidded ids ', forbiddenIds);
+      const targetUserOfRomm = room[0].ActiveUsers.filter(
+        (ActiveUser) => !forbiddenIds.includes(ActiveUser),
+      );
+      ///
       let targetSockets;
       console.log('target users : ', targetUserOfRomm);
-      targetUserOfRomm.forEach((user_is) => {
+      targetUserOfRomm?.forEach((user_is) => {
         targetSockets = GlobalService.UsersChatSockets.get(user_is);
-        targetSockets.forEach((socket) => {
+        targetSockets?.forEach((socket) => {
           this.server.to(socket).emit('NEW_MESSAGE', { ...createMessageDto });
         });
       });

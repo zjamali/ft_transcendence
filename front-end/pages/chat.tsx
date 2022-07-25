@@ -64,6 +64,10 @@ export default function Chat() {
         setReceiver(null)
         fetchAllChannels()
       })
+      chatSocket.current.on('ADMINS_STATUS_UPDATED', () => {
+        console.log('a admins status updated ')
+        fetchAllChannels()
+      })
     } catch (error) {
       console.log('sockets error', error)
     }

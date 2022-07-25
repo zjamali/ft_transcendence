@@ -85,4 +85,12 @@ export class RoomsService {
     );
     this.roomRepository.save(roomToUpdate);
   }
+
+  async setAdmins(room_id: string, admins: string[]) {
+    const roomToUpdate = await this.roomRepository.findOne(room_id);
+    if (!admins.includes(roomToUpdate.owner))
+      roomToUpdate.admins = [roomToUpdate.owner, ...admins];
+    else roomToUpdate.admins = [...admins];
+    this.roomRepository.save(roomToUpdate);
+  }
 }
