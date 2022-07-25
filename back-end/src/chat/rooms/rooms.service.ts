@@ -4,6 +4,7 @@ import { CreateRoomDto } from './dto/create-room.dto';
 import Room from './entities/room.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RoutesMapper } from '@nestjs/core/middleware/routes-mapper';
+import { GlobalService } from 'src/utils/Global.service';
 
 @Injectable()
 export class RoomsService {
@@ -69,6 +70,11 @@ export class RoomsService {
     roomToUpdate.password = null;
     roomToUpdate.roomType = 'Public';
     roomToUpdate.image = '/images/icons/channel_icon.png';
+    this.roomRepository.save(roomToUpdate);
+  }
+  async updatePassword(room_id: string, new_password: string) {
+    const roomToUpdate = await this.roomRepository.findOne(room_id);
+    roomToUpdate.password = await GlobalService.hashPassword(new_password);
     this.roomRepository.save(roomToUpdate);
   }
 
