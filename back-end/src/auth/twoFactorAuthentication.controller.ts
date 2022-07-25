@@ -50,6 +50,7 @@ export class TwoFactorAuthenticationController {
     return req.user;
   }
 
+  @Post('turnOn')
   async turnOnTwoFactorAuthentication(
     @Req() req: RequestWithUser,
     @Body() { twoFactorAuthenticationCode },
