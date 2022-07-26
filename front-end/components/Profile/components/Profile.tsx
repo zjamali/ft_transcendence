@@ -42,7 +42,7 @@ const Profile = () => {
               <Image src={intra} alt="user avatar" layout="fill" />
             </div>
             <div className="profile-wall-nav">
-              <div
+              {/* <div
                 className="profile-btn-div"
                 onClick={() => {
                   setOpenModal(true)
@@ -117,10 +117,10 @@ const Profile = () => {
                   </svg>
                 </div>
                 <div className="hidden-sidebar">History</div>
-              </div>
-              {/* <div style={{ fontWeight: '400', color: 'white' }}>username</div>
+              </div> */}
+              <div style={{ fontWeight: '400', color: 'white' }}>username</div>
               <div className="add-or-remove">
-                {!true ? (
+                {true ? (
                   <Button
                     variant="outlined"
                     color="primary"
@@ -151,7 +151,7 @@ const Profile = () => {
                     Unfriend
                   </Button>
                 )}
-              </div> */}
+              </div>
             </div>
           </div>
           {renderComponent(active)}
