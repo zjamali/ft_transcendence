@@ -443,6 +443,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       ///
     }
   }
+  @UseGuards(JwtAuthGuard)
   async handleConnection(client: Socket) {
     const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
     GlobalService.Sockets.set(client.id, client);

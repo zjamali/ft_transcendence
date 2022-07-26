@@ -21,7 +21,8 @@ InputMessageInterface) {
 
   const handleMessage = (e: any) => {
     e.preventDefault()
-    if (!/^\s+$/g.test(messageInput)) {
+
+    if (!/^\s+$/g.test(messageInput) && messageInput.length) {
       sendMessage(e, messageInput)
       setMessageinput('')
     }

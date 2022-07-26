@@ -1,9 +1,5 @@
 import React, { ReactNode, createContext, useState } from 'react'
 import { Message, Channel , User} from '../utils/interfaces'
-import {v4 as uuidv4} from 'uuid'
-
-import { api_contacts } from '../pages/api/contacts'
-import { api_rooms } from '../pages/api/rooms'
 export const ChatContext = createContext<any>({});
 
 export const ChatProvider = (props: any) => {
