@@ -13,7 +13,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { Request } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
 import RequestWithUser from './requestWithUser.interface';
@@ -23,27 +22,27 @@ import { saveImageToStorage } from './helpers/image-storage';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get()
+  @UseGuards(JwtAuthGuard)
   getUsers() {
     return this.usersService.getUsers();
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('create')
+  @UseGuards(JwtAuthGuard)
   createUser(@Body() createUserDto: any) {
     return this.usersService.createUser(createUserDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('id/:id')
+  @UseGuards(JwtAuthGuard)
   findUserById(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('me')
-  getme(@Req() req: Request) {
+  @UseGuards(JwtAuthGuard)
+  getme(@Req() req: RequestWithUser) {
     return { ...req.user };
   }
 
@@ -94,6 +93,7 @@ export class UsersController {
     return this.usersService.getReceivedRequests(id);
   }
 
+  // @UseGuards(JwtAuthGuard)
   // @Get('recievedrequests')
   // getRecievedRequests(@Req() req: RequestWithUser) {
   //   return this.usersService.getReceivedRequests(req.user.id);
@@ -105,7 +105,7 @@ export class UsersController {
   updateProfile(
     @Req() req: RequestWithUser,
     @UploadedFile() file: Express.Multer.File,
-    @Body() payload: { givenUserName: string },
+    @Body() body: { givenUserName: string },
   ) {
     const fileName = file?.filename;
     if (!fileName)
@@ -116,8 +116,20 @@ export class UsersController {
 
     return this.usersService.updateProfile(
       req.user,
-      payload.givenUserName,
+      body.givenUserName,
       file.path,
     );
   }
 }
+
+// "@nestjs/common": "^8.0.0",
+    // "@nestjs/config": "^2.1.0",
+    // "@nestjs/core": "^7.5.5",
+    // "@nestjs/jwt": "^8.0.1",
+    // "@nestjs/mapped-types": "*",
+    // "@nestjs/passport": "^8.2.1",
+    // "@nestjs/platform-express": "^7.6.18",
+    // "@nestjs/platform-socket.io": "^8.4.7",
+    // "@nestjs/schedule": "^2.1.0",
+    // "@nestjs/typeorm": "^7.1.5",
+    // "@nestjs/websockets": "^8.4.7",

@@ -69,6 +69,7 @@ export class TwoFactorAuthenticationController {
   }
 
   @Post('turnOff')
+  @UseGuards(JwtAuthGuard)
   async turnOffTwoFactorAuthentication(@Req() req: RequestWithUser) {
     await this.usersService.turnOffTwoFactorAuthentication(req.user.id);
   }

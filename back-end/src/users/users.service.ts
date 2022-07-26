@@ -1,18 +1,18 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm/repository/Repository';
 import Friend, { State } from './friend.entity';
-import { Connection } from 'typeorm';
+// import { Connection } from 'typeorm';
 import User from './user.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
+    // @InjectConnection() private readonly connection: Connection
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
     @InjectRepository(Friend)
     private readonly friendsRepository: Repository<Friend>,
-    @InjectConnection() private readonly connection: Connection,
   ) {}
 
   getUsers() {
@@ -25,7 +25,7 @@ export class UsersService {
   }
 
   async findOne(id: string): Promise<User> {
-    return this.usersRepository.findOne(id);
+    return this.usersRepository.findOne({ where: { id: id } });
   }
 
   async sendRequest(relatingUserID: string, relatedUserID: string) {
@@ -75,21 +75,21 @@ export class UsersService {
     Union
     SELECT * from public.User where id in (select "relatingUserID" from Friend where "relatedUserID" = $1 and "state" = 'friends')`;
 
-    const friends = this.connection.query(sql, [userId]);
+    const friends = this.usersRepository.query(sql, [userId]);
     return friends;
   }
 
   async getBolckedUsers(userId: string): Promise<User[]> {
     const sql = `SELECT * FROM public.User WHERE id IN (SELECT "relatedUserID" FROM Friend where "relatingUserID" = $1 and "state" = 'blocked')`;
 
-    const blockedUsers = this.connection.query(sql, [userId]);
+    const blockedUsers = this.usersRepository.query(sql, [userId]);
     return blockedUsers;
   }
 
   async getBlockedByUsers(userId: string): Promise<User[]> {
     const sql = `SELECT * FROM public.User WHERE id IN (SELECT "relatingUserID" FROM Friend where "relatedUserID" = $1 and "state" = 'blocked')`;
 
-    const blockedByUsers = this.connection.query(sql, [userId]);
+    const blockedByUsers = this.usersRepository.query(sql, [userId]);
     return blockedByUsers;
   }
 
@@ -191,14 +191,14 @@ export class UsersService {
 
     const sql = `SELECT * FROM public.User WHERE id IN (SELECT "relatedUserID" FROM Friend where "relatingUserID" = $1 and "state" = 'pending')`;
 
-    const receivedRequests = this.connection.query(sql, [userId]);
+    const receivedRequests = this.usersRepository.query(sql, [userId]);
     return receivedRequests;
   }
 
   async getReceivedRequests(userId: string) {
     const sql = `SELECT * FROM public.User WHERE id IN (SELECT "relatingUserID" FROM Friend where "relatedUserID" = $1 and "state" = 'pending')`;
 
-    const receivedRequests = this.connection.query(sql, [userId]);
+    const receivedRequests = this.usersRepository.query(sql, [userId]);
     return receivedRequests;
   }
 
