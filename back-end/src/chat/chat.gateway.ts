@@ -128,7 +128,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     roomUpdate: { admin_id: string; room_id: string; new_admins: any[] },
   ) {
     const admins = roomUpdate.new_admins.map((admin) => {
-      return admin.value;
+      return admin?.value;
     });
     const room = await this.roomsService.findOne(Number(roomUpdate.room_id));
     if (room[0].admins.includes(roomUpdate.admin_id)) {
@@ -156,6 +156,23 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const room = await this.roomsService.findOne(Number(roomUpdate.room_id));
     if (room[0].owner === roomUpdate.admin_id) {
       await this.roomsService.removePassword(roomUpdate.room_id);
+      setTimeout(() => {
+        this.server.emit('A_CHANNELS_STATUS_UPDATED');
+      }, 100);
+    }
+  }
+  @SubscribeMessage('ROOM_ADD_PASSWORD')
+  async addPassword(
+    @ConnectedSocket() client: Socket,
+    @MessageBody()
+    roomUpdate: { admin_id: string; room_id: string; password: string },
+  ) {
+    const room = await this.roomsService.findOne(Number(roomUpdate.room_id));
+    if (room[0].owner === roomUpdate.admin_id) {
+      await this.roomsService.addPassword(
+        roomUpdate.room_id,
+        roomUpdate.password,
+      );
       setTimeout(() => {
         this.server.emit('A_CHANNELS_STATUS_UPDATED');
       }, 100);
@@ -353,13 +370,22 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.leave(UserToLeaveRoom.room_id);
     this.roomsService
       .deleteUser(Number(UserToLeaveRoom.room_id), UserToLeaveRoom.user_id)
-      .then(() => {
-        const targetUserSockets = GlobalService.UsersChatSockets.get(
-          UserToLeaveRoom.user_id,
+      .then(async () => {
+        const newRoomData = await this.roomsService.findOne(
+          Number(UserToLeaveRoom.room_id),
         );
-        targetUserSockets.forEach((socket) => {
-          this.server.to(socket).emit('A_CHANNELS_STATUS_UPDATED');
-        });
+        if (newRoomData[0].owner !== roomToLeave[0].owner) {
+          this.server
+            .to(UserToLeaveRoom.room_id)
+            .emit('A_CHANNELS_STATUS_UPDATED');
+        } else {
+          const targetUserSockets = GlobalService.UsersChatSockets.get(
+            UserToLeaveRoom.user_id,
+          );
+          targetUserSockets.forEach((socket) => {
+            this.server.to(socket).emit('A_CHANNELS_STATUS_UPDATED');
+          });
+        }
       });
   }
 
@@ -417,6 +443,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       ///
     }
   }
+  @UseGuards(JwtAuthGuard)
   async handleConnection(client: Socket) {
     const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
     GlobalService.Sockets.set(client.id, client);

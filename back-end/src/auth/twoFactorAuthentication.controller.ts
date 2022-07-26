@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   Req,
   Res,
@@ -20,7 +21,7 @@ export class TwoFactorAuthenticationController {
     private readonly usersService: UsersService,
   ) {}
 
-  @Post('generate')
+  @Get('generate')
   @UseGuards(JwtAuthGuard)
   async register(@Res() res: Response, @Req() req: RequestWithUser) {
     const { otpauthUrl } =
