@@ -1,6 +1,6 @@
 import { Button } from "@mui/material"
 import Image from "next/image"
-import intra from "../public/42.jpg"
+import intra from "../../../public/42.jpg"
 
 
 const FriendsList: React.FC = () => {

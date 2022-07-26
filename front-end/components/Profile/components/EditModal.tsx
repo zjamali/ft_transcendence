@@ -16,7 +16,7 @@ import {useState} from "react";
 import Button from '@mui/material/Button';
 import Image from "next/image"
 import TextField from '@mui/material/TextField';
-import intra from "../public/42.jpg"
+import intra from '../../../public/42.jpg'
 import { styled } from '@mui/material/styles';
 import { red } from '@mui/material/colors';
 import Switch, { SwitchProps } from '@mui/material/Switch';

@@ -1,4 +1,4 @@
-html,
+/* html,
 body {
   padding: 0;
   margin: 0;
@@ -24,7 +24,7 @@ h3 {
 }
 
 main {
-  background-color: #161C24;
+  /* background-color: #161C24; 
   height: 100vh;
   display: flex;
   align-items: center;
@@ -35,6 +35,46 @@ main {
 }
 
 p {
+  margin: 0;
+  padding: 0;
+} 
+*/
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background-color: rgb(25, 32, 41);
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  overflow-x: hidden;
+  width: 100vw;
+  height: 100vh;
+  /* border: 10px solid white; */
+  /* display: none; */
+  
+}
+
+/* .holder {
+  
+  border: 10px solid white;
+} */
+
+main {
+   /* background-color: #161C24;  */
+  height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }

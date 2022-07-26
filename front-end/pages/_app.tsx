@@ -3,7 +3,7 @@ import type { AppProps } from 'next/app'
 import ChatProvider from '../context/chatContext'
 import Modal from 'react-modal'
 // import '../styles/globals.css'
-import "../styles/LandingPage.css"
+// import "../styles/LandingPage.css"
 import "../styles/Profile.css"
 import Head from 'next/head'
 
