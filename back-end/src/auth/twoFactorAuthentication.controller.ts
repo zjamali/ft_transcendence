@@ -38,19 +38,20 @@ export class TwoFactorAuthenticationController {
     @Req() req: RequestWithUser,
     @Body() { twoFactorAuthenticaionCode },
   ) {
-    console.log(twoFactorAuthenticaionCode);
     const isCodeValid =
       await this.twoFactorAuthService.isTwoFactorAuthenticationCodeValid(
         twoFactorAuthenticaionCode,
         req.user,
       );
-    console.log(isCodeValid);
+
     if (!isCodeValid) {
       throw new UnauthorizedException('Wrong two factor authentication');
     }
     return req.user;
   }
 
+  @Post('turnOn')
+  @UseGuards(JwtAuthGuard)
   async turnOnTwoFactorAuthentication(
     @Req() req: RequestWithUser,
     @Body() { twoFactorAuthenticationCode },
@@ -60,9 +61,16 @@ export class TwoFactorAuthenticationController {
         twoFactorAuthenticationCode,
         req.user,
       );
+
     if (!isCodeValid) {
       throw new UnauthorizedException('Wrong two factor authentication');
     }
     await this.usersService.turnOnTwoFactorAuthentication(req.user.id);
+  }
+
+  @Post('turnOff')
+  @UseGuards(JwtAuthGuard)
+  async turnOffTwoFactorAuthentication(@Req() req: RequestWithUser) {
+    await this.usersService.turnOffTwoFactorAuthentication(req.user.id);
   }
 }

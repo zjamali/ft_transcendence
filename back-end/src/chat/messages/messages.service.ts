@@ -1,7 +1,6 @@
 import Message from './entities/message.entity';
 import { Injectable } from '@nestjs/common';
 import { CreateMessageDto } from './dto/create-message.dto';
-import { UpdateMessageDto } from './dto/update-message.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -30,7 +29,9 @@ export class MessagesService {
 
   async findOne(receiverId: string, user_id: string, isChannel: boolean) {
     if (isChannel) {
-      return await this.messagesRepository.find({ roomId: receiverId });
+      return await this.messagesRepository.find({
+        where: { roomId: receiverId },
+      });
     }
     return await this.messagesRepository.find({
       where: [
@@ -38,13 +39,5 @@ export class MessagesService {
         { receiverId: user_id, senderId: receiverId },
       ],
     });
-  }
-
-  update(id: number, updateMessageDto: UpdateMessageDto) {
-    return `This action updates a #${id} message`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} message`;
   }
 }

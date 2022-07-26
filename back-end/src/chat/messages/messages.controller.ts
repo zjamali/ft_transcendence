@@ -6,14 +6,11 @@ import {
   Req,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   UseGuards,
 } from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dto/create-message.dto';
-import { UpdateMessageDto } from './dto/update-message.dto';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../chat.gateway';
 import { Request } from 'express';
@@ -48,7 +45,7 @@ export class MessagesController {
 
     console.log('queries : ', req.query['isChannel']);
     if (req.query['isChannel']) {
-      const roomData = await this.roomsService.findOne(Number(receiverId));
+      const roomData = await this.roomsService.findOne(receiverId);
       console.log('room data : ', roomData);
       if (roomData[0].ActiveUsers.includes(jwtPayload.id)) {
         ////// filtre messages
@@ -79,15 +76,5 @@ export class MessagesController {
     } else {
       return this.messagesService.findOne(receiverId, jwtPayload.id, false);
     }
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMessageDto: UpdateMessageDto) {
-    return this.messagesService.update(+id, updateMessageDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.messagesService.remove(+id);
   }
 }

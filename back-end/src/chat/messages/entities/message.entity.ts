@@ -22,8 +22,8 @@ class Message {
   @Column({ nullable: true })
   public receiverId: string;
 
-  @CreateDateColumn({ type: 'timestamp', nullable: false })
-  public createdAt!: Date;
+  @Column({ nullable: false })
+  public createdAt: string;
 
   @Column({ nullable: false })
   public content: string;

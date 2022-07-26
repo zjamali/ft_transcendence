@@ -3,7 +3,7 @@ export class CreateMessageDto {
   senderId: string;
   senderName: string;
   receiverId: string;
-  createdAt: Date;
+  createdAt: string;
   content: string;
   isChannel: boolean;
 }

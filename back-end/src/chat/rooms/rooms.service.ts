@@ -36,12 +36,14 @@ export class RoomsService {
     return roomUserHaveAccess.sort((a, b) => Number(a.id) - Number(b.id));
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.roomRepository.find({ where: { id: id } });
   }
 
-  async addUser(id: number, user_id: string) {
-    const roomToUpdate = await this.roomRepository.findOne(id);
+  async addUser(id: string, user_id: string) {
+    const roomToUpdate = await this.roomRepository.findOne({
+      where: { id: id },
+    });
     if (roomToUpdate.ActiveUsers?.includes(user_id)) {
       return;
     }
@@ -49,9 +51,11 @@ export class RoomsService {
     await this.roomRepository.save(roomToUpdate);
     return;
   }
-  async deleteUser(id: number, user_id: string) {
+  async deleteUser(id: string, user_id: string) {
     console.log('remove a user ', user_id);
-    const roomToUpdate = await this.roomRepository.findOne(id);
+    const roomToUpdate = await this.roomRepository.findOne({
+      where: { id: id },
+    });
     roomToUpdate.ActiveUsers = roomToUpdate.ActiveUsers.filter(
       (ActiveUserid) => {
         return ActiveUserid !== user_id;
@@ -70,8 +74,10 @@ export class RoomsService {
     await this.roomRepository.save(roomToUpdate);
   }
 
-  async bannedUser(id: number, bannedUSerIds: string[]) {
-    const roomToUpdate = await this.roomRepository.findOne(id);
+  async bannedUser(id: string, bannedUSerIds: string[]) {
+    const roomToUpdate = await this.roomRepository.findOne({
+      where: { id: id },
+    });
     // roomToUpdate.bannedUser = [];
     // this.roomRepository.save(roomToUpdate);
     bannedUSerIds.forEach((bannedId) => {
@@ -84,7 +90,9 @@ export class RoomsService {
     this.roomRepository.save(roomToUpdate);
   }
   async removePassword(room_id: string) {
-    const roomToUpdate = await this.roomRepository.findOne(room_id);
+    const roomToUpdate = await this.roomRepository.findOne({
+      where: { id: room_id },
+    });
     roomToUpdate.isProtected = false;
     roomToUpdate.password = null;
     roomToUpdate.roomType = 'Public';
@@ -92,12 +100,16 @@ export class RoomsService {
     this.roomRepository.save(roomToUpdate);
   }
   async updatePassword(room_id: string, new_password: string) {
-    const roomToUpdate = await this.roomRepository.findOne(room_id);
+    const roomToUpdate = await this.roomRepository.findOne({
+      where: { id: room_id },
+    });
     roomToUpdate.password = await GlobalService.hashPassword(new_password);
     this.roomRepository.save(roomToUpdate);
   }
   async addPassword(room_id: string, password: string) {
-    const roomToUpdate = await this.roomRepository.findOne(room_id);
+    const roomToUpdate = await this.roomRepository.findOne({
+      where: { id: room_id },
+    });
     roomToUpdate.password = await GlobalService.hashPassword(password);
     roomToUpdate.roomType = 'Private';
     roomToUpdate.image = '/images/icons/channel_private.png';
@@ -107,12 +119,16 @@ export class RoomsService {
 
   async muteUsers(room_id: string, muted_user: string[]) {
     console.log('mute user db ');
-    const roomToUpdate = await this.roomRepository.findOne(room_id);
+    const roomToUpdate = await this.roomRepository.findOne({
+      where: { id: room_id },
+    });
     roomToUpdate.mutedUsers = [...muted_user];
     return await this.roomRepository.save(roomToUpdate);
   }
   async unMuteUser(room_id: string, unmuted_user: string) {
-    const roomToUpdate = await this.roomRepository.findOne(room_id);
+    const roomToUpdate = await this.roomRepository.findOne({
+      where: { id: room_id },
+    });
     roomToUpdate.mutedUsers = roomToUpdate.mutedUsers.filter(
       (muted) => muted != unmuted_user,
     );
@@ -120,7 +136,9 @@ export class RoomsService {
   }
 
   async setAdmins(room_id: string, admins: string[]) {
-    const roomToUpdate = await this.roomRepository.findOne(room_id);
+    const roomToUpdate = await this.roomRepository.findOne({
+      where: { id: room_id },
+    });
     if (!admins.includes(roomToUpdate.owner))
       roomToUpdate.admins = [roomToUpdate.owner, ...admins];
     else roomToUpdate.admins = [...admins];

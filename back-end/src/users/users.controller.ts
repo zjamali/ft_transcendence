@@ -3,6 +3,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Req,
@@ -11,42 +13,37 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { Request } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import * as path from 'path';
 import { Express } from 'express';
 import RequestWithUser from './requestWithUser.interface';
-// import * as fs from 'fs';
+import { saveImageToStorage } from './helpers/image-storage';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get()
+  @UseGuards(JwtAuthGuard)
   getUsers() {
     return this.usersService.getUsers();
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('create')
+  @UseGuards(JwtAuthGuard)
   createUser(@Body() createUserDto: any) {
     return this.usersService.createUser(createUserDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('id/:id')
+  @UseGuards(JwtAuthGuard)
   findUserById(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('me')
-  getme(@Req() req: Request) {
-    console.log('uWu');
-    // console.log(req);
-    return { ...req.user, isOnline: true };
+  @UseGuards(JwtAuthGuard)
+  getme(@Req() req: RequestWithUser) {
+    return { ...req.user };
   }
 
   @Post('send')
@@ -84,31 +81,55 @@ export class UsersController {
     return this.usersService.getSentRequests(id);
   }
 
-  @Get('id/:id/recievedrequests')
+  // @UseGuards(JwtAuthGuard)
+  // @Get('sentrequests')
+  // getSentRequests(@Req() req: RequestWithUser) {
+  //   return this.usersService.getSentRequests(req.user.id);
+  // }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('recievedrequests')
   getRecievedRequests(@Param('id') id: string) {
     return this.usersService.getReceivedRequests(id);
   }
 
+  // @UseGuards(JwtAuthGuard)
+  // @Get('recievedrequests')
+  // getRecievedRequests(@Req() req: RequestWithUser) {
+  //   return this.usersService.getReceivedRequests(req.user.id);
+  // }
+
   @UseGuards(JwtAuthGuard)
-  @Post('upload')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req: RequestWithUser, file, cb) => {
-          const filename: string = req.user.id;
-          // path.parse(file.originalname).name.replace(/\s/g, '') + 'meow';
-          const extension: string = path.parse(file.originalname).ext;
-          // fs.unlinkSync(req.user.image);
-          cb(null, `${filename}${extension}`);
-        },
-      }),
-    }),
-  )
+  @Post('updateProfile')
+  @UseInterceptors(FileInterceptor('file', saveImageToStorage))
   updateProfile(
     @Req() req: RequestWithUser,
     @UploadedFile() file: Express.Multer.File,
+    @Body() body: { givenUserName: string },
   ) {
-    return this.usersService.updateAvatar(req.user.id, file.path);
+    const fileName = file?.filename;
+    if (!fileName)
+      throw new HttpException(
+        'File extension must be one of [.png, .jpg, .jpeg]',
+        HttpStatus.FORBIDDEN,
+      );
+
+    return this.usersService.updateProfile(
+      req.user,
+      body.givenUserName,
+      file.path,
+    );
   }
 }
+
+// "@nestjs/common": "^8.0.0",
+    // "@nestjs/config": "^2.1.0",
+    // "@nestjs/core": "^7.5.5",
+    // "@nestjs/jwt": "^8.0.1",
+    // "@nestjs/mapped-types": "*",
+    // "@nestjs/passport": "^8.2.1",
+    // "@nestjs/platform-express": "^7.6.18",
+    // "@nestjs/platform-socket.io": "^8.4.7",
+    // "@nestjs/schedule": "^2.1.0",
+    // "@nestjs/typeorm": "^7.1.5",
+    // "@nestjs/websockets": "^8.4.7",

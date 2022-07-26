@@ -21,7 +21,9 @@ export class AuthService {
     } else if (req.user.isTwoFactorAuthenticationEnabled == true) {
       return res.redirect('http://localhost:3000/2fa');
     }
-    this.usersService.createUser(req.user);
+    this.usersService.createUser(req.user); /// well well well you mustn't create the use every time
+    //don't forget to set isOnline to true when loggin in ;)
+
     // console.log('req.user from intraLogin AuthService: ');
     // console.log(req.user);
     const { access_token } = this.jwtAuthService.login(req.user);

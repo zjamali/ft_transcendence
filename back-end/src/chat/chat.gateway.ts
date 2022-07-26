@@ -16,7 +16,7 @@ import { CreateMessageDto } from './messages/dto/create-message.dto';
 import { MessagesService } from './messages/messages.service';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { Cron, SchedulerRegistry } from '@nestjs/schedule';
+import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob } from 'cron';
 import { JwtService } from '@nestjs/jwt';
 import { CreateRoomDto } from './rooms/dto/create-room.dto';
@@ -78,7 +78,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async checkRoomPassword(
     @MessageBody() data: { room_id: string; password: string },
   ) {
-    const roomToJoin = await this.roomsService.findOne(Number(data.room_id));
+    const roomToJoin = await this.roomsService.findOne(data.room_id);
     const isMatch = await GlobalService.CheckPassword(
       data.password,
       roomToJoin[0].password,
@@ -97,9 +97,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
     @MessageBody() newUserToJoin: { user_id: string; room_id: string },
   ) {
-    const roomToJoin = await this.roomsService.findOne(
-      Number(newUserToJoin.room_id),
-    );
+    const roomToJoin = await this.roomsService.findOne(newUserToJoin.room_id);
     console.log('join room: ', roomToJoin);
     client.join(newUserToJoin.room_id);
 
@@ -110,7 +108,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       roomToJoin,
     );
     this.roomsService
-      .addUser(Number(newUserToJoin.room_id), newUserToJoin.user_id)
+      .addUser(newUserToJoin.room_id, newUserToJoin.user_id)
       .then(() => {
         const targetUserSockets = GlobalService.UsersChatSockets.get(
           newUserToJoin.user_id,
@@ -130,14 +128,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const admins = roomUpdate.new_admins.map((admin) => {
       return admin?.value;
     });
-    const room = await this.roomsService.findOne(Number(roomUpdate.room_id));
+    const room = await this.roomsService.findOne(roomUpdate.room_id);
     if (room[0].admins.includes(roomUpdate.admin_id)) {
       await this.roomsService
         .setAdmins(roomUpdate.room_id, [...admins])
         .then(async () => {
-          const room = await this.roomsService.findOne(
-            Number(roomUpdate.room_id),
-          );
+          const room = await this.roomsService.findOne(roomUpdate.room_id);
           room[0].ActiveUsers.forEach((activeUser) => {
             const userSockets = GlobalService.UsersChatSockets.get(activeUser);
             userSockets.forEach((socketId) => {
@@ -153,7 +149,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody()
     roomUpdate: { admin_id: string; room_id: string },
   ) {
-    const room = await this.roomsService.findOne(Number(roomUpdate.room_id));
+    const room = await this.roomsService.findOne(roomUpdate.room_id);
     if (room[0].owner === roomUpdate.admin_id) {
       await this.roomsService.removePassword(roomUpdate.room_id);
       setTimeout(() => {
@@ -167,7 +163,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody()
     roomUpdate: { admin_id: string; room_id: string; password: string },
   ) {
-    const room = await this.roomsService.findOne(Number(roomUpdate.room_id));
+    const room = await this.roomsService.findOne(roomUpdate.room_id);
     if (room[0].owner === roomUpdate.admin_id) {
       await this.roomsService.addPassword(
         roomUpdate.room_id,
@@ -189,7 +185,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       timeToMute: number;
     },
   ) {
-    const room = await this.roomsService.findOne(Number(roomUpdate.room_id));
+    const room = await this.roomsService.findOne(roomUpdate.room_id);
     if (!room[0].admins.includes(roomUpdate.admin_id)) return;
 
     const mutedUser = roomUpdate.muted_user.map((user) => {
@@ -266,7 +262,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody()
     roomUpdate: { admin_id: string; room_id: string; banned: any[] },
   ) {
-    const room = await this.roomsService.findOne(Number(roomUpdate.room_id));
+    const room = await this.roomsService.findOne(roomUpdate.room_id);
     // check if request owner is admin
     if (!room[0].admins.includes(roomUpdate.admin_id)) return;
 
@@ -281,10 +277,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       });
     }
 
-    await this.roomsService.bannedUser(
-      Number(roomUpdate.room_id),
-      bannedUserIds,
-    );
+    await this.roomsService.bannedUser(roomUpdate.room_id, bannedUserIds);
     roomUpdate.banned.forEach((bannesUser) => {
       const userChatSocketsIds = GlobalService.UsersChatSockets.get(
         bannesUser.value,
@@ -315,7 +308,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     roomUpdate: { admin_id: string; room_id: string; new_kicked: any },
   ) {
     console.log('user to kick :', roomUpdate.new_kicked);
-    const room = await this.roomsService.findOne(Number(roomUpdate.room_id));
+    const room = await this.roomsService.findOne(roomUpdate.room_id);
     if (room[0].owner === roomUpdate.new_kicked.value) return;
     const userChatSocketsIds = GlobalService.UsersChatSockets.get(
       roomUpdate.new_kicked.value,
@@ -326,7 +319,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       if (user_socket) {
         user_socket.leave(roomUpdate.room_id);
         await this.roomsService
-          .deleteUser(Number(roomUpdate.room_id), roomUpdate.new_kicked.value)
+          .deleteUser(roomUpdate.room_id, roomUpdate.new_kicked.value)
           .then(() => {
             const targetUserSockets = GlobalService.UsersChatSockets.get(
               roomUpdate.new_kicked.value,
@@ -346,7 +339,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody()
     roomUpdate: { admin_id: string; room_id: string; new_password: string },
   ) {
-    const room = await this.roomsService.findOne(Number(roomUpdate.room_id));
+    const room = await this.roomsService.findOne(roomUpdate.room_id);
     if (room[0].owner === roomUpdate.admin_id) {
       await this.roomsService.updatePassword(
         roomUpdate.room_id,
@@ -364,15 +357,15 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() UserToLeaveRoom: { user_id: string; room_id: string },
   ) {
     const roomToLeave = await this.roomsService.findOne(
-      Number(UserToLeaveRoom.room_id),
+      UserToLeaveRoom.room_id,
     );
     console.log('leave room ', roomToLeave);
     client.leave(UserToLeaveRoom.room_id);
     this.roomsService
-      .deleteUser(Number(UserToLeaveRoom.room_id), UserToLeaveRoom.user_id)
+      .deleteUser(UserToLeaveRoom.room_id, UserToLeaveRoom.user_id)
       .then(async () => {
         const newRoomData = await this.roomsService.findOne(
-          Number(UserToLeaveRoom.room_id),
+          UserToLeaveRoom.room_id,
         );
         if (newRoomData[0].owner !== roomToLeave[0].owner) {
           this.server
@@ -410,9 +403,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     } else {
       console.log('the message is for a channel ', createMessageDto);
       this.messagesService.create(createMessageDto);
-      const room = await this.roomsService.findOne(
-        Number(createMessageDto.receiverId),
-      );
+      const room = await this.roomsService.findOne(createMessageDto.receiverId);
       // if sender is muted do nothings
       if (room[0].mutedUsers?.includes(createMessageDto.senderId)) return;
       ////

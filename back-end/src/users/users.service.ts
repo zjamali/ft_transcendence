@@ -1,27 +1,18 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  // OnApplicationShutdown,
-  // OnModuleDestroy,
-} from '@nestjs/common';
-import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
-
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm/repository/Repository';
 import Friend, { State } from './friend.entity';
+// import { Connection } from 'typeorm';
 import User from './user.entity';
-import { Connection } from 'typeorm';
-import { ShutdownService } from './shutdown.service';
-// import { Subject } from 'rxjs';
 
 @Injectable()
 export class UsersService {
   constructor(
+    // @InjectConnection() private readonly connection: Connection
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
     @InjectRepository(Friend)
     private readonly friendsRepository: Repository<Friend>,
-    @InjectConnection() private readonly connection: Connection,
   ) {}
 
   getUsers() {
@@ -34,7 +25,7 @@ export class UsersService {
   }
 
   async findOne(id: string): Promise<User> {
-    return this.usersRepository.findOne(id);
+    return this.usersRepository.findOne({ where: { id: id } });
   }
 
   async sendRequest(relatingUserID: string, relatedUserID: string) {
@@ -84,21 +75,21 @@ export class UsersService {
     Union
     SELECT * from public.User where id in (select "relatingUserID" from Friend where "relatedUserID" = $1 and "state" = 'friends')`;
 
-    const friends = this.connection.query(sql, [userId]);
+    const friends = this.usersRepository.query(sql, [userId]);
     return friends;
   }
 
   async getBolckedUsers(userId: string): Promise<User[]> {
     const sql = `SELECT * FROM public.User WHERE id IN (SELECT "relatedUserID" FROM Friend where "relatingUserID" = $1 and "state" = 'blocked')`;
 
-    const blockedUsers = this.connection.query(sql, [userId]);
+    const blockedUsers = this.usersRepository.query(sql, [userId]);
     return blockedUsers;
   }
 
   async getBlockedByUsers(userId: string): Promise<User[]> {
     const sql = `SELECT * FROM public.User WHERE id IN (SELECT "relatingUserID" FROM Friend where "relatedUserID" = $1 and "state" = 'blocked')`;
 
-    const blockedByUsers = this.connection.query(sql, [userId]);
+    const blockedByUsers = this.usersRepository.query(sql, [userId]);
     return blockedByUsers;
   }
 
@@ -200,19 +191,34 @@ export class UsersService {
 
     const sql = `SELECT * FROM public.User WHERE id IN (SELECT "relatedUserID" FROM Friend where "relatingUserID" = $1 and "state" = 'pending')`;
 
-    const receivedRequests = this.connection.query(sql, [userId]);
+    const receivedRequests = this.usersRepository.query(sql, [userId]);
     return receivedRequests;
   }
 
   async getReceivedRequests(userId: string) {
     const sql = `SELECT * FROM public.User WHERE id IN (SELECT "relatingUserID" FROM Friend where "relatedUserID" = $1 and "state" = 'pending')`;
 
-    const receivedRequests = this.connection.query(sql, [userId]);
+    const receivedRequests = this.usersRepository.query(sql, [userId]);
     return receivedRequests;
   }
 
-  async updateAvatar(userId: string, imagePath: string) {
-    return this.usersRepository.update(userId, {
+  async updateProfile(
+    currUser: User,
+    givenUserName: string,
+    imagePath: string,
+  ) {
+    const foundedUser: User = await this.usersRepository.findOne({
+      where: { userName: givenUserName },
+    });
+
+    if (foundedUser && foundedUser.id != currUser.id)
+      throw new HttpException(
+        'UserName is already taken',
+        HttpStatus.FORBIDDEN,
+      );
+
+    return this.usersRepository.update(currUser.id, {
+      userName: givenUserName,
       image: imagePath,
     });
   }
@@ -229,40 +235,21 @@ export class UsersService {
     });
   }
 
+  async turnOffTwoFactorAuthentication(userId: string) {
+    return this.usersRepository.update(userId, {
+      isTwoFactorAuthenticationEnabled: false,
+      twoFactorAuthenticationSecret: null,
+    });
+  }
+
+  // public async logOut() {}
+
   public async logOutFromAllUsers() {
-    // (await this.usersRepository.find()).map((user) => {
-    //   user.isOnline = false;
-    //   user.isPlaying = false;
-    //   this.usersRepository.save(user);
-    // });
-    // const id = '62225';
-    // await this.usersRepository.update({ id }, { isOnline: false });
     console.log('logged out');
     this.usersRepository
       .createQueryBuilder()
       .update()
       .set({ isOnline: false, isPlaying: false })
-      // .where()
       .execute();
-
-    // return true;
   }
-
-  // onApplicationShutdown(signal: string) {
-  //   console.log(signal); // e.g. "SIGINT"
-  // }
-
-  // onModuleDestroy() {
-  //   console.log('blah');
-  // }
 }
-
-// @Injectable()
-// class ShutDown implements OnApplicationShutdown {
-//   onApplicationShutdown(signal: string) {
-//     console.log(signal); // e.g. "SIGINT"
-//   }
-//   onModuleDestroy(signal: string) {
-//     console.log(signal);
-//   }
-// }
