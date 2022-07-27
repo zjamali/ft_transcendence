@@ -7,7 +7,7 @@ import ChatProvider, { ChatContext } from '../context/chatContext'
 import Login from './login'
 import { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
-import Profile from '../components/Profile/components/Profile'
+import Profile from '../components/Profile/Profile'
 
 const Home: NextPage = () => {
   const [login, setLogin] = useState<boolean>(false)

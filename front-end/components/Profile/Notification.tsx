@@ -2,7 +2,7 @@
 import Image from "next/image"
 import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
-import intra from "../../../public/42.jpg"
+import intra from "../../public/42.jpg"
 
 
 const Notification: React.FC = ({...props}) => {

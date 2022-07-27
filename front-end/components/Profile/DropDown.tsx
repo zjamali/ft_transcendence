@@ -9,7 +9,7 @@ import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import {useState} from "react";
 import Image from "next/image"
-import intra from '../../../public/42.jpg'
+import intra from '../../public/42.jpg'
 
 const DropDown: React.FC = ({...props}) => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

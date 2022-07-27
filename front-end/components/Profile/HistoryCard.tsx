@@ -1,5 +1,5 @@
 import Image from "next/image"
-import img from "../../../public/abstract.jpeg"
+import img from "../../public/abstract.jpeg"
 
 const HistoryCard = () => {
 	return (

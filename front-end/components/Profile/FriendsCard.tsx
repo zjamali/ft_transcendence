@@ -1,6 +1,6 @@
 import { Button } from "@mui/material"
 import Image from "next/image"
-import img from "../../../public/abstract.jpeg"
+import img from "../../public/abstract.jpeg"
 import NoiseControlOffIcon from '@mui/icons-material/NoiseControlOff';
 import HideSourceIcon from '@mui/icons-material/HideSource';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';

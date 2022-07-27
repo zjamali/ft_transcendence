@@ -1,6 +1,6 @@
 import Image from 'next/image'
 // import intra from '../../..//public/42.jpg'
-import logoImg from '../../../public/ponglogo.svg'
+import logoImg from '../../public/ponglogo.svg'
 import DropDown from './DropDown'
 import DropDNotifications from './DropDNotifications'
 
