@@ -120,6 +120,11 @@
 	position: sticky;
 	left: 0;
 	top: var(--header-height);
+	-ms-overflow-style: none;  /* IE and Edge */
+	scrollbar-width: none;
+}
+.sidebar::-webkit-scrollbar {
+	display: none;
 }
 
 .hidden-sidebar {

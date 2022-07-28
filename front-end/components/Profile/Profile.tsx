@@ -10,6 +10,7 @@ import FriendsList from './FriendsList'
 import HistoryList from './HistoryList'
 import { ChatContext } from '../../context/chatContext'
 import MainUserNav from './MainUserNav'
+import OtherUserNav from './OtherUserNav'
 
 const Profile = () => {
   const [active, setActive] = useState<String>('DefaultData')
@@ -44,8 +45,8 @@ const Profile = () => {
 						<Image loader={()=> src} unoptimized={true} src={src} alt="user avatar" layout="fill" />
 						{/* <img src={state.mainUser.image} className="profile-wall-img-user" /> */}
 					</div>
-					<MainUserNav setActive={setActive} setOpenModal={setOpenModal}/>
-					{/* <OtherUserNav /> */}
+					{/* <MainUserNav setActive={setActive} setOpenModal={setOpenModal}/> */}
+					<OtherUserNav />
 				</div>
 				{renderComponent(active)}
 			</div>
