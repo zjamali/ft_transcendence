@@ -10,8 +10,11 @@ import Logout from '@mui/icons-material/Logout';
 import {useState} from "react";
 import Image from "next/image"
 import intra from '../../public/42.jpg'
-
-const DropDown: React.FC = ({...props}) => {
+interface DropDown {
+	userName: string,
+	image: string
+}
+const DropDown: React.FC<DropDown> = ({userName, image}) => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
 	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -25,7 +28,7 @@ const DropDown: React.FC = ({...props}) => {
 		<React.Fragment>
 			<Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center', backgroundColor: '#171d25' }}>
 				<div className="user-container" onClick={handleClick} aria-controls={open ? 'account-menu' : undefined} aria-haspopup="true" aria-expanded={open ? 'true' : undefined}>
-					<Image src={intra} alt="avatar" layout="fill" />
+					<Image unoptimized={true} loader={()=> image} src={image} alt="avatar" layout="fill" />
 				</div>
 			</Box>
 			<Menu
@@ -68,7 +71,7 @@ const DropDown: React.FC = ({...props}) => {
 				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
 			>
 				<MenuItem autoFocus={false} style={{color: "#919eab",}}>
-					<Avatar /> {props.userName}
+					<Avatar /> {userName}
 				</MenuItem>
 				<Divider />
 				<MenuItem  style={{color: "#919eab"}}>

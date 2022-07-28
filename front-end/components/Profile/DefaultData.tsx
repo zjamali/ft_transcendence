@@ -29,26 +29,13 @@ const DefaultData = () => {
 				<div className="friends-label">
 					<div className="friends-label-header"><h4>Match History</h4></div>
 					<div className="list-of-friends">
-						{/* <FriendsCard /> */}
 						<HistoryCard />
-						{/* <FriendsCard />
-						<FriendsCard />
-						<FriendsCard />
-						<FriendsCard />
-						<FriendsCard />
-						<FriendsCard />  */}
 					</div>
 				</div>
 				<div className="friends-label">
 					<div className="friends-label-header"><h4>Friends</h4></div>
 					<div className="list-of-friends">
 						<FriendsCard />
-						{/* <FriendsCard />
-						<FriendsCard />
-						<FriendsCard />
-						<FriendsCard />
-						<FriendsCard />
-						<FriendsCard />  */}
 					</div>
 				</div>
 			</div>

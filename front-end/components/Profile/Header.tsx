@@ -3,16 +3,20 @@ import Image from 'next/image'
 import logoImg from '../../public/ponglogo.svg'
 import DropDown from './DropDown'
 import DropDNotifications from './DropDNotifications'
+import { useContext } from 'react'
+import { ChatContext } from '../../context/chatContext'
 
 const Header = () => {
-  const userName: string = 'abdait-m'
+  const {state} = useContext(ChatContext)
+  const userName: string = state.mainUser.userName
+  const src: string = state.mainUser.image
 
   return (
     <header className="header">
       <div className="logo-container">
         <Image
-          className="img-logo"
           src={logoImg}
+          className="img-logo"
           alt="this is the logo"
           layout="fill"
         />
@@ -20,13 +24,9 @@ const Header = () => {
       <div className="left-items">
         <div className="notifications-container">
           <DropDNotifications />
-          {/* <button className="btn-notification">
-					<svg xmlns="http://www.w3.org/2000/svg"className="notification-icon" viewBox="0 0 16 16"><path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/></svg>
-					</button> */}
         </div>
-        {/* <div className="header-user-name">{userName}</div> */}
         <div className="user-container">
-          <DropDown userName={userName} />
+          <DropDown userName={userName} image={src}/>
         </div>
       </div>
     </header>

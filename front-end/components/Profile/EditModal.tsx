@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
-import {useState} from "react";
+import {useState, useContext} from "react";
 import Button from '@mui/material/Button';
 import Image from "next/image"
 import TextField from '@mui/material/TextField';
@@ -23,17 +23,13 @@ import Switch, { SwitchProps } from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { OutlinedInputProps } from '@mui/material/OutlinedInput';
 import { withThemeCreator } from '@material-ui/styles';
+import { ChatContext } from '../../context/chatContext';
 // import "./../styles/Profile.css"
 
 type EditModalProps = {
-	closeModal: (t:boolean) => void;
+	closeModal: (modal:boolean) => void;
 }
 
-// const styles = theme => ({
-// 	testColor: {
-// 		color: "white"
-// 	}
-// })
 const CssTextField = styled(TextField)({
 	'& label.Mui-focused': {
 	  color: '#ff3030',
@@ -44,6 +40,11 @@ const CssTextField = styled(TextField)({
 	'&  .MuiInputBase-root' : {
 		color: '#919eab',
 
+	},
+
+	' &.MuiFormHelperText-root.Mui-error':{
+		backgroundColor: 'white',
+		color: 'white'
 	},
 
 	'&  .MuiInputBase-root: hover' : {
@@ -100,7 +101,8 @@ const Android12Switch = styled(Switch)(({ theme }) => ({
   }));
 
 const EditModal:React.FC<EditModalProps> = ({closeModal}) => {
-	const test: string = "abdait-m"
+	const {state} = useContext(ChatContext)
+	const test: string = state.mainUser.userName;
 	const primary = red[500]
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
@@ -110,35 +112,33 @@ const EditModal:React.FC<EditModalProps> = ({closeModal}) => {
 	const handleClose = () => {
 	  setAnchorEl(null);
 	};
+	const src = state.mainUser.image;
+	const editProfilePicture = () => {
+		alert("uploadpicture")
+	}
 	return (
 		<>
 			<div className="overlay-modal" onClick={() => closeModal(false)} />
 			<div className="edit-modal">
 				<div className="modal-picture">
 					<div className="modal-picture-container">
-						<Image src={intra} alt="avatar" layout="fill" />
+						<Image loader={()=> src} unoptimized={true} src={src} alt="avatar" layout="fill" />
 					</div>
 					<div className="modal-picture-upload">
-						<Button variant="contained" size="small" component="label" style={{color:"white", backgroundColor: "#919eab"}}>
+						<Button variant="contained" size="small" onClick={editProfilePicture} component="label" style={{color:"white", backgroundColor: "#919eab"}}>
         					Upload photo
         					<input hidden accept="image/*" type="file" />
       					</Button>
 					</div>
 				</div>
 				<div className="modal-data">
-					{/* <div className="user-name"> username </div> */}
 					<div className="modal-data-input">
 						<CssTextField
-							// id="outlined-required"
-							// id="custom-css-outlined-input"
 							label="Username"
 							defaultValue={test}
-							// InputProps={{
-							// 	classes: {
-							// 		input: classes.testColor
-							// 	}
-							// }}
 							size="small"
+							helperText="test"
+							
 						/>
 					</div>
 					<div className="modal-two-factor">
@@ -146,17 +146,15 @@ const EditModal:React.FC<EditModalProps> = ({closeModal}) => {
 							label="TWO-FACTOR AUTH"
 							labelPlacement='start'
 							control={<Android12Switch />}
+							checked={ state.mainUser.isTwoFactorAuthenticationEnabled ? true : false}
+							onClick={() => alert("hi")}
 						/>
 					</div>
 				</div>
 				<div className="modal-buttons">
-					{/* <div className='modal-cancel'>
-						<Button variant="contained" size="small" color="secondary">Cancel</Button>
-					</div> */}
 					<div className='modal-submit'>
-						<Button variant='contained' size="small" color='success'>Confirm</Button>
+						<Button variant='outlined' size="small" color='success'>Confirm</Button>
 					</div>
-					{/* <button onClick={() => closeModal(false)}>Cancel</button> */}
 				</div>
 			</div>
 		</>
