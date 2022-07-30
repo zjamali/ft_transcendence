@@ -34,6 +34,6 @@ export default function ChatPage() {
 	}
 
 	return (
-		<div className="profile-container">{state.mainUser && <Chat />}</div>
+		<div className="profile-content">{state.mainUser && <Chat />}</div>
 	);
 }

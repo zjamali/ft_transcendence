@@ -47,10 +47,6 @@ export default function UserProfile() {
 	return (
 		<>
 			{state.mainUser && user && (
-				<div>
-					<Header />
-					<div className="profile-container">
-						<SideBar />
 						<div className="profile-content">
 							<div className="profile-wall">
 								<div className="profile-wall-bg"></div>
@@ -72,8 +68,6 @@ export default function UserProfile() {
 							</div>
 								<DefaultData />
 						</div>
-					</div>
-				</div>
 			)}
 		</>
 	);
