@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import chatStyles from '../../styles/Chat.module.css'
 import uniqid from 'uniqid'
 import Room from './Channel'
-import { ChatContext } from '../../context/chatContext'
+import { AppContext } from '../../context/AppContext'
 import Channel from './Channel'
 import Modal from 'react-modal'
 import { CreateChannel } from './createChannel'
@@ -18,8 +18,8 @@ function NoChannels(props: { message: string }) {
   )
 }
 
-export default function Channels({chatSocket} : {chatSocket:any}) {
-  const { state } = useContext(ChatContext)
+export default function Channels() {
+  const { state } = useContext(AppContext)
   const [modalIsOpen, setModalIsOpen] = React.useState(false)
 
 
@@ -75,7 +75,7 @@ export default function Channels({chatSocket} : {chatSocket:any}) {
           }}
           contentLabel="Example Modal"
         >
-          <CreateChannel chatSocket={chatSocket} setModalIsOpen={setModalIsOpen}/>
+          <CreateChannel setModalIsOpen={setModalIsOpen}/>
         </Modal>
       </div>
     </>

@@ -3,7 +3,7 @@ import chatStyles from '../../styles/Chat.module.css'
 import Contact from './Contact'
 import uniqid from 'uniqid'
 
-import { ChatContext } from '../../context/chatContext'
+import { AppContext } from '../../context/AppContext'
 import { Console } from 'console'
 
 function NoContacts(props: { message: string }) {
@@ -15,7 +15,7 @@ function NoContacts(props: { message: string }) {
 }
 
 export default function ChatContacts() {
-  const { state, setReceiver } = useContext(ChatContext)
+  const { state, setReceiver } = useContext(AppContext)
 
   // set first contact as receiver 
   // useEffect(() => {

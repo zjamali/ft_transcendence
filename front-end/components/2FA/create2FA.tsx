@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { ChatContext } from '../context/chatContext'
+import { AppContext } from '../context/chatContext'
 import login2fa from '../styles/Chat.module.css'
 import { InputError } from '../components/chat/createChannel'
 import Modal from 'react-modal'
 export default function Create2FA(props: any) {
   const [opne2faModal, setOpne2faModal] = useState(false)
-  const { state } = useContext(ChatContext)
+  const { state } = useContext(AppContext)
 
   return (
     <>

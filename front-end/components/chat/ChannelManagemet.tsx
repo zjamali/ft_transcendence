@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { ChatContext } from '../../context/chatContext'
+import { AppContext } from '../../context/AppContext'
 import channelManagemetStyle from '../../styles/Chat.module.css'
 import Modal from 'react-modal'
 import { InputError } from './createChannel'
@@ -10,7 +10,7 @@ import ReactLoading from 'react-loading'
 import { validatePassword } from '../../regex/createChannelRegex'
 
 function ManageMembers(props: any) {
-  const { state } = useContext(ChatContext)
+  const { state } = useContext(AppContext)
   const [timetoMute, setTimetoMute] = useState(0)
   const [Admins, setAdmins] = useState<[{}]>([{}])
   const [banned, setBanned] = useState<[{}]>([{}])
@@ -480,7 +480,7 @@ function ManageMembers(props: any) {
 
 function ChannelSettings(props: any) {
   const [openSettingModal, setOpenSettingModal] = useState(false)
-  const { state } = useContext(ChatContext)
+  const { state } = useContext(AppContext)
   return (
     <div className={channelManagemetStyle.channleSettings}>
       <button
@@ -552,7 +552,7 @@ function JoinProtectedRoom(props: any) {
   const [password, setPassword] = useState<string>('')
   const [validatePasswordState, setValidatePasswordState] = useState(false)
   const [passwordIsWrong, setPasswordIsWrong] = useState(false)
-  const { setIsUserJoinedChannel } = useContext(ChatContext)
+  const { setIsUserJoinedChannel } = useContext(AppContext)
 
   function handleForm(e: any) {
     e.preventDefault()
@@ -611,7 +611,7 @@ export default function ChannelManagement({
   leaveRoom: () => void
   chatSocket: any
 }) {
-  const { state, setIsUserJoinedChannel, setReceiver } = useContext(ChatContext)
+  const { state, setIsUserJoinedChannel, setReceiver } = useContext(AppContext)
   console.log('room state :', state.receiver)
   const [openPasswordModal, setOpenPasswordModal] = useState(false)
   function ChannalJoinHandle() {

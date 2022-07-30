@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useContext, useEffect, useState } from 'react'
-import { ChatContext } from '../../context/chatContext'
+import { AppContext } from '../../context/AppContext'
 import inputMessageStyle from '../../styles/Chat.module.css'
 interface InputMessageInterface {
   sendMessage: (e: any, inputMessage: string) => void
@@ -13,7 +13,7 @@ export function InputMessage({
 }: // messageInput,
 // setMessageinput,
 InputMessageInterface) {
-  const { state } = useContext(ChatContext)
+  const { state } = useContext(AppContext)
 
   useEffect(() => {
     // just the receiver changed
