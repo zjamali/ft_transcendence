@@ -1,6 +1,6 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
-import ChatProvider from '../context/chatContext'
+import ChatProvider from '../context/AppContext'
 import Modal from 'react-modal'
 // import '../styles/globals.css'
 // import "../styles/LandingPage.css"

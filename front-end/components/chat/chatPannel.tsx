@@ -4,7 +4,7 @@ import chatPannelStyle from '../../styles/Chat.module.css'
 import uniqid from 'uniqid'
 import MessageComponent from './message'
 import Reciever from './reciever'
-import { ChatContext } from '../../context/chatContext'
+import { AppContext } from '../../context/AppContext'
 import io, { Socket } from 'socket.io-client'
 import { Message } from '../../utils/interfaces'
 import axios from 'axios'
@@ -16,7 +16,7 @@ import { isContact } from '../../utils/utils'
 
 function MessagesContainer(props: any) {
   const chatContainer = useRef<HTMLDivElement>(null)
-  const { state } = useContext(ChatContext)
+  const { state } = useContext(AppContext)
   useEffect(() => {
     if (chatContainer.current) {
       chatContainer.current.scrollIntoView({ behavior: 'smooth' })
@@ -42,9 +42,9 @@ function MessagesContainer(props: any) {
   )
 }
 
-export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
+export default function ChatPannel() {
   const notify = (message: string) => toast(message)
-  const { state, setIsUserJoinedChannel, setReceiver } = useContext(ChatContext)
+  const { state, setIsUserJoinedChannel, setReceiver } = useContext(AppContext)
 
   const messagesList = useRef<any>([])
   const [messages, setMessages] = useState<any[]>([])
@@ -95,37 +95,37 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
   useEffect(() => {
     //////
     /* creation Sockets start */
-    if (!chatSocket.current) {
-      chatSocket.current = io('http://localhost:5000/chat', {
+    if (!state.chatSocket.current) {
+      state.chatSocket.current = io('http://localhost:5000/chat', {
         withCredentials: true,
       })
-      chatSocket.current.on('connect_failed', () => {
+      state.chatSocket.current.on('connect_failed', () => {
         console.log('Sorry, there seems to be an issue with the connection!')
       })
-      chatSocket.current.on('connect_error', () => {
+      state.chatSocket.current.on('connect_error', () => {
         console.log('Sorry, there seems to be an issue with the connection!')
       })
-      chatSocket.current.on('connect_failed', () => {
+      state.chatSocket.current.on('connect_failed', () => {
         console.log('Sorry, there seems to be an issue with the connection!')
       })
-      chatSocket.current.on('disconnect', () => {
+      state.chatSocket.current.on('disconnect', () => {
         console.log('Sorry, there seems to be an issue with the connection!')
       })
     }
     try {
-      chatSocket.current.on('connect_failed', () => {
+      state.chatSocket.current.on('connect_failed', () => {
         console.log('Sorry, there seems to be an issue with the connection!')
       })
-      chatSocket.current.on('connect_error', () => {
+      state.chatSocket.current.on('connect_error', () => {
         console.log('Sorry, there seems to be an issue with the connection!')
       })
-      chatSocket.current.on('connect_failed', () => {
+      state.chatSocket.current.on('connect_failed', () => {
         console.log('Sorry, there seems to be an issue with the connection!')
       })
-      chatSocket.current.on('disconnect', () => {
+      state.chatSocket.current.on('disconnect', () => {
         console.log('Sorry, there seems to be an issue with the connection!')
       })
-      chatSocket.current.on('NEW_MESSAGE', (newMessage: any) => {
+      state.chatSocket.current.on('NEW_MESSAGE', (newMessage: any) => {
         console.log('wa message : ', newMessage)
         setNewMessage({ ...newMessage })
       })
@@ -135,7 +135,7 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
 
     return () => {
       console.log('close sockets')
-      if (chatSocket.current) chatSocket?.current.disconnect()
+      if (state.chatSocket.current) state.chatSocket?.current.disconnect()
     }
   }, [])
 
@@ -180,13 +180,13 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
       isChannel: !isContact(state.receiver),
     }
     console.log('send message : ', message)
-    chatSocket.current.emit('SEND_MESSAGE', { ...message })
+    state.chatSocket.current.emit('SEND_MESSAGE', { ...message })
   }
 
   function leaveRoom() {
     console.log('leave room ')
-    if (chatSocket.current) {
-      chatSocket.current.emit('LEAVE_ROOM', {
+    if (state.chatSocket.current) {
+      state.chatSocket.current.emit('LEAVE_ROOM', {
         user_id: state.mainUser.id,
         room_id: state.receiver.id,
       })
@@ -198,8 +198,8 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
 
   function joinRoom() {
     console.log('join room :::')
-    if (chatSocket.current) {
-      chatSocket.current.emit('JOIN_ROOM', {
+    if (state.chatSocket.current) {
+      state.chatSocket.current.emit('JOIN_ROOM', {
         user_id: state.mainUser.id,
         room_id: state.receiver.id,
       })
@@ -232,7 +232,7 @@ export default function ChatPannel({ chatSocket }: { chatSocket: any }) {
           <div className={chatPannelStyle.message_head}>
             <div className={chatPannelStyle.reciverInfo}>
               <Reciever
-                chatSocket={chatSocket}
+                chatSocket={state.chatSocket}
                 joinRoom={joinRoom}
                 leaveRoom={leaveRoom}
               />

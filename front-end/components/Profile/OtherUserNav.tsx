@@ -12,16 +12,18 @@ import HistoryList from './HistoryList'
 import { Button } from '@mui/material'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
-import { ChatContext } from '../../context/chatContext'
+import { AppContext } from '../../context/AppContext'
 import MainUserNav from './MainUserNav'
 
 
 const OtherUserNav: React.FC = () => {
+
+	
 	return (
 		<div className="profile-wall-nav">
 			<div style={{ fontWeight: '400', color: 'white' }}>username</div>
 			<div className="add-or-remove">
-				{true ? (
+				{!true ? (
 					<Button
 					variant="outlined"
 					color="primary"

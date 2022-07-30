@@ -1,11 +1,11 @@
 import React, { useContext, useEffect } from 'react'
-import { ChatContext } from '../../context/chatContext'
+import { AppContext } from '../../context/AppContext'
 import ContactStyles from '../../styles/Chat.module.css'
 import Avatar from './avatar'
 import { ContactComponentProps, User } from '../../utils/interfaces'
 
 function Contact(props: ContactComponentProps) {
-  const {setReceiver, state} = useContext(ChatContext);
+  const {setReceiver, state} = useContext(AppContext);
 
   function handleChangeReceiver(receiver_id : string)
   {

@@ -23,7 +23,7 @@ import Switch, { SwitchProps } from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { OutlinedInputProps } from '@mui/material/OutlinedInput';
 import { withThemeCreator } from '@material-ui/styles';
-import { ChatContext } from '../../context/chatContext';
+import { AppContext } from '../../context/AppContext';
 // import "./../styles/Profile.css"
 
 type EditModalProps = {
@@ -101,7 +101,7 @@ const Android12Switch = styled(Switch)(({ theme }) => ({
   }));
 
 const EditModal:React.FC<EditModalProps> = ({closeModal}) => {
-	const {state} = useContext(ChatContext)
+	const {state} = useContext(AppContext)
 	const test: string = state.mainUser.userName;
 	const primary = red[500]
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

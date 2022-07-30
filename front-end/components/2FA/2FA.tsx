@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react'
-import { ChatContext } from '../../context/chatContext'
+import { AppContext } from '../../context/AppContext'
 import loginStyle from '../styles/Chat.module.css'
 import { v4 as uuidv4 } from 'uuid'
 
 export default function Login(props: any) {
-  // const { state, setMainUser } = useContext(ChatContext)
+  // const { state, setMainUser } = useContext(AppContext)
 
   return (
     <div className={loginStyle.loginContainner}>

@@ -2,26 +2,27 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import Header from "../../../components/Profile/Header";
 import SideBar from "../../../components/Profile/SideBar";
-import { ChatContext } from "../../../context/chatContext";
+import { AppContext } from "../../../context/AppContext";
 import Image from "next/image";
 import OtherUserNav from "../../../components/Profile/OtherUserNav";
 import { User } from "../../../utils/interfaces";
 import { useRouter } from "next/router";
+import DefaultData from "../../../components/Profile/DefaultData"
 
 type Props = {};
 
 export default function UserProfile({}: Props) {
 	const [user, setUser] = useState<User | null>(null);
-	const { state, setMainUser } = useContext(ChatContext);
-    const root = useRouter();
-
+	const { state, setMainUser } = useContext(AppContext);
+	const root = useRouter();
+	const roote = useRouter();
+	const { userId } = roote.query;
 	useEffect(() => {
 		axios
 			.get("http://localhost:5000/users/me", { withCredentials: true })
 			.then((res) => {
 				if (res.status === 200) {
 					setMainUser({ ...res.data });
-                    console.log("root :",root);
 					userData();
 				}
 			})
@@ -32,7 +33,9 @@ export default function UserProfile({}: Props) {
 
 	function userData() {
 		axios
-			.get(`http://localhost:5000/users/me`, { withCredentials: true })
+			.get(`http://localhost:5000/users/id/${userId}`, {
+				withCredentials: true,
+			})
 			.then((res) => {
 				if (res.status === 200) {
 					setUser({ ...res.data });
@@ -43,11 +46,9 @@ export default function UserProfile({}: Props) {
 			});
 	}
 
-    const src = state.mainUser?.image;
-
-    return (
+	return (
 		<>
-			{state.mainUser && (
+			{state.mainUser && user && (
 				<div>
 					<Header />
 					<div className="profile-container">
@@ -56,18 +57,22 @@ export default function UserProfile({}: Props) {
 							<div className="profile-wall">
 								<div className="profile-wall-bg"></div>
 								<div className="profile-wall-img-user">
-									<Image
-										loader={() => src}
-										unoptimized={true}
-										src={src}
-										alt="user avatar"
-										layout="fill"
-									/>
+									{user && (
+										<Image
+											loader={() => `${user.image}`}
+											unoptimized={true}
+											src={`${user.image}`}
+											alt="user avatar"
+											layout="fill"
+										/>
+									)}
+									{/* <img src={user.image} alt="user image" /> */}
 									{/* <img src={state.mainUser.image} className="profile-wall-img-user" /> */}
 								</div>
 								{/* <MainUserNav setActive={setActive} setOpenModal={setOpenModal}/> */}
 								<OtherUserNav />
 							</div>
+								<DefaultData />
 						</div>
 					</div>
 				</div>

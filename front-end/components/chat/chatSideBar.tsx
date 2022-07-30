@@ -3,9 +3,9 @@ import chatSideBar from '../../styles/Chat.module.css'
 import MainUser from './mainUser'
 import ChatContacts from './chatContacts'
 import ChatRooms from './channelsChat'
-import {ChatContext} from '../../context/chatContext'
+import {AppContext} from '../../context/AppContext'
 
-export default function ChatSideBar({chatSocket} : {chatSocket:any}) {
+export default function ChatSideBar() {
   const [buttonState, setButtonState] = useState(0)
   const hangleToogle = (e: any) => {
     if (e.target.id === 'contacts') {
@@ -46,8 +46,8 @@ export default function ChatSideBar({chatSocket} : {chatSocket:any}) {
             Channels
           </button>
         </div>
-        {buttonState === 0 && <ChatContacts  />}
-        {buttonState === 1 && <ChatRooms chatSocket={chatSocket} />}
+        {buttonState === 0 && <ChatContacts />}
+        {buttonState === 1 && <ChatRooms/>}
       </div>
     </div>
   )

@@ -3,12 +3,12 @@ import img from "../../public/abstract.jpeg"
 import { Button } from "@mui/material"
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
-import { ChatContext } from "../../context/chatContext";
+import { AppContext } from "../../context/AppContext";
 import { useContext } from "react";
 
 
 const HistoryCard = () => {
-	const { state } = useContext(ChatContext)
+	const { state } = useContext(AppContext)
 	const mainUserName = state.mainUser.userName
 	const mainUserImage = state.mainUser.image
 

@@ -3,13 +3,23 @@ import Image from 'next/image'
 import logoImg from '../../public/ponglogo.svg'
 import DropDown from './DropDown'
 import DropDNotifications from './DropDNotifications'
-import { useContext } from 'react'
-import { ChatContext } from '../../context/chatContext'
+import { useContext, useEffect, useRef } from 'react'
+import { AppContext } from '../../context/AppContext'
+import { io } from 'socket.io-client'
 
 const Header = () => {
-  const {state} = useContext(ChatContext)
+  const {state} = useContext(AppContext)
   const userName: string = state.mainUser.userName
   const src: string = state.mainUser.image
+
+  useEffect(() => {
+    if (!state.eventsSocket.current) {
+			state.eventsSocket.current = io("http://localhost:5000/events", {
+				withCredentials: true,
+			});
+		}
+  }, [])
+  
 
   return (
     <header className="header">

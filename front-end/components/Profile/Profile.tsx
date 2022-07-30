@@ -8,7 +8,7 @@ import { useContext, useState,useEffect } from 'react'
 import Portal from './Portal'
 import FriendsList from './FriendsList'
 import HistoryList from './HistoryList'
-import { ChatContext } from '../../context/chatContext'
+import { AppContext } from '../../context/AppContext'
 import MainUserNav from './MainUserNav'
 import OtherUserNav from './OtherUserNav'
 
@@ -16,7 +16,7 @@ const Profile = () => {
   const [active, setActive] = useState<String>('DefaultData')
   const [openModal, setOpenModal] = useState<Boolean>(false)
   
-  const {state} = useContext(ChatContext)
+  const {state} = useContext(AppContext)
   const renderComponent = (active: String) => {
 		switch (active) {
 		case 'DefaultData':

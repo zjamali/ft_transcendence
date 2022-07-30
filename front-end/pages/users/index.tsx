@@ -3,13 +3,13 @@ import Header from "../../components/Profile/Header";
 import SideBar from "../../components/Profile/SideBar";
 import Image from "next/image";
 import axios from "axios";
-import { ChatContext } from "../../context/chatContext";
+import { AppContext } from "../../context/AppContext";
 import { User } from "../../utils/interfaces";
 import Link from "next/link";
 import Router, { useRouter } from "next/router";
 
 const Users = () => {
-	const { state, setMainUser } = useContext(ChatContext);
+	const { state, setMainUser } = useContext(AppContext);
 	const [allUsers, setAllUsers] = useState<User[]>([]);
 	const router = useRouter();
 

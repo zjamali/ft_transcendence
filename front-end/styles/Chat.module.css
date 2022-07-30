@@ -43,7 +43,7 @@
 .chatComponentStyle {
   /* overflow: hidden; */
   background-color: #212b36;
-  border-radius: 30px;
+  border-radius: 12px;
   height: calc(85vh + 0px);
   margin: 0 auto;
   margin-top: 20px;
@@ -280,6 +280,10 @@
   top: -16px;
   left: -20px;
   color: #d0d6dc;
+}
+.Channel_senderName:hover
+{
+  cursor: pointer;
 }
 
 .message_head {
@@ -697,5 +701,12 @@
   }
   .room_management {
     margin-right: 100px;
+  }
+}
+@media (max-width: 900px)
+{
+
+	.chatComponentStyle {
+		width: 92%;
   }
 }
