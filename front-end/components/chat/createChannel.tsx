@@ -1,5 +1,5 @@
 import React, { ReactChild, Ref, useContext, useEffect, useState } from 'react'
-import { ChatContext } from '../../context/chatContext'
+import { AppContext } from '../../context/AppContext'
 import craeteChannelStyle from '../../styles/Chat.module.css'
 import { validateName, validatePassword } from '../../regex/createChannelRegex'
 import { Channel } from '../../utils/interfaces'
@@ -13,13 +13,11 @@ export function InputError(props: { message: string }) {
 }
 
 export function CreateChannel({
-  chatSocket,
   setModalIsOpen,
 }: {
-  chatSocket: any
   setModalIsOpen: any
 }) {
-  const { state } = useContext(ChatContext)
+  const { state } = useContext(AppContext)
   const [roomName, setRoomName] = useState<string>('')
   const [validateRoomName, setValidateRoomName] = useState<boolean>(true)
   const [roomType, setRoomType] = useState<string>('Public')
@@ -29,7 +27,7 @@ export function CreateChannel({
   )
 
   function createRoom(newRoom: Channel) {
-    chatSocket.current.emit('CREATE_CHANNEL', newRoom)
+    state.chatSocket.current.emit('CREATE_CHANNEL', newRoom)
     setModalIsOpen(false)
   }
 

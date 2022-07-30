@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
-import { ChatContext } from '../../context/chatContext'
+import { AppContext } from '../../context/AppContext'
 import userStyles from '../../styles/Chat.module.css'
 import  Avatar from './avatar'
 
 export default function MainUser(props: any) {
-  const {state} = useContext(ChatContext)
+  const {state} = useContext(AppContext)
   return (
     <div className={userStyles.main_user}>
       <Avatar image={state.mainUser?.image} />

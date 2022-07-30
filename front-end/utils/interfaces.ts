@@ -15,7 +15,7 @@ export interface User {
   lastName: string;
   firstName: string;
   isOnline: boolean;
-  playing: boolean;
+  isPlaying: boolean;
 }
 export interface Profile {
   id: string;
