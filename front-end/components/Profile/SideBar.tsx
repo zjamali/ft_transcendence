@@ -108,7 +108,7 @@ const SideBar = () => {
 				<ul className="sidebar-list">
 					{sideMenu.map((item) => {
 						return (
-							<li
+							<li key={sideMenu.indexOf(item)}
 								className={
 									item.active
 										? "sidebar-list-item active"
