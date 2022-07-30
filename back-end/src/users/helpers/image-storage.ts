@@ -28,13 +28,13 @@ export const saveImageToStorage = {
       cb(null, fileName);
     },
   }),
-  fileFilter: (_req, file, cb) => {
-    console.log('from fileFilter function');
-    console.log(file);
-    // console.log(FileType.fileTypeFromFile(file));
-    const allowedMimeTypes: validMimeType[] = validMimeTypes;
-    allowedMimeTypes.includes(file.mimetype) ? cb(null, true) : cb(null, false);
-  },
+  // fileFilter: (_req, file, cb) => {
+  //   console.log('from fileFilter function');
+  //   console.log(file);
+  //   // console.log(FileType.fileTypeFromFile(file));
+  //   const allowedMimeTypes: validMimeType[] = validMimeTypes;
+  //   allowedMimeTypes.includes(file.mimetype) ? cb(null, true) : cb(null, false);
+  // },
 };
 
 // export const isFileExtensionSafe = (

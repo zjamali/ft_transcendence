@@ -26,11 +26,11 @@ export class JwtAuthService {
   }
 
   login(user) {
-    console.log('user from login in JwtAuthService: ');
-    console.log(user);
+    // console.log('user from login in JwtAuthService: ');
+    // console.log(user);
     const payload: JwtPayload = { username: user.userName, id: user.id };
-    console.log('payload:');
-    console.log(payload);
+    // console.log('payload:');
+    // console.log(payload);
     return {
       access_token: this.jwtService.sign(payload),
     };

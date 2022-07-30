@@ -2,10 +2,14 @@ import { JwtAuthGuard } from './../auth/jwt-auth.guard';
 import {
   Body,
   Controller,
+  FileTypeValidator,
   Get,
   HttpException,
   HttpStatus,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
+  ParseFilePipeBuilder,
   Post,
   Req,
   UploadedFile,
@@ -104,9 +108,22 @@ export class UsersController {
   @UseInterceptors(FileInterceptor('file', saveImageToStorage))
   updateProfile(
     @Req() req: RequestWithUser,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: 'png|jpg|jpeg',
+        })
+        .addMaxSizeValidator({
+          maxSize: 500000000000,
+        })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    file: Express.Multer.File,
     @Body() body: { givenUserName: string },
   ) {
+    console.log(file);
     const fileName = file?.filename;
     if (!fileName)
       throw new HttpException(
@@ -121,15 +138,3 @@ export class UsersController {
     );
   }
 }
-
-// "@nestjs/common": "^8.0.0",
-    // "@nestjs/config": "^2.1.0",
-    // "@nestjs/core": "^7.5.5",
-    // "@nestjs/jwt": "^8.0.1",
-    // "@nestjs/mapped-types": "*",
-    // "@nestjs/passport": "^8.2.1",
-    // "@nestjs/platform-express": "^7.6.18",
-    // "@nestjs/platform-socket.io": "^8.4.7",
-    // "@nestjs/schedule": "^2.1.0",
-    // "@nestjs/typeorm": "^7.1.5",
-    // "@nestjs/websockets": "^8.4.7",
