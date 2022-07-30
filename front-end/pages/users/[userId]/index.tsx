@@ -9,12 +9,10 @@ import { User } from "../../../utils/interfaces";
 import { useRouter } from "next/router";
 import DefaultData from "../../../components/Profile/DefaultData"
 
-type Props = {};
 
-export default function UserProfile({}: Props) {
+export default function UserProfile() {
 	const [user, setUser] = useState<User | null>(null);
 	const { state, setMainUser } = useContext(AppContext);
-	const root = useRouter();
 	const roote = useRouter();
 	const { userId } = roote.query;
 	useEffect(() => {

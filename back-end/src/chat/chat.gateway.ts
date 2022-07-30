@@ -436,6 +436,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
   @UseGuards(JwtAuthGuard)
   async handleConnection(client: Socket) {
+    if (!client.handshake.headers.cookie) return;
     const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
     GlobalService.Sockets.set(client.id, client);
     this.chatService.addUserChatSocket(user_id, client.id);

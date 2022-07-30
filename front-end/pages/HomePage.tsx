@@ -10,7 +10,7 @@ import axios from "axios";
 import Profile from "../components/Profile/Profile";
 import { useCookies } from "react-cookie";
 
-const Home: NextPage = () => {
+export default function HomePage() {
 	const { state, setMainUser, setLogin } = useContext(AppContext);
 	const [cookies, setCookie, removeCookie] = useCookies(["access_token"]);
 	useEffect(() => {
@@ -32,14 +32,12 @@ const Home: NextPage = () => {
 		if (state.mainUser) setLogin(true);
 	}, [state.mainUser]);
 	return (
-		<div style={{width: "100%", height: "100%"}} >
+		<>
 			{!state.login && !state.mainUser ? (
 				<Login login={state.login} setLogin={setLogin} />
 			) : (
 				<Profile />
 			)}
-		</div>
+		</>
 	);
-};
-
-export default Home;
+}

@@ -2,6 +2,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 const SideBar = () => {
+	const router = useRouter();
+	console.log("PATH : ", router.pathname);
 	return (
 		<aside className="sidebar">
 			<div className="middle-sidebar">

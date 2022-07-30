@@ -47,7 +47,7 @@ const FriendsCard = () => {
 	}
 
 	useEffect(() => {
-		state.eventsSocket.current.on("A_USER_STATUS_UPDATED", (user: any) => {
+		state.eventsSocket.current?.on("A_USER_STATUS_UPDATED", (user: any) => {
 			console.log("user status updated");
 			setFriendsStatus(user.isOnline, user);
 		});

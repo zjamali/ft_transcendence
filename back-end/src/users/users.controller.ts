@@ -12,13 +12,14 @@ import {
   ParseFilePipeBuilder,
   Post,
   Req,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Express } from 'express';
+import { Express, Request, Response, response } from 'express';
 import RequestWithUser from './requestWithUser.interface';
 import { saveImageToStorage } from './helpers/image-storage';
 
@@ -136,5 +137,10 @@ export class UsersController {
       body.givenUserName,
       file.path,
     );
+  }
+  // @UseGuards(JwtAuthGuard)
+  @Get('logOut')
+  public logOut(@Req() req: Request, @Res() res: Response) {
+    this.usersService.logOut(res);
   }
 }
