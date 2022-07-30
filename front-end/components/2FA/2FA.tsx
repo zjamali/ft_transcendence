@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { ChatContext } from '../context/chatContext'
+import { ChatContext } from '../../context/chatContext'
 import loginStyle from '../styles/Chat.module.css'
 import { v4 as uuidv4 } from 'uuid'
 
