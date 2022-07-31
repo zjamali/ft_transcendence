@@ -1,0 +1,59 @@
+@import url("https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Kanit:wght@500&family=Outfit:wght@100;500&family=Press+Start+2P&family=Work+Sans:wght@100;200;300;400;500;600;700;800&display=swap");
+
+.container {
+  width: 70vw;
+  margin: 0 auto;
+  color: #fff;
+  font-size: 1vw;
+  font-family: "Press Start 2P", cursive;
+}
+.container .box {
+  display: flex;
+}
+.box .dataOne {
+  flex: 30vw;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.box .dataOne {
+  border-left: 5px dashed #fff;
+  border-right: 5px dashed #fff;
+  border-bottom: 5px dashed #fff;
+}
+
+.box .dataTwo {
+  flex: 30vw;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  justify-content: space-around;
+  align-items: center;
+  border-right: 5px dashed #fff;
+  border-bottom: 5px dashed #fff;
+}
+.box .watch {
+  position: relative;
+  left: -50%;
+}
+.box .watch button {
+  position: relative;
+  top: 25%;
+  left: 5%;
+  border-radius: 15px;
+  cursor: pointer;
+  border: 2px solid green;
+  user-select: none;
+}
+.box .watch button:active {
+  background-color: #EEE;
+  border: 3px solid #EEE;
+
+}
+.box .watch button:hover {
+  background-color: #EEE;
+
+}
+.box .watch button img {
+  width: 100%;
+}

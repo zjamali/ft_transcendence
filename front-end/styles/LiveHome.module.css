@@ -1,0 +1,73 @@
+@import url("https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Kanit:wght@500&family=Outfit:wght@100;500&family=Press+Start+2P&family=Work+Sans:wght@100;200;300;400;500;600;700;800&display=swap");
+
+.empty {
+  color: #fff;
+  font-size: 1vw;
+  font-family: "Press Start 2P", cursive;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.divBtn {
+    display: flex;
+    justify-content: center;
+}
+
+.btn {
+  position: relative;
+  top: 0;
+  cursor: pointer;
+  text-decoration: none !important;
+  outline: none !important;
+  font-family: "Carter One", sans-serif;
+  font-size: 40px;
+  line-height: 1.5em;
+  letter-spacing: 0.1em;
+  text-shadow: 2px 2px 1px #348628, -2px 2px 1px #348628, 2px -2px 1px #348628,
+    -2px -2px 1px #348628, 0px 2px 1px #348628, 0px -2px 1px #348628,
+    0px 4px 1px #1d4c16, 2px 4px 1px #1d4c16, -2px 4px 1px #1d4c16;
+  border: none;
+  margin: 15px 15px 30px;
+  background: repeating-linear-gradient(
+    45deg,
+    #54d440,
+    #54d440 5px,
+    #52cc3f 5px,
+    #52cc3f 10px
+  );
+  border-bottom: 3px solid rgba(40, 117, 29, 0.5);
+  border-top: 3px solid rgba(255, 255, 255, 0.3);
+  color: #fff !important;
+  border-radius: 8px;
+  padding: 8px 15px 10px;
+  box-shadow: 0 6px 0 #348628, 0 8px 1px 1px rgba(0, 0, 0, 0.3),
+    0 10px 0 5px #2a6d20, 0 12px 0 5px #39822e, 0 15px 0 5px #1d4c16,
+    0 15px 1px 6px rgba(0, 0, 0, 0.3);
+}
+.btn:hover {
+  top: 2px;
+  box-shadow: 0 4px 0 #348628, 0 6px 1px 1px rgba(0, 0, 0, 0.3),
+    0 8px 0 5px #2a6d20, 0 10px 0 5px #39822e, 0 13px 0 5px #1d4c16,
+    0 13px 1px 6px rgba(0, 0, 0, 0.3);
+}
+.btn::before {
+  content: "";
+  height: 10%;
+  position: absolute;
+  width: 40%;
+  background: #fff;
+  right: 13%;
+  top: -3%;
+  border-radius: 99px;
+}
+.btn::after {
+  content: "";
+  height: 10%;
+  position: absolute;
+  width: 5%;
+  background: #fff;
+  right: 5%;
+  top: -3%;
+  border-radius: 99px;
+}

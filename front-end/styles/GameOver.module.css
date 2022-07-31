@@ -1,0 +1,161 @@
+@import url("https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Kanit:wght@500&family=Outfit:wght@100;500&family=Press+Start+2P&family=Work+Sans:wght@100;200;300;400;500;600;700;800&display=swap");
+
+.splashScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: hsla(0, 0%, 0%, 0.526);
+    width: 100%;
+    height: 100%;
+}
+
+.splashScreen h2 {
+    width: 100%;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    font-size: 5rem;
+    font-family: 'Press Start 2P', cursive;
+    font-weight: bold;
+    color: #FFF;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    letter-spacing: 10px;
+}
+
+@media (max-width: 1200px) {
+    .splashScreen h2 {
+        font-size: 5rem;
+    }
+}
+@media (max-width: 800px) {
+    .splashScreen h2 {
+        font-size: 4rem;
+    }
+}
+@media (max-width: 600px) {
+    .splashScreen h2 {
+        font-size: 3rem;
+    }
+}
+@media (max-width: 700px) {
+    .splashScreen h2 {
+        font-size: 2.5rem;
+    }
+}
+
+.loser {
+    font-size: 4rem;
+    font-family: 'Press Start 2P', cursive;
+    position: absolute;
+    left: 51%;
+    top: calc(100% - 95%);
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+}
+
+.loser h2 {
+    width: 100%;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    font-size: 5rem;
+    font-family: 'Press Start 2P', cursive;
+    font-weight: bold;
+    color: #d50000;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    letter-spacing: 1.5rem;
+}
+
+@media (max-width: 1200px) {
+    .loser h2 {
+        font-size: 5rem;
+    }
+}
+@media (max-width: 800px) {
+    .loser h2 {
+        font-size: 4rem;
+    }
+}
+@media (max-width: 700px) {
+    .loser h2 {
+        font-size: 2.5rem;
+    }
+}
+@media (max-width: 515px) {
+    .loser h2 {
+        font-size: 1.5rem;
+    }
+}
+.win {
+    font-size: 4rem;
+    font-family: 'Press Start 2P', cursive;
+    position: absolute;
+    left: 51%;
+    top: calc(100% - 95%);
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+}
+
+.win h2 {
+    width: 100%;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    font-size: 5rem;
+    font-family: 'Press Start 2P', cursive;
+    font-weight: bold;
+    color: #357a38;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    letter-spacing: 1.5rem;
+}
+
+@media (max-width: 1200px) {
+    .win h2 {
+        font-size: 5rem;
+    }
+}
+@media (max-width: 800px) {
+    .win h2 {
+        font-size: 4rem;
+    }
+}
+@media (max-width: 700px) {
+    .win h2 {
+        font-size: 2.5rem;
+    }
+}
+@media (max-width: 515px) {
+    .win h2 {
+        font-size: 1.5rem;
+    }
+}@media (max-width: 1200px) {
+    .win h2 {
+        font-size: 5rem;
+    }
+}
+@media (max-width: 800px) {
+    .win h2 {
+        font-size: 4rem;
+    }
+}
+@media (max-width: 700px) {
+    .win h2 {
+        font-size: 2.5rem;
+    }
+}
+@media (max-width: 515px) {
+    .win h2 {
+        font-size: 1.5rem;
+    }
+}
