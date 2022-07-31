@@ -278,8 +278,14 @@
 	gap: 10px;
 	width: 100%;
 	height: 100%;
+	-ms-overflow-style: none;  /* IE and Edge */
+	scrollbar-width: none;
 	/* max-height: 2500px; */
 	/* border: 1px solid yellowgreen; */
+}
+
+.profile-content::-webkit-scrollbar {
+	display: none;
 }
 
 .profile-wall {
@@ -314,6 +320,12 @@
 	height: calc(100vh - 350px - var(--header-height));
 	/* min-width: 860px; */
 	overflow-x: auto;
+	-ms-overflow-style: none;  /* IE and Edge */
+	scrollbar-width: none;
+}
+
+.profile-data::-webkit-scrollbar{
+	display: none;
 }
 
 .profile-data-row1 {

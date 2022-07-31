@@ -12,7 +12,7 @@ export default function Layout(props: any) {
 				} else {
 					return (
 						<div>
-							<Header />
+							<Header state={state} />
 							<div className="profile-container">
 								<SideBar />
 								{/* <div className="profile-content"> */}

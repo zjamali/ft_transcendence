@@ -58,9 +58,22 @@ export class UsersController {
   }
 
   @Post('accept')
-  acceptRequest(@Body() ids: { id1: string; id2: string }) {
-    console.log(ids.id1);
-    this.usersService.acceptRequest(ids.id1, ids.id2);
+  @UseGuards(JwtAuthGuard)
+  acceptRequest(
+    @Req() req: RequestWithUser,
+    @Body() body: { relatedUserId: string },
+  ) {
+    this.usersService.acceptRequest(req.user.id, body.relatedUserId);
+    return 'success';
+  }
+
+  @Post('unfriend')
+  @UseGuards(JwtAuthGuard)
+  unfriend(
+    @Req() req: RequestWithUser,
+    @Body() body: { relatedUserId: string },
+  ) {
+    this.usersService.removeRelation(req.user.id, body.relatedUserId);
     return 'success';
   }
 
@@ -92,17 +105,17 @@ export class UsersController {
   //   return this.usersService.getSentRequests(req.user.id);
   // }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('recievedrequests')
-  getRecievedRequests(@Param('id') id: string) {
-    return this.usersService.getReceivedRequests(id);
-  }
-
   // @UseGuards(JwtAuthGuard)
   // @Get('recievedrequests')
-  // getRecievedRequests(@Req() req: RequestWithUser) {
-  //   return this.usersService.getReceivedRequests(req.user.id);
+  // getRecievedRequests(@Param('id') id: string) {
+  //   return this.usersService.getReceivedRequests(id);
   // }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('recievedrequests')
+  getRecievedRequests(@Req() req: RequestWithUser) {
+    return this.usersService.getReceivedRequests(req.user.id);
+  }
 
   @UseGuards(JwtAuthGuard)
   @Post('updateProfile')

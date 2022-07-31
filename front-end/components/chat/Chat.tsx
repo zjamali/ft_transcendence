@@ -102,7 +102,7 @@ export default function Chat() {
 
 		return () => {
 			console.log("close sockets");
-			state.eventsSocket.current.disconnect();
+			state.chatSocket.cureent.disconnect();
 			state.chatSocket.cureent.disconnect();
 		};
 	}, []);

@@ -24,7 +24,7 @@ export default function MessageComponent(props: MessageComponentProps) {
 							messageStyles.message_main_user
 						}
 					>
-						<pre>{props.message?.content}</pre>
+						<p>{props.message?.content}</p>
 					</div>
 					{/* <p className={messageStyles.Channel_senderName}>{`   `}</p> */}
 				</>

@@ -11,6 +11,7 @@ export const AppProvider = (props: any) => {
 	//const [channels, setChannels] = useState<Channel[]>([])
 	const [channels, setChannels] = useState<Channel[]>([]);
 	const [receiver, setReceiver] = useState<User | Channel | null>(null);
+	const [friends, setFriends] = useState<User | null>(null);
 
 	const [isUserJoinedChannel, setIsUserJoinedChannel] = useState<boolean>(
 		false
@@ -24,6 +25,7 @@ export const AppProvider = (props: any) => {
 			value={{
 				state: {
           login,
+		  friends,
 					mainUser,
 					messages,
 					contacts,
@@ -38,6 +40,7 @@ export const AppProvider = (props: any) => {
 				setContacts,
 				setChannels,
 				setReceiver,
+				setFriends,
 				setMainUser,
 				setIsUserJoinedChannel,
 			}}
