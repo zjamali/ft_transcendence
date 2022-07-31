@@ -41,10 +41,6 @@ const Users = () => {
 	return (
 		<>
 			{state.mainUser && (
-				<div>
-					<Header />
-					<div className="profile-container">
-						<SideBar />
 						<div className="profile-content">
 							{allUsers.length &&
 								allUsers.map((user) => {
@@ -62,8 +58,6 @@ const Users = () => {
 									);
 								})}
 						</div>
-					</div>
-				</div>
 			)}
 		</>
 	);

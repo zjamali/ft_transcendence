@@ -26,7 +26,7 @@ export class AuthService {
       res.redirect(url);
     } else {
       console.log('user doesnt exist');
-      url = 'http://localhost:3000?first_time_login=true';
+      url = 'http://localhost:3000?edit_profile=true';
       this.usersService.createUser(req.user);
     }
 

@@ -489,11 +489,20 @@
 }
 
 .loginContainner {
+  margin-top: 25vh;
   width: 100%;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-content: center;
+  justify-content: center;
 }
+.loginContainner div
+{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 
 .loginForm {
   width: 500px;

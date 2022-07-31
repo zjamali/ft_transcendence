@@ -144,4 +144,13 @@ export class RoomsService {
     else roomToUpdate.admins = [...admins];
     this.roomRepository.save(roomToUpdate);
   }
+
+  async deleteRoom(room_id: string) {
+    const roomToDelete = await this.roomRepository.find({
+      where: {
+        id: room_id,
+      },
+    });
+    await this.roomRepository.remove(roomToDelete);
+  }
 }
