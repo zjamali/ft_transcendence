@@ -20,6 +20,7 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob } from 'cron';
 import { JwtService } from '@nestjs/jwt';
 import { CreateRoomDto } from './rooms/dto/create-room.dto';
+import { type } from 'os';
 
 export type JwtPayload = { id: string; username: string };
 
@@ -231,16 +232,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   muteAUserForWhile(jobName: string, room_id: string, time: number) {
     const job = new CronJob(`*/${time} * * * *`, () => {
-      console.log('cron job deleteUser');
+      console.log('cron job mute a user');
       this.deleteUnmuteUserTime(jobName, room_id);
     });
     this.schedulerRegistry.addCronJob(jobName, job);
     job.start();
     console.log(
-      `********** Job for every seconds ${jobName} : ${room_id} : ${time}`,
+      `********** Job for every seconds user : ${jobName} , room  :${room_id} , for ${time} minutes`,
     );
   }
   deleteUnmuteUserTime(jobName: string, room_id: string) {
+    if (!this.schedulerRegistry.doesExist('cron', jobName)) return;
     this.schedulerRegistry.deleteCronJob(jobName);
     console.log(
       `********** delete  Job for every seconds ${jobName} : ${room_id}`,
@@ -348,6 +350,31 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       setTimeout(() => {
         this.server.emit('A_CHANNELS_STATUS_UPDATED');
       }, 100);
+    }
+  }
+
+  @SubscribeMessage('DELETE_ROOM')
+  async deleteChannel(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() deleteChannel: { admin_id: string; room_id: string },
+  ) {
+    const room = await this.roomsService.findOne(deleteChannel.room_id);
+    if (room[0].owner === deleteChannel.admin_id) {
+      // this.server.sockets
+      //   .in(deleteChannel.room_id)
+      //   .socketsLeave(deleteChannel.room_id);
+      const userSockets = await this.server
+        .in(deleteChannel.room_id)
+        .fetchSockets();
+      userSockets.forEach((user) => {
+        user.leave(deleteChannel.room_id);
+      });
+      await this.messagesService.deleteRoomMessages(deleteChannel.room_id);
+      await this.roomsService.deleteRoom(deleteChannel.room_id);
+
+      setTimeout(() => {
+        this.server.emit('A_CHANNELS_STATUS_UPDATED');
+      }, 200);
     }
   }
 

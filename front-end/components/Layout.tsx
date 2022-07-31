@@ -6,9 +6,8 @@ import SideBar from "./Profile/SideBar";
 export default function Layout(props: any) {
 	return (
 		<AppConsumer>
-			{({ state, setLogin }) => {
+			{({ state}) => {
 				if (!state.login) {
-					console.log("ererer");
 					return <HomePage/>;
 				} else {
 					return (

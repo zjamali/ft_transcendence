@@ -12,10 +12,7 @@ import { useCookies } from "react-cookie";
 
 const Home: NextPage = () => {
 	const { state, setMainUser, setLogin } = useContext(AppContext);
-	const [cookies, setCookie, removeCookie] = useCookies(["access_token"]);
 	useEffect(() => {
-		console.log("index cookie :", cookies);
-
 		axios
 			.get("http://localhost:5000/users/me", { withCredentials: true })
 			.then((res) => {

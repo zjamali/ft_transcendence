@@ -37,7 +37,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('LOG_OUT')
   async logOut(client: any) {
-    console.log("hello log out");
+    console.log('hello log out');
     // this.userService.logOut();
   }
 
