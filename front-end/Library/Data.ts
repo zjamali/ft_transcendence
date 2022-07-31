@@ -90,7 +90,7 @@ export class Data {
 
   public set_userOne(userOne: UserInGame): void {
     this.userOne = userOne;
-    this.userOne.avatar = "http://localhost:5000/images.png";
+    // this.userOne.avatar = "http://localhost:5000/images.png";
   }
 
   public get_userTwo(): UserInGame {
@@ -99,7 +99,7 @@ export class Data {
 
   public set_userTwo(userTwo: UserInGame): void {
     this.userTwo = userTwo;
-    this.userTwo.avatar = "http://localhost:5000/images.png";
+    // this.userTwo.avatar = "http://localhost:5000/images.png";
   }
   public get_Width(): number {
     return this.cWidth;

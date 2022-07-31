@@ -238,6 +238,7 @@ export function Game(props: GameProps) {
               <span>{data.get_userOne().username}</span>
             </div>
             <div>
+              { console.log("image :", data.get_userTwo().avatar)}
               <img
                 src={data.get_userTwo().avatar}
                 alt="User_Two"
