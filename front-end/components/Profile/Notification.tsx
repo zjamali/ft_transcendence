@@ -7,6 +7,8 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import IconButton from '@mui/material/IconButton';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { acceptFriendRequest, unfriend } from "../../utils/utils";
+import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
+import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 
 const Notification = (props) => {
 	const username: string = "asaadi"
@@ -18,8 +20,12 @@ const Notification = (props) => {
 				</div>
 				<div style={{marginLeft: '10px',}}>
 					<p style={{color: 'white', display: "inline"}}>{props.user.userName}</p>
-					<IconButton aria-label="add" color="success" onClick={(e)=> {e.preventDefault(); acceptFriendRequest(props.user.id)  }}><CheckCircleIcon/></IconButton>
-					<IconButton aria-label="add" color="error" onClick={(e)=> {e.preventDefault(); unfriend(props.user.id) }}><CancelIcon/></IconButton>
+					<IconButton aria-label="add" color="error" onClick={(e)=> {e.preventDefault(); unfriend(props.user.id) }}>
+						<CancelIcon/>
+					</IconButton>
+					<IconButton aria-label="add" color="success" onClick={(e)=> {e.preventDefault(); acceptFriendRequest(props.user.id)  }}>
+						<DoneRoundedIcon/>
+					</IconButton>
 				</div>
 			</MenuItem>
 			<Divider />

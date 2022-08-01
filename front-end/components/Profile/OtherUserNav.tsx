@@ -40,12 +40,10 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 				.then((res) => {
 					console.log("other : ", res.data);
 					[...res.data].map((friend : any) =>{
-						
-						console.log("zabi", friend.userName, props.userName);
 						if (friend.userName === props.userName)
 						{
 							setIsFriend(true);
-							console.log("is friend");
+							// console.log("is friend");
 							return;
 						}
 					})
