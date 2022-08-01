@@ -41,8 +41,9 @@ const Profile = () => {
 	}, [router]);
 
 
-	const src = state.mainUser?.image;
-
+	const src = "http://localhost:5000/users/" + state.mainUser?.image;
+	
+	console.log("path------------>", src)
 	return (
 		<div className="profile-content">
 			<div className="profile-wall">

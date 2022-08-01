@@ -185,6 +185,14 @@ export class UsersController {
     );
   }
 
+  @Get('uploads/:imgId')
+  @UseGuards(JwtAuthGuard)
+  test(@Param('imgId') imgId, @Req() req: RequestWithUser, @Res() res) {
+    const imgPath = req.user.image;
+    console.log(imgId);
+    return res.sendFile(imgId, { root: './uploads' });
+  }
+
   @Get('logOut')
   @UseGuards(JwtAuthGuard)
   public logOut(@Req() req: Request, @Res() res: Response) {
