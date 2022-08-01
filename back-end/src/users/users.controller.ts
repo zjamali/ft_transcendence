@@ -52,9 +52,12 @@ export class UsersController {
   }
 
   @Post('send')
-  sendRequest(@Body() ids: { id1: string; id2: string }) {
-    this.usersService.sendRequest(ids.id1, ids.id2);
-    return 'success';
+  @UseGuards(JwtAuthGuard)
+  sendRequest(
+    @Req() req: RequestWithUser,
+    @Body() body: { relatedUserId: string },
+  ) {
+    return this.usersService.sendRequest(req.user.id, body.relatedUserId);
   }
 
   @Post('accept')
@@ -63,8 +66,7 @@ export class UsersController {
     @Req() req: RequestWithUser,
     @Body() body: { relatedUserId: string },
   ) {
-    this.usersService.acceptRequest(req.user.id, body.relatedUserId);
-    return 'success';
+    return this.usersService.acceptRequest(req.user.id, body.relatedUserId);
   }
 
   @Post('unfriend')
@@ -78,33 +80,51 @@ export class UsersController {
     return 'success';
   }
 
-  @Get('id/:id/friends')
-  getFriends(@Param('id') id: string) {
-    return this.usersService.getFriends(id);
-  }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Get('friends')
-  // getFriends(@Req() req: RequestWithUser) {
-  //   return this.usersService.getFriends(req.user.id);
+  // @Get('id/:id/friends')
+  // getFriends(@Param('id') id: string) {
+  //   return this.usersService.getFriends(id);
   // }
 
   @UseGuards(JwtAuthGuard)
+  @Get('friends')
+  getFriends(@Req() req: RequestWithUser) {
+    return this.usersService.getFriends(req.user.id);
+  }
+
   @Get('blocked')
+  @UseGuards(JwtAuthGuard)
   getBolckedUsers(@Req() req: RequestWithUser) {
     return this.usersService.getBolckedUsers(req.user.id);
   }
 
-  @Get('id/:id/sentrequests')
-  getSentRequests(@Param('id') id: string) {
-    return this.usersService.getSentRequests(id);
+  @Post('block')
+  @UseGuards(JwtAuthGuard)
+  blockUser(
+    @Req() req: RequestWithUser,
+    @Body() body: { relatedUserId: string },
+  ) {
+    return this.usersService.blockUser(req.user.id, body.relatedUserId);
   }
 
-  // @UseGuards(JwtAuthGuard)
-  // @Get('sentrequests')
-  // getSentRequests(@Req() req: RequestWithUser) {
-  //   return this.usersService.getSentRequests(req.user.id);
+  @Post('unblock')
+  @UseGuards(JwtAuthGuard)
+  unblockUser(
+    @Req() req: RequestWithUser,
+    @Body() body: { relatedUserId: string },
+  ) {
+    return this.usersService.unblockUser(req.user.id, body.relatedUserId);
+  }
+
+  // @Get('id/:id/sentrequests')
+  // getSentRequests(@Param('id') id: string) {
+  //   return this.usersService.getSentRequests(id);
   // }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('sentrequests')
+  getSentRequests(@Req() req: RequestWithUser) {
+    return this.usersService.getSentRequests(req.user.id);
+  }
 
   // @UseGuards(JwtAuthGuard)
   // @Get('recievedrequests')
@@ -116,6 +136,18 @@ export class UsersController {
   @Get('recievedrequests')
   getRecievedRequests(@Req() req: RequestWithUser) {
     return this.usersService.getReceivedRequests(req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('blockedUsers')
+  getBlockedUsers(@Req() req: RequestWithUser) {
+    return this.usersService.getBolckedUsers(req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('blockedByUsers')
+  getBlockedByUsers(@Req() req: RequestWithUser) {
+    return this.usersService.getBlockedByUsers(req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -152,8 +184,9 @@ export class UsersController {
       file.path,
     );
   }
-  // @UseGuards(JwtAuthGuard)
+
   @Get('logOut')
+  @UseGuards(JwtAuthGuard)
   public logOut(@Req() req: Request, @Res() res: Response) {
     this.usersService.logOut(res);
   }
