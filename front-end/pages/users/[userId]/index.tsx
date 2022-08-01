@@ -66,7 +66,7 @@ export default function UserProfile({}: Props) {
 						</div>
 						<OtherUserNav   userName={user.userName} id={user.id}/>
 					</div>
-					<DefaultData router={router} id={user.id} />
+					<DefaultData id={user.id} />
 				</div>
 
 			)}

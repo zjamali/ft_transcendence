@@ -1,6 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import Header from "../../components/Profile/Header";
-import SideBar from "../../components/Profile/SideBar";
 import Image from "next/image";
 import axios from "axios";
 import { AppContext } from "../../context/AppContext";
@@ -14,7 +12,18 @@ import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import CircleIcon from "@mui/icons-material/Circle";
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
+import { addFriend, unfriend } from '../../utils/utils'
+import Stack from '@mui/material/Stack';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+	props,
+	ref,
+  ) {
+	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
 
 
 const Users = () => {
@@ -98,6 +107,19 @@ const Users = () => {
 			console.log("CANT GET ALL USERS");
 		}
 	}
+	const [open, setOpen] = useState(false);
+  
+	const handleClick = () => {
+	  setOpen(true);
+	};
+  
+	const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+	  if (reason === 'clickaway') {
+		return;
+	  }
+  
+	  setOpen(false);
+	};
 	return (
 		<>
 			{state.mainUser && (
@@ -108,7 +130,7 @@ const Users = () => {
 							<hr style={{marginTop: "-2px", marginBottom: '20px', width: '90px', height: '0.1px', color: '#555f6a'}}/>
 							{/* <Divider sx={{color: 'white'}} variant="inset"/> */}
 							{/* <hr/> */}
-							<div style={{display: 'flex', flexDirection: 'row', alignContent: 'stretch', justifyContent: 'left',flexWrap:'wrap', gap: '15px'}}>
+							<div style={{display: 'flex', flexDirection: 'row', justifyContent: 'left',alignItems: 'flex-start',flexWrap:'wrap', gap: '15px'}}>
 								{allUsers &&
 									allUsers.map((user) => {
 										const src:string = user.image
@@ -176,9 +198,21 @@ const Users = () => {
 																		: 3)
 															}
 															{
-																(friendsIds?.includes(user.id))? 
-																	<Button variant="outlined" size="small" color="error" sx={{width: 95}}startIcon={<PersonRemoveIcon sx={{width: 14}}/>} onClick={()=>{alert("si")}}>Unfriend</Button> :
-																	<Button variant="outlined" size="small" color="primary" sx={{fontSize: 11}} startIcon={<PersonAddIcon sx={{width: 14}}/>}onClick={()=> {alert('sisi')}}>Add friend</Button>
+															(friendsIds?.includes(user.id))? 
+																(
+
+																	<Button variant="outlined" size="small" color="error" sx={{width: 95}}startIcon={<PersonRemoveIcon sx={{width: 14}}/>} onClick={(e)=>{e.preventDefault(); unfriend(user.id);}}>
+																		Unfriend
+																	</Button>
+
+																):
+																(
+
+																	<Button variant="outlined" size="small" color="primary" sx={{fontSize: 11}} startIcon={<PersonAddIcon sx={{width: 14}}/>}onClick={(e)=> {e.preventDefault(); addFriend(state.mainUser.id, user.id);}}>
+																		Add friend
+																	</Button>
+
+																)
 															}
 														</div>
 													</div>
