@@ -112,7 +112,7 @@ export class UsersService {
             relatedUserID: relatedUserID,
           },
           {
-            relateingUserId: relatedUserID,
+            relatingUserID: relatedUserID,
             relatedUserID: relatingUserID,
           },
         ])

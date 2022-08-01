@@ -73,6 +73,7 @@ export class UsersController {
     @Req() req: RequestWithUser,
     @Body() body: { relatedUserId: string },
   ) {
+    console.log(body.relatedUserId);
     this.usersService.removeRelation(req.user.id, body.relatedUserId);
     return 'success';
   }
