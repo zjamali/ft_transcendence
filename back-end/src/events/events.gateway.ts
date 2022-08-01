@@ -1,9 +1,11 @@
+import { UsersService } from 'src/users/users.service';
 import { Server } from 'socket.io';
 import {
   WebSocketGateway,
   OnGatewayConnection,
   OnGatewayDisconnect,
   WebSocketServer,
+  SubscribeMessage,
 } from '@nestjs/websockets';
 import { EventsService } from './events.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -30,11 +32,19 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly eventsService: EventsService,
     private readonly jwtService: JwtService,
+    private readonly userService: UsersService,
   ) {}
+
+  @SubscribeMessage('LOG_OUT')
+  async logOut(client: any) {
+    console.log('hello log out');
+    // this.userService.logOut();
+  }
 
   @UseGuards(JwtAuthGuard)
   async handleConnection(client: any) {
     this.allgetwaySockets.push(client.id);
+    if (!client.handshake.headers.cookie) return;
     const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
     const response = await this.eventsService.addUserEventsSocket(
       user_id,

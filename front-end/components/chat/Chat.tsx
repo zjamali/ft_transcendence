@@ -17,10 +17,6 @@ export default function Chat() {
 		setIsUserJoinedChannel,
 		setMainUser,
 	} = useContext(AppContext);
-	// event socket
-	// const state.eventsSocket = useRef<any>(null);
-	//chat socket if a reciver is set
-	// const chatSocket = useRef<any>(null);
 	const [windowWidth, setWindowWidth] = useState<any>(null);
 	const [showContacts, setShowContacts] = useState(windowWidth === 1000);
 
@@ -106,7 +102,8 @@ export default function Chat() {
 
 		return () => {
 			console.log("close sockets");
-			state.eventsSocket.current.disconnect();
+			state.chatSocket.cureent.disconnect();
+			state.chatSocket.cureent.disconnect();
 		};
 	}, []);
 

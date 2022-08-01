@@ -1,5 +1,6 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Res } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Response } from 'express';
 import { Repository } from 'typeorm/repository/Repository';
 import Friend, { State } from './friend.entity';
 // import { Connection } from 'typeorm';
@@ -315,7 +316,10 @@ export class UsersService {
     });
   }
 
-  // public async logOut() {}
+  public logOut(@Res() res?: Response) {
+    res.clearCookie('access_token');
+    res.redirect('http://localhost:3000');
+  }
 
   public async logOutFromAllUsers() {
     console.log('logged out');

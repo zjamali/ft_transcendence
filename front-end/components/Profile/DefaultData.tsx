@@ -2,7 +2,8 @@ import FriendsCard from "./FriendsCard";
 import HistoryCard from "./HistoryCard";
 
 
-const DefaultData = () => {
+const DefaultData = ({id} : {id :string}) => {
+	
 	return (
 		<div className="profile-data">
 			<div className="profile-data-row1">
@@ -35,7 +36,7 @@ const DefaultData = () => {
 				<div className="friends-label">
 					<div className="friends-label-header"><h4>Friends</h4></div>
 					<div className="list-of-friends">
-						<FriendsCard />
+						<FriendsCard id={id}/>
 					</div>
 				</div>
 			</div>

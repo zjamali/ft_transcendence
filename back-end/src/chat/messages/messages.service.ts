@@ -40,4 +40,12 @@ export class MessagesService {
       ],
     });
   }
+  async deleteRoomMessages(room_id: string) {
+    const messagesToDelete = await this.messagesRepository.find({
+      where: {
+        roomId: room_id,
+      },
+    });
+    await this.messagesRepository.remove(messagesToDelete);
+  }
 }

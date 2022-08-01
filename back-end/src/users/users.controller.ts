@@ -184,9 +184,10 @@ export class UsersController {
       file.path,
     );
   }
-  // @UseGuards(JwtAuthGuard)
+
   @Get('logOut')
+  @UseGuards(JwtAuthGuard)
   public logOut(@Req() req: Request, @Res() res: Response) {
-    // this.usersService.logOut(res);
+    this.usersService.logOut(res);
   }
 }

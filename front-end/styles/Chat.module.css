@@ -72,10 +72,13 @@
   height: calc(60vh + 0px);
   overflow: scroll;
   color: #d0d6dc;
+  -ms-overflow-style: none;  /* IE and Edge */
+	scrollbar-width: none;
 }
 
 .Contactslist::-webkit-scrollbar {
-  width: 100%;
+  /* width: 100%; */
+  display: none;
 }
 
 .roomsList {
@@ -84,10 +87,13 @@
 
   overflow: scroll;
   color: #d0d6dc;
+  -ms-overflow-style: none;  /* IE and Edge */
+	scrollbar-width: none;
 }
 
 .roomsList::-webkit-scrollbar {
-  width: 100%;
+  /* width: 100%; */
+  display: none;
 }
 
 .chatSideBar h2 {
@@ -384,8 +390,15 @@
   display: grid;
   grid-template-rows: 11fr 1fr;
   padding: 20px 20px 0 20px;
+  -ms-overflow-style: none;  /* IE and Edge */
+	scrollbar-width: none;
   /* gap: 20px; */
 }
+
+.message_body::-webkit-scrollbar {
+  display: none;
+}
+
 .messages_list {
   width: 100%;
   height: 100%;
@@ -397,10 +410,15 @@
   flex-direction: column;
   justify-content: flex-start;
   /* padding-right: 5%; */
+  -ms-overflow-style: none;  /* IE and Edge */
+	scrollbar-width: none;
 }
+
 .messages_list::-webkit-scrollbar {
   width: 100%;
+  display:none;
 }
+
 .message_input {
   margin-top: 40px;
 }
@@ -463,7 +481,7 @@
   align-self: flex-start;
   position: relative;
 }
-.message_content pre {
+.message_content  p{
   min-width: 100px;
   font-size: 16px;
   /* height: 100%; */
@@ -489,11 +507,20 @@
 }
 
 .loginContainner {
+  margin-top: 25vh;
   width: 100%;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-content: center;
+  justify-content: center;
 }
+.loginContainner div
+{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 
 .loginForm {
   width: 500px;

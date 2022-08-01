@@ -13,7 +13,8 @@ type Props = {};
 
 export default function UserProfile({}: Props) {
 	const [user, setUser] = useState<User | null>(null);
-	const { state, setMainUser } = useContext(AppContext);
+	const [userFriends, setUserFriends] = useState([]);
+	const { state, setMainUser,friends  } = useContext(AppContext);
 	const root = useRouter();
 	const roote = useRouter();
 	const { userId } = roote.query;
@@ -49,33 +50,26 @@ export default function UserProfile({}: Props) {
 	return (
 		<>
 			{state.mainUser && user && (
-				<div>
-					<Header />
-					<div className="profile-container">
-						<SideBar />
-						<div className="profile-content">
-							<div className="profile-wall">
-								<div className="profile-wall-bg"></div>
-								<div className="profile-wall-img-user">
-									{user && (
-										<Image
-											loader={() => `${user.image}`}
-											unoptimized={true}
-											src={`${user.image}`}
-											alt="user avatar"
-											layout="fill"
-										/>
-									)}
-									{/* <img src={user.image} alt="user image" /> */}
-									{/* <img src={state.mainUser.image} className="profile-wall-img-user" /> */}
-								</div>
-								{/* <MainUserNav setActive={setActive} setOpenModal={setOpenModal}/> */}
-								<OtherUserNav />
-							</div>
-								<DefaultData />
+
+				<div className="profile-content">
+					<div className="profile-wall">
+						<div className="profile-wall-bg"></div>
+						<div className="profile-wall-img-user">
+							{user && (
+								<Image
+									loader={() => `${user.image}`}
+									unoptimized={true}
+									src={`${user.image}`}
+									alt="user avatar"
+									layout="fill"
+								/>
+							)}
 						</div>
+						<OtherUserNav userName={user.userName} id={user.id}/>
 					</div>
+					<DefaultData id={user.id} />
 				</div>
+
 			)}
 		</>
 	);

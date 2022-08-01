@@ -3,7 +3,7 @@ import { Message, Channel, User } from "../utils/interfaces";
 export const AppContext = createContext<any>({});
 
 export const AppProvider = (props: any) => {
-	const [session, setSession] = useState<any>(null);
+  const [login, setLogin] = useState<boolean>(false)
 	const [mainUser, setMainUser] = useState<User | null>(null);
 	const [messages, setMessages] = useState<Message[]>([]);
 	// const [contacts, setContacts] = useState<ContactProps[]>([])
@@ -11,6 +11,7 @@ export const AppProvider = (props: any) => {
 	//const [channels, setChannels] = useState<Channel[]>([])
 	const [channels, setChannels] = useState<Channel[]>([]);
 	const [receiver, setReceiver] = useState<User | Channel | null>(null);
+	const [friends, setFriends] = useState<User | null>(null);
 
 	const [isUserJoinedChannel, setIsUserJoinedChannel] = useState<boolean>(
 		false
@@ -23,7 +24,8 @@ export const AppProvider = (props: any) => {
 		<AppContext.Provider
 			value={{
 				state: {
-					session,
+          login,
+		  friends,
 					mainUser,
 					messages,
 					contacts,
@@ -33,12 +35,13 @@ export const AppProvider = (props: any) => {
           eventsSocket,
           chatSocket,
 				},
+        setLogin,
 				setMessages,
 				setContacts,
 				setChannels,
 				setReceiver,
+				setFriends,
 				setMainUser,
-				setSession,
 				setIsUserJoinedChannel,
 			}}
 		>
@@ -47,4 +50,7 @@ export const AppProvider = (props: any) => {
 	);
 };
 
+const AppConsumer = AppContext.Consumer;
+
 export default AppProvider;
+export {AppConsumer};
