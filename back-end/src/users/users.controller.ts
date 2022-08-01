@@ -12,13 +12,14 @@ import {
   ParseFilePipeBuilder,
   Post,
   Req,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Express } from 'express';
+import { Express, Request, Response, response } from 'express';
 import RequestWithUser from './requestWithUser.interface';
 import { saveImageToStorage } from './helpers/image-storage';
 
@@ -51,57 +52,103 @@ export class UsersController {
   }
 
   @Post('send')
-  sendRequest(@Body() ids: { id1: string; id2: string }) {
-    this.usersService.sendRequest(ids.id1, ids.id2);
-    return 'success';
+  @UseGuards(JwtAuthGuard)
+  sendRequest(
+    @Req() req: RequestWithUser,
+    @Body() body: { relatedUserId: string },
+  ) {
+    return this.usersService.sendRequest(req.user.id, body.relatedUserId);
   }
 
   @Post('accept')
-  acceptRequest(@Body() ids: { id1: string; id2: string }) {
-    console.log(ids.id1);
-    this.usersService.acceptRequest(ids.id1, ids.id2);
+  @UseGuards(JwtAuthGuard)
+  acceptRequest(
+    @Req() req: RequestWithUser,
+    @Body() body: { relatedUserId: string },
+  ) {
+    return this.usersService.acceptRequest(req.user.id, body.relatedUserId);
+  }
+
+  @Post('unfriend')
+  @UseGuards(JwtAuthGuard)
+  unfriend(
+    @Req() req: RequestWithUser,
+    @Body() body: { relatedUserId: string },
+  ) {
+    console.log(body.relatedUserId);
+    this.usersService.removeRelation(req.user.id, body.relatedUserId);
     return 'success';
   }
 
-  @Get('id/:id/friends')
-  getFriends(@Param('id') id: string) {
-    return this.usersService.getFriends(id);
-  }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Get('friends')
-  // getFriends(@Req() req: RequestWithUser) {
-  //   return this.usersService.getFriends(req.user.id);
+  // @Get('id/:id/friends')
+  // getFriends(@Param('id') id: string) {
+  //   return this.usersService.getFriends(id);
   // }
 
   @UseGuards(JwtAuthGuard)
+  @Get('friends')
+  getFriends(@Req() req: RequestWithUser) {
+    return this.usersService.getFriends(req.user.id);
+  }
+
   @Get('blocked')
+  @UseGuards(JwtAuthGuard)
   getBolckedUsers(@Req() req: RequestWithUser) {
     return this.usersService.getBolckedUsers(req.user.id);
   }
 
-  @Get('id/:id/sentrequests')
-  getSentRequests(@Param('id') id: string) {
-    return this.usersService.getSentRequests(id);
+  @Post('block')
+  @UseGuards(JwtAuthGuard)
+  blockUser(
+    @Req() req: RequestWithUser,
+    @Body() body: { relatedUserId: string },
+  ) {
+    return this.usersService.blockUser(req.user.id, body.relatedUserId);
   }
 
-  // @UseGuards(JwtAuthGuard)
-  // @Get('sentrequests')
-  // getSentRequests(@Req() req: RequestWithUser) {
-  //   return this.usersService.getSentRequests(req.user.id);
+  @Post('unblock')
+  @UseGuards(JwtAuthGuard)
+  unblockUser(
+    @Req() req: RequestWithUser,
+    @Body() body: { relatedUserId: string },
+  ) {
+    return this.usersService.unblockUser(req.user.id, body.relatedUserId);
+  }
+
+  // @Get('id/:id/sentrequests')
+  // getSentRequests(@Param('id') id: string) {
+  //   return this.usersService.getSentRequests(id);
   // }
 
   @UseGuards(JwtAuthGuard)
-  @Get('recievedrequests')
-  getRecievedRequests(@Param('id') id: string) {
-    return this.usersService.getReceivedRequests(id);
+  @Get('sentrequests')
+  getSentRequests(@Req() req: RequestWithUser) {
+    return this.usersService.getSentRequests(req.user.id);
   }
 
   // @UseGuards(JwtAuthGuard)
   // @Get('recievedrequests')
-  // getRecievedRequests(@Req() req: RequestWithUser) {
-  //   return this.usersService.getReceivedRequests(req.user.id);
+  // getRecievedRequests(@Param('id') id: string) {
+  //   return this.usersService.getReceivedRequests(id);
   // }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('recievedrequests')
+  getRecievedRequests(@Req() req: RequestWithUser) {
+    return this.usersService.getReceivedRequests(req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('blockedUsers')
+  getBlockedUsers(@Req() req: RequestWithUser) {
+    return this.usersService.getBolckedUsers(req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('blockedByUsers')
+  getBlockedByUsers(@Req() req: RequestWithUser) {
+    return this.usersService.getBlockedByUsers(req.user.id);
+  }
 
   @UseGuards(JwtAuthGuard)
   @Post('updateProfile')
@@ -136,5 +183,10 @@ export class UsersController {
       body.givenUserName,
       file.path,
     );
+  }
+  // @UseGuards(JwtAuthGuard)
+  @Get('logOut')
+  public logOut(@Req() req: Request, @Res() res: Response) {
+    // this.usersService.logOut(res);
   }
 }
