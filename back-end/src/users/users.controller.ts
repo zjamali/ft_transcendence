@@ -80,16 +80,16 @@ export class UsersController {
     return 'success';
   }
 
-  // @Get('id/:id/friends')
-  // getFriends(@Param('id') id: string) {
-  //   return this.usersService.getFriends(id);
-  // }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('friends')
-  getFriends(@Req() req: RequestWithUser) {
-    return this.usersService.getFriends(req.user.id);
+  @Get('id/:id/friends')
+  getFriends(@Param('id') id: string) {
+    return this.usersService.getFriends(id);
   }
+
+  // @UseGuards(JwtAuthGuard)
+  // @Get('friends')
+  // getFriends(@Req() req: RequestWithUser) {
+  //   return this.usersService.getFriends(req.user.id);
+  // }
 
   @Get('blocked')
   @UseGuards(JwtAuthGuard)

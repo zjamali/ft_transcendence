@@ -15,9 +15,8 @@ export default function UserProfile({}: Props) {
 	const [user, setUser] = useState<User | null>(null);
 	const [userFriends, setUserFriends] = useState([]);
 	const { state, setMainUser,friends  } = useContext(AppContext);
-	const root = useRouter();
-	const roote = useRouter();
-	const { userId } = roote.query;
+	const router = useRouter();
+	const { userId } = router.query;
 	useEffect(() => {
 		axios
 			.get("http://localhost:5000/users/me", { withCredentials: true })
@@ -65,7 +64,7 @@ export default function UserProfile({}: Props) {
 								/>
 							)}
 						</div>
-						<OtherUserNav userName={user.userName} id={user.id}/>
+						<OtherUserNav   userName={user.userName} id={user.id}/>
 					</div>
 					<DefaultData id={user.id} />
 				</div>

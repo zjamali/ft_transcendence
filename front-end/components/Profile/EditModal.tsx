@@ -1,29 +1,15 @@
 
-
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Avatar from '@mui/material/Avatar';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Tooltip from '@mui/material/Tooltip';
-import Settings from '@mui/icons-material/Settings';
-import Logout from '@mui/icons-material/Logout';
 import {useState, useContext} from "react";
 import Button from '@mui/material/Button';
 import Image from "next/image"
 import TextField from '@mui/material/TextField';
-import intra from '../../public/42.jpg'
 import { styled } from '@mui/material/styles';
 import { red } from '@mui/material/colors';
 import Switch, { SwitchProps } from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { OutlinedInputProps } from '@mui/material/OutlinedInput';
-import { withThemeCreator } from '@material-ui/styles';
 import { AppContext } from '../../context/AppContext';
+import axios from 'axios';
 // import "./../styles/Profile.css"
 
 type EditModalProps = {
@@ -102,7 +88,11 @@ const Android12Switch = styled(Switch)(({ theme }) => ({
 
 const EditModal:React.FC<EditModalProps> = ({closeModal}) => {
 	const {state} = useContext(AppContext)
-	const test: string = state.mainUser.userName;
+	const [userName, setUserName] = useState(state.mainUser.userName)
+	const [userImage, setUserImage] = useState(state.mainUser.image)
+	const [imageData, setImageData] = useState(state.mainUser.image);
+	
+	// const test: string = state.mainUser.userName;
 	const primary = red[500]
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
@@ -112,22 +102,60 @@ const EditModal:React.FC<EditModalProps> = ({closeModal}) => {
 	const handleClose = () => {
 	  setAnchorEl(null);
 	};
-	const src = state.mainUser.image;
-	const editProfilePicture = () => {
-		alert("uploadpicture")
-	}
+	// const src = state.mainUser.image;
+	const editProfilePicture = (e : any) => {
+		e.preventDefault();
+		console.log("upload profile");
+
+		const formData = new FormData();
+    
+    //   Update the formData object
+      formData.append(
+        "file",
+        imageData,
+      );
+      formData.append(
+        "givenUserName",
+        userName
+      );
+    
+      // Details of the uploaded file
+      console.log(userImage);
+    
+      // Request made to the backend api
+      // Send formData object
+	  try {
+		  
+		  axios.post("http://localhost:5000/users/updateProfile", formData , {withCredentials: true}).then((response) => {
+			  closeModal(false);
+			  console.log("upload data : ", response)
+		  })
+	  } catch (error) {
+		  console.log("error : ", error);
+	  }
+    };
+	
 	return (
 		<>
 			<div className="overlay-modal" onClick={() => closeModal(false)} />
 			<div className="edit-modal">
 				<div className="modal-picture">
 					<div className="modal-picture-container">
-						<Image loader={()=> src} unoptimized={true} src={src} alt="avatar" layout="fill" />
+						<Image loader={()=> userImage} unoptimized={true} src={userImage} alt="avatar" layout="fill" />
 					</div>
 					<div className="modal-picture-upload">
-						<Button variant="contained" size="small" onClick={editProfilePicture} component="label" style={{color:"white", backgroundColor: "#919eab"}}>
+						<Button variant="contained" size="small" /*onClick={editProfilePicture}*/  component="label" style={{color:"white", backgroundColor: "#919eab"}}>
         					Upload photo
-        					<input hidden accept="image/*" type="file" />
+        					<input hidden accept="image/*" type="file" onChange={(event) => {
+								if (event.target.files && event.target.files[0])
+								{
+									setImageData(event.target.files[0]);
+									let imageUrl:File = event.target.files[0]
+									URL.createObjectURL(imageUrl)
+									console.log("image : upload");
+									setUserImage(URL.createObjectURL(imageUrl));
+								}
+								}}/>
       					</Button>
 					</div>
 				</div>
@@ -135,10 +163,10 @@ const EditModal:React.FC<EditModalProps> = ({closeModal}) => {
 					<div className="modal-data-input">
 						<CssTextField
 							label="Username"
-							defaultValue={test}
+							defaultValue={userName}
 							size="small"
 							helperText="test"
-							
+							onChange={(e)=> setUserName(e.target.value)}
 						/>
 					</div>
 					<div className="modal-two-factor">
@@ -153,7 +181,7 @@ const EditModal:React.FC<EditModalProps> = ({closeModal}) => {
 				</div>
 				<div className="modal-buttons">
 					<div className='modal-submit'>
-						<Button variant='outlined' size="small" color='success'>Confirm</Button>
+						<Button variant='outlined' size="small" color='success' onClick={(e)=>{editProfilePicture(e)}} >Confirm</Button>
 					</div>
 				</div>
 			</div>
