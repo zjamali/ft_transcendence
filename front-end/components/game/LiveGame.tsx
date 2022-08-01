@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import styles from "../styles/LiveGame.module.css";
+import styles from "../../styles/LiveGame.module.css";
 import Game from "./Game";
 
 function LiveGame(props: any) {
