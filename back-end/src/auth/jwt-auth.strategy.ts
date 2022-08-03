@@ -1,18 +1,14 @@
-import { JwtAuthService } from './jwt-auth.service';
-import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
+import { UsersService } from 'src/users/users.service';
 
 type JwtPayload = { id: string; username: string };
 
 @Injectable()
 export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly jwtAuthService: JwtAuthService,
-  ) {
+  constructor(private readonly usersService: UsersService) {
     // const extractJwtFromCookie = (req) => {
     //     let token = null;
     //     console.log(req?.cookies);
@@ -36,8 +32,7 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: JwtPayload) {
-    console.log('I am in jwt validate');
-    const user = await this.jwtAuthService.validateUser(payload);
+    const user = await this.usersService.findOne(payload.id);
     if (!user) {
       throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
     }

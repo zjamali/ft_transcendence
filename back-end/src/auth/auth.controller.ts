@@ -18,7 +18,6 @@ export class AuthController {
   @Get('callback')
   @UseGuards(AuthGuard('42'))
   intraAuthRedirect(@Req() req: RequestWithUser, @Res() res: Response) {
-    console.log('I am in loginBlah()');
     // console.log(req.user);
     // return req.user;
 
