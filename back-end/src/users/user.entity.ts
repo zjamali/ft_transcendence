@@ -2,10 +2,10 @@ import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
 class User {
-  @PrimaryColumn()
+  @PrimaryColumn({ unique: true })
   public id: string;
 
-  @Column()
+  @Column({ unique: true })
   public userName: string;
 
   @Column()
