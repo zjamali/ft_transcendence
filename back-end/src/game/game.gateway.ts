@@ -145,6 +145,7 @@ export class GameGateway
       const firstSocket = this.privateGame.get(payload.room);
       console.log('first  game socket : ', firstSocket);
       const userData = await this.usersService.findOne(userPayload.id);
+      if (userData.id === userPayload.id) return;
       console.log('user Data : ', userData);
       if (!firstSocket) {
         this.privateGame.set(payload.room, [client]);

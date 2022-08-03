@@ -132,13 +132,13 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       gameInvitation.sender,
     );
 
-    firstPlayersSockets.forEach((socketsID) => {
+    firstPlayersSockets?.forEach((socketsID) => {
       this.Server.to(socketsID).emit('STAR_PLAYING', {
         hello: 'hello',
       });
     });
     setTimeout(() => {
-      secondPlayerSockets.forEach((socketsID) => {
+      secondPlayerSockets?.forEach((socketsID) => {
         this.Server.to(socketsID).emit('STAR_PLAYING', {
           hello: 'hello',
         });
