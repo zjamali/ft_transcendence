@@ -7,14 +7,14 @@ import Image from "next/image";
 import OtherUserNav from "../../../components/Profile/OtherUserNav";
 import { User } from "../../../utils/interfaces";
 import { useRouter } from "next/router";
-import DefaultData from "../../../components/Profile/DefaultData"
+import DefaultData from "../../../components/Profile/DefaultData";
 
 type Props = {};
 
 export default function UserProfile({}: Props) {
 	const [user, setUser] = useState<User | null>(null);
 	const [userFriends, setUserFriends] = useState([]);
-	const { state, setMainUser,friends  } = useContext(AppContext);
+	const { state, setMainUser, friends } = useContext(AppContext);
 	const router = useRouter();
 	const { userId } = router.query;
 	useEffect(() => {
@@ -29,8 +29,23 @@ export default function UserProfile({}: Props) {
 			.catch(() => {
 				console.log("ee");
 			});
-	}, []);
 
+		state.eventsSocket.on("UPDATE_DATA", () => {
+			console.log("re render page --------->")
+			axios
+			.get("http://localhost:5000/users/me", { withCredentials: true })
+			.then((res) => {
+				if (res.status === 200) {
+					setMainUser({ ...res.data });
+					userData();
+				}
+			})
+			.catch(() => {
+				console.log("ee");
+			});
+		})
+	}, []);
+	
 	function userData() {
 		axios
 			.get(`http://localhost:5000/users/id/${userId}`, {
@@ -44,12 +59,12 @@ export default function UserProfile({}: Props) {
 			.catch(() => {
 				console.log("eee");
 			});
-	}
-
+		}
+		
+		console.log("re render page ");
 	return (
 		<>
 			{state.mainUser && user && (
-
 				<div className="profile-content">
 					<div className="profile-wall">
 						<div className="profile-wall-bg"></div>
@@ -64,11 +79,15 @@ export default function UserProfile({}: Props) {
 								/>
 							)}
 						</div>
-						<OtherUserNav   userName={user.userName} id={user.id}/>
+						{user && (
+							<OtherUserNav
+								userName={user.userName}
+								id={user.id}
+							/>
+						)}
 					</div>
 					<DefaultData id={user.id} />
 				</div>
-
 			)}
 		</>
 	);

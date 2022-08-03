@@ -49,6 +49,11 @@ const FriendsCard = ({id } : {id: string}) => {
 			console.log("user status updated");
 			setFriendsStatus(user.isOnline, user);
 		});
+		state.eventsSocket.on("UPDATE_DATA", (user: any) => {
+			console.log("updated");
+			fetchFriends();
+		});
+		
 		fetchFriends();
 	}, []);
 

@@ -5,22 +5,17 @@ import DropDown from "./DropDown";
 import DropDNotifications from "./DropDNotifications";
 import { useContext, useEffect, useRef } from "react";
 import { AppContext } from "../../context/AppContext";
-import { io } from "socket.io-client";
+import { eventsSocket } from "../../context/sockets";
 
 const Header = (props) => {
-	const { state } = useContext(AppContext);
+	const { state, setMainUser } = useContext(AppContext);
 	const userName: string = state.mainUser.userName;
-	const src: string = state.mainUser.image;
+	let src: string = state.mainUser.image;
 
 	useEffect(() => {
-		// if (!state.eventsSocket) {
-		// 	state.eventsSocket = io("http://localhost:5000/events", {
-		// 		withCredentials: true,
-		// 	});
-		// }
-		// return () => {
-		// 	state.eventsSocket.close();
-		// };
+		state.eventsSocket.on("A_PROFILE_UPDATE", (user: any) => {
+			setMainUser({ ...user });
+		});
 	}, []);
 
 	return (

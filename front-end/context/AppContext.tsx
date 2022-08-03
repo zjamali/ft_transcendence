@@ -1,5 +1,5 @@
 import { FaxRounded } from "@mui/icons-material";
-import React, { ReactNode, createContext, useState, useRef } from "react";
+import React, { ReactNode, createContext, useState, useRef, useEffect } from "react";
 import { Message, Channel, User } from "../utils/interfaces";
 export const AppContext = createContext<any>({});
 import { eventsSocket, chatSocket } from "./sockets";
@@ -19,6 +19,16 @@ export const AppProvider = (props: any) => {
 		false
 	);
 
+	// useEffect(() => {
+	  
+	
+	//   return () => {
+	// 	eventsSocket.close();
+	// 	chatSocket.close();
+	//   }
+	// }, [])
+	
+	
 	return (
 		<AppContext.Provider
 			value={{

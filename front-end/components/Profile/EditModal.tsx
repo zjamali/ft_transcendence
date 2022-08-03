@@ -129,6 +129,7 @@ const EditModal:React.FC<EditModalProps> = ({closeModal}) => {
 		  axios.post("http://localhost:5000/users/updateProfile", formData , {withCredentials: true}).then((response) => {
 			  closeModal(false);
 			  console.log("upload data : ", response)
+			  state.eventsSocket.emit('I_UPDATE_MY_PROFILE', state.mainUser.id);
 		  })
 	  } catch (error) {
 		  console.log("error : ", error);

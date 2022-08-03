@@ -37,11 +37,14 @@ const Profile = () => {
 	}, []);
 
 	useEffect(() => {
+
+		
+
 		setOpenModal(router.query.edit_profile ? true : false);
 	}, [router]);
 
 
-	const src = "http://localhost:5000/users/" + state.mainUser?.image;
+	const src = state.mainUser?.image;
 	
 	console.log("path------------>", src)
 	return (

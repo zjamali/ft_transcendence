@@ -13,9 +13,9 @@ import intra from "../../public/42.jpg";
 import Link from "next/link";
 import axios from "axios";
 import { AppContext } from "../../context/AppContext";
-import { useRouter } from "next/router";
 import Router from "next/router";
 import cookies, { useCookies } from "react-cookie";
+import PersonIcon from '@mui/icons-material/Person';
 interface DropDown {
 	userName: string;
 	image: string;
@@ -109,7 +109,11 @@ const DropDown: React.FC<DropDown> = ({ userName, image }) => {
 			>
 				<Link href="/">
 					<MenuItem autoFocus={false} style={{ color: "#919eab" }}>
-						<Avatar /> {userName}
+						{/* <Avatar /> */}
+						<ListItemIcon style={{ color: "#919eab" }}>
+						<PersonIcon fontSize="small"/>
+						</ListItemIcon>
+						 {userName}
 					</MenuItem>
 				</Link>
 				<Divider />

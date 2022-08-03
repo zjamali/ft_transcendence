@@ -67,6 +67,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @UseGuards(JwtAuthGuard)
   async handleDisconnect(client: any) {
     // const cookies = client.handshake.headers.cookie;
+    if (!client.handshake.headers.cookie) return;
     const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
     this.allgetwaySockets = this.allgetwaySockets.filter(
       (socketid) => socketid != client.id,
@@ -144,6 +145,73 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         });
       });
     }, 200);
+  }
+  @SubscribeMessage('I_UPDATE_MY_PROFILE')
+  async profileUpdate(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() userId: string,
+  ) {
+    console.log('user update profile id  : ', userId);
+    const user = await this.userService.findOne(userId);
+    this.Server.to(client.id).emit('A_PROFILE_UPDATE', { ...user });
+    client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user });
+  }
+  @SubscribeMessage('I_UPDATE_MY_DATA')
+  async userUpdateData(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() userId: string,
+  ) {
+    console.log('user update data id  : ', userId);
+    const user = await this.userService.findOne(userId);
+    this.Server.to(client.id).emit('A_UPDATE_MY_DATA', { ...user });
+    client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user });
+  }
+  @SubscribeMessage('SEND_FRIEND_REQUEST')
+  async sendFriendRequest(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() friendRequest: { sender: string; target: string },
+  ) {
+    const targetSockets = GlobalService.UsersEventsSockets.get(
+      friendRequest.target,
+    );
+    targetSockets?.forEach((socketsID) => {
+      this.Server.to(socketsID).emit('NEW_FRIEND_REQUEST');
+    });
+  }
+  @SubscribeMessage('ACCEPT_FREIND_REQUEST')
+  async acceptFriendRequest(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() friendRequest: { accpter: string; relatedUserId: string },
+  ) {
+    const targetSockets = GlobalService.UsersEventsSockets.get(
+      friendRequest.accpter,
+    );
+    const target = await this.userService.findOne(friendRequest.accpter);
+    targetSockets?.forEach((socketsID) => {
+      this.Server.to(socketsID).emit('UPDATE_DATA');
+    });
+
+    const senderSockets = GlobalService.UsersEventsSockets.get(
+      friendRequest.relatedUserId,
+    );
+    const sender = await this.userService.findOne(friendRequest.relatedUserId);
+    senderSockets?.forEach((socketsID) => {
+      this.Server.to(socketsID).emit('UPDATE_DATA');
+    });
+  }
+  @SubscribeMessage('DENY_FREIND_REQUEST')
+  async denyFriendRequest(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() friendRequest: { denier: string; relatedUserId: string },
+  ) {
+    this.Server.emit('UPDATE_DATA');
+  }
+  @SubscribeMessage('BLOCK_A_USER')
+  async blockUser(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() blockUser: { blocker: string; target: string },
+  ) {
+    this.Server.emit('UPDATE_DATA');
   }
 
   getUserIdFromJWT(cookies: string): string {
