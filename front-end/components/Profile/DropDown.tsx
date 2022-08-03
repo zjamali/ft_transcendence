@@ -32,9 +32,9 @@ const DropDown: React.FC<DropDown> = ({ userName, image }) => {
 	};
 	const [cookies, setCookie, removeCookie] = useCookies(["access_token"]);
 	const handleLogOut = (e: any) => {
-		state.chatSocket.current?.close();
-		state.eventsSocket.current?.emit("LOG_OUT");
-		state.eventsSocket.current?.close();
+		state.chatSocket?.close();
+		state.eventsSocket?.emit("LOG_OUT");
+		state.eventsSocket?.close();
 		removeCookie("access_token");
 		setLogin(false);
 		setMainUser(null);

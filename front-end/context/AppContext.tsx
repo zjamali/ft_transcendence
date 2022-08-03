@@ -1,9 +1,11 @@
+import { FaxRounded } from "@mui/icons-material";
 import React, { ReactNode, createContext, useState, useRef } from "react";
 import { Message, Channel, User } from "../utils/interfaces";
 export const AppContext = createContext<any>({});
+import { eventsSocket, chatSocket } from "./sockets";
 
 export const AppProvider = (props: any) => {
-  const [login, setLogin] = useState<boolean>(false)
+	const [login, setLogin] = useState<boolean>(false);
 	const [mainUser, setMainUser] = useState<User | null>(null);
 	const [messages, setMessages] = useState<Message[]>([]);
 	// const [contacts, setContacts] = useState<ContactProps[]>([])
@@ -16,26 +18,23 @@ export const AppProvider = (props: any) => {
 	const [isUserJoinedChannel, setIsUserJoinedChannel] = useState<boolean>(
 		false
 	);
-	// event socket
-	const eventsSocket = useRef<any>(null);
-	//chat socket if a reciver is set
-	const chatSocket = useRef<any>(null);
+
 	return (
 		<AppContext.Provider
 			value={{
 				state: {
-          login,
-		  friends,
+					login,
+					friends,
 					mainUser,
 					messages,
 					contacts,
 					channels,
 					receiver,
 					isUserJoinedChannel,
-          eventsSocket,
-          chatSocket,
+					eventsSocket,
+					chatSocket,
 				},
-        setLogin,
+				setLogin,
 				setMessages,
 				setContacts,
 				setChannels,
@@ -53,4 +52,4 @@ export const AppProvider = (props: any) => {
 const AppConsumer = AppContext.Consumer;
 
 export default AppProvider;
-export {AppConsumer};
+export { AppConsumer };

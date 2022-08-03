@@ -95,37 +95,37 @@ export default function ChatPannel() {
   useEffect(() => {
     //////
     /* creation Sockets start */
-    if (!state.chatSocket.current) {
-      state.chatSocket.current = io('http://localhost:5000/chat', {
-        withCredentials: true,
-      })
-      state.chatSocket.current.on('connect_failed', () => {
-        console.log('Sorry, there seems to be an issue with the connection!')
-      })
-      state.chatSocket.current.on('connect_error', () => {
-        console.log('Sorry, there seems to be an issue with the connection!')
-      })
-      state.chatSocket.current.on('connect_failed', () => {
-        console.log('Sorry, there seems to be an issue with the connection!')
-      })
-      state.chatSocket.current.on('disconnect', () => {
-        console.log('Sorry, there seems to be an issue with the connection!')
-      })
-    }
+    // if (!state.chatSocket) {
+    //   state.chatSocket = io('http://localhost:5000/chat', {
+    //     withCredentials: true,
+    //   })
+    //   state.chatSocket.on('connect_failed', () => {
+    //     console.log('Sorry, there seems to be an issue with the connection!')
+    //   })
+    //   state.chatSocket.on('connect_error', () => {
+    //     console.log('Sorry, there seems to be an issue with the connection!')
+    //   })
+    //   state.chatSocket.on('connect_failed', () => {
+    //     console.log('Sorry, there seems to be an issue with the connection!')
+    //   })
+    //   state.chatSocket.on('disconnect', () => {
+    //     console.log('Sorry, there seems to be an issue with the connection!')
+    //   })
+    // }
     try {
-      state.chatSocket.current.on('connect_failed', () => {
-        console.log('Sorry, there seems to be an issue with the connection!')
-      })
-      state.chatSocket.current.on('connect_error', () => {
-        console.log('Sorry, there seems to be an issue with the connection!')
-      })
-      state.chatSocket.current.on('connect_failed', () => {
-        console.log('Sorry, there seems to be an issue with the connection!')
-      })
-      state.chatSocket.current.on('disconnect', () => {
-        console.log('Sorry, there seems to be an issue with the connection!')
-      })
-      state.chatSocket.current.on('NEW_MESSAGE', (newMessage: any) => {
+      // state.chatSocket.on('connect_failed', () => {
+      //   console.log('Sorry, there seems to be an issue with the connection!')
+      // })
+      // state.chatSocket.on('connect_error', () => {
+      //   console.log('Sorry, there seems to be an issue with the connection!')
+      // })
+      // state.chatSocket.on('connect_failed', () => {
+      //   console.log('Sorry, there seems to be an issue with the connection!')
+      // })
+      // state.chatSocket.on('disconnect', () => {
+      //   console.log('Sorry, there seems to be an issue with the connection!')
+      // })
+      state.chatSocket.on('NEW_MESSAGE', (newMessage: any) => {
         console.log('wa message : ', newMessage)
         setNewMessage({ ...newMessage })
       })
@@ -134,8 +134,8 @@ export default function ChatPannel() {
     }
 
     return () => {
-      console.log('close sockets')
-      if (state.chatSocket.current) state.chatSocket?.current.disconnect()
+      // console.log('close sockets')
+      // if (state.chatSocket) state.chatSocket?.current.disconnect()
     }
   }, [])
 
@@ -173,20 +173,21 @@ export default function ChatPannel() {
     console.log('messaglsklksf :', messageInput)
     const message = {
       senderId: state.mainUser.id,
-      senderName: `${state.mainUser.firstName} ${state.mainUser.lastName}`,
+      // senderName: `${state.mainUser.firstName} ${state.mainUser.lastName}`,
+      senderName: `${state.mainUser.userName}`,
       receiverId: state.receiver.id,
       createdAt: Date(),
       content: messageInput,
       isChannel: !isContact(state.receiver),
     }
     console.log('send message : ', message)
-    state.chatSocket.current.emit('SEND_MESSAGE', { ...message })
+    state.chatSocket.emit('SEND_MESSAGE', { ...message })
   }
 
   function leaveRoom() {
     console.log('leave room ')
-    if (state.chatSocket.current) {
-      state.chatSocket.current.emit('LEAVE_ROOM', {
+    if (state.chatSocket) {
+      state.chatSocket.emit('LEAVE_ROOM', {
         user_id: state.mainUser.id,
         room_id: state.receiver.id,
       })
@@ -198,8 +199,8 @@ export default function ChatPannel() {
 
   function joinRoom() {
     console.log('join room :::')
-    if (state.chatSocket.current) {
-      state.chatSocket.current.emit('JOIN_ROOM', {
+    if (state.chatSocket) {
+      state.chatSocket.emit('JOIN_ROOM', {
         user_id: state.mainUser.id,
         room_id: state.receiver.id,
       })

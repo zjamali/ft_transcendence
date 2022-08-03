@@ -66,7 +66,7 @@ const Users = () => {
 			});
 	}, []);
 	useEffect(() => {
-		state.eventsSocket.current.on("A_USER_STATUS_UPDATED", (user: any) => {
+		state.eventsSocket.on("A_USER_STATUS_UPDATED", (user: any) => {
 			console.log("user status updated");
 			setUsersStatus(user.isOnline, user);})
 			fetchAllUsers();

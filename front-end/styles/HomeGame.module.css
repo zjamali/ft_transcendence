@@ -1,0 +1,321 @@
+@import url("https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Kanit:wght@500&family=Outfit:wght@100;500&family=Press+Start+2P&family=Work+Sans:wght@100;200;300;400;500;600;700;800&display=swap");
+
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: #fff;
+}
+
+.game {
+  flex-basis: 50%;
+  display: flex;
+  justify-content: center;
+}
+
+.game img {
+  width: 80%;
+}
+.about {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  background-color: #000;
+  flex-basis: 50%;
+  height: 100vh;
+}
+.about h1 {
+  font-size: 4vw;
+  font-family: "Press Start 2P", cursive;
+}
+.about h1 img {
+  -webkit-animation: mover 2s infinite alternate;
+  animation: mover 2s infinite alternate;
+}
+@-webkit-keyframes mover {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-90px);
+  }
+}
+@keyframes mover {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-90px);
+  }
+}
+.about .emoji {
+  font-size: 40px;
+}
+.about p {
+  line-height: 3;
+  font-family: "Press Start 2P", cursive;
+  font-size: 20px;
+}
+.about .btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.about .btnDef,
+.about .btnObs {
+  position: relative;
+  top: 0;
+  width: 12vw;
+  cursor: pointer;
+  text-decoration: none !important;
+  outline: none !important;
+  font-family: "Press Start 2P", cursive;
+  font-size: 1vw;
+  line-height: 1.5em;
+  letter-spacing: 0.1em;
+  text-shadow: 2px 2px 1px #348628, -2px 2px 1px #348628, 2px -2px 1px #348628,
+    -2px -2px 1px #348628, 0px 2px 1px #348628, 0px -2px 1px #348628,
+    0px 4px 1px #1d4c16, 2px 4px 1px #1d4c16, -2px 4px 1px #1d4c16;
+  border: none;
+  margin: 15px 80px 30px;
+  background: repeating-linear-gradient(
+    45deg,
+    #54d440,
+    #54d440 5px,
+    #52cc3f 5px,
+    #52cc3f 10px
+  );
+  border-bottom: 3px solid rgba(40, 117, 29, 0.5);
+  border-top: 3px solid rgba(255, 255, 255, 0.3);
+  color: #fff !important;
+  border-radius: 8px;
+  padding: 8px 15px 10px;
+  box-shadow: 0 6px 0 #348628, 0 8px 1px 1px rgba(0, 0, 0, 0.3),
+    0 10px 0 5px #2a6d20, 0 12px 0 5px #39822e, 0 15px 0 5px #1d4c16,
+    0 15px 1px 6px rgba(0, 0, 0, 0.3);
+}
+.about .btnDef:hover,
+.about .btnObs:hover {
+  top: 2px;
+  box-shadow: 0 4px 0 #348628, 0 6px 1px 1px rgba(0, 0, 0, 0.3),
+    0 8px 0 5px #2a6d20, 0 10px 0 5px #39822e, 0 13px 0 5px #1d4c16,
+    0 13px 1px 6px rgba(0, 0, 0, 0.3);
+}
+.btnDef::before {
+  content: "";
+  height: 10%;
+  position: absolute;
+  width: 40%;
+  background: #fff;
+  right: 13%;
+  top: -3%;
+  border-radius: 99px;
+}
+.btnObs::before {
+  content: "";
+  height: 10%;
+  position: absolute;
+  width: 40%;
+  background: #fff;
+  right: 13%;
+  top: -3%;
+  border-radius: 99px;
+}
+.btnDef::after {
+  content: "";
+  height: 10%;
+  position: absolute;
+  width: 5%;
+  background: #fff;
+  right: 5%;
+  top: -3%;
+  border-radius: 99px;
+}
+.btnObs::after {
+  content: "";
+  height: 10%;
+  position: absolute;
+  width: 5%;
+  background: #fff;
+  right: 5%;
+  top: -3%;
+  border-radius: 99px;
+}
+
+@media (max-width: 1900px) {
+  .about h1 img {
+    -webkit-animation: mover 2s infinite alternate;
+    animation: mover 2s infinite alternate;
+  }
+  @-webkit-keyframes mover {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-60px);
+    }
+  }
+  @keyframes mover {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-60px);
+    }
+  }
+  .about .btnDef,
+  .about .btnObs {
+    padding: 10px 10px 10px 10px;
+  }
+  .about .btnDef img,
+  .about .btnObs img {
+    width: 50px;
+    height: 50px;
+  }
+}
+@media (max-width: 1800px) {
+  .about h1 img {
+    -webkit-animation: mover 2s infinite alternate;
+    animation: mover 2s infinite alternate;
+  }
+  @-webkit-keyframes mover {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-60px);
+    }
+  }
+  @keyframes mover {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-60px);
+    }
+  }
+  .about .btnDef,
+  .about .btnObs {
+    padding: 10px 10px 10px 10px;
+  }
+  .about .btnDef img,
+  .about .btnObs img {
+    width: 40px;
+    height: 40px;
+  }
+}
+@media (max-width: 1400px) {
+  .container {
+    flex-direction: column;
+  }
+  .about h1,
+  .about p {
+    text-align: center;
+  }
+  .about h1 img {
+    -webkit-animation: mover 2s infinite alternate;
+    animation: mover 2s infinite alternate;
+  }
+  @-webkit-keyframes mover {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-50px);
+    }
+  }
+  @keyframes mover {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-50px);
+    }
+  }
+  .about .btnDef,
+  .about .btnObs {
+    padding: 10px 10px 10px 10px;
+  }
+  .about .btnDef img,
+  .about .btnObs img {
+    width: 40px;
+    height: 40px;
+  }
+}
+@media (max-width: 1200px) {
+  .about .btnDef,
+  .about .btnObs {
+    padding: 10px 10px 10px 10px;
+  }
+  .about .btnDef img,
+  .about .btnObs img {
+    width: 30px;
+    height: 30px;
+  }
+}
+@media (max-width: 900px) {
+  .about h1 img {
+    width: 50px;
+    height: 50px;
+    -webkit-animation: mover 2s infinite alternate;
+    animation: mover 2s infinite alternate;
+  }
+  @-webkit-keyframes mover {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-30px);
+    }
+  }
+  @keyframes mover {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-30px);
+    }
+  }
+  .about .btnDef,
+  .about .btnObs {
+    padding: 10px 10px 10px 10px;
+  }
+  .about .btnDef img,
+  .about .btnObs img {
+    width: 20px;
+    height: 20px;
+  }
+}
+@media (max-width: 600px) {
+  .about h1 img {
+    width: 40px;
+    height: 40px;
+    -webkit-animation: mover 2s infinite alternate;
+    animation: mover 2s infinite alternate;
+  }
+  @-webkit-keyframes mover {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-20px);
+    }
+  }
+  @keyframes mover {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-20px);
+    }
+  }
+  .about .btnDef,
+  .about .btnObs {
+    padding: 10px 10px 10px 10px;
+  }
+  .about .btnDef img,
+  .about .btnObs img {
+    width: 10px;
+    height: 10px;
+  }
+}

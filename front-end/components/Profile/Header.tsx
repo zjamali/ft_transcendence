@@ -13,14 +13,14 @@ const Header = (props) => {
 	const src: string = state.mainUser.image;
 
 	useEffect(() => {
-		if (!state.eventsSocket.current) {
-			state.eventsSocket.current = io("http://localhost:5000/events", {
-				withCredentials: true,
-			});
-		}
-		return () => {
-			state.eventsSocket.current.close();
-		};
+		// if (!state.eventsSocket) {
+		// 	state.eventsSocket = io("http://localhost:5000/events", {
+		// 		withCredentials: true,
+		// 	});
+		// }
+		// return () => {
+		// 	state.eventsSocket.close();
+		// };
 	}, []);
 
 	return (

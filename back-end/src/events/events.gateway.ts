@@ -1,11 +1,14 @@
+import { GlobalService } from './../utils/Global.service';
 import { UsersService } from 'src/users/users.service';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import {
   WebSocketGateway,
   OnGatewayConnection,
   OnGatewayDisconnect,
   WebSocketServer,
   SubscribeMessage,
+  ConnectedSocket,
+  MessageBody,
 } from '@nestjs/websockets';
 import { EventsService } from './events.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -79,6 +82,68 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user });
       await this.eventsService.setUserOfflineInDb(user_id);
     }
+  }
+
+  @SubscribeMessage('send_game_invitaion_to_server')
+  gameInvitation(
+    @ConnectedSocket() client: Socket,
+    @MessageBody()
+    gameInvitation: { sender: any; receiver: string; game_room: string },
+  ) {
+    console.log(
+      '%%%%%%%%%',
+      gameInvitation.sender,
+      ' :game invitaion sent to ',
+      gameInvitation.receiver,
+      ' to palay in room : ',
+      gameInvitation.game_room,
+    );
+    const InviteduserSockets = GlobalService.UsersEventsSockets.get(
+      gameInvitation.receiver,
+    );
+    // if (Inviteduser) {
+    //   console.log('invited user is :', Inviteduser);
+    // }
+    InviteduserSockets.forEach((invitedSocketId) => {
+      this.Server.to(invitedSocketId).emit('GAME_INVITATION', {
+        hello: 'hello',
+      });
+    });
+    console.log('InviteduserSockets : ', InviteduserSockets);
+  }
+  @SubscribeMessage('accept_game_invitaion_to_server')
+  gameAcceptInvitation(
+    @ConnectedSocket() client: Socket,
+    @MessageBody()
+    gameInvitation: { sender: string; receiver: string; game_room: string },
+  ) {
+    console.log(
+      '+++++++++',
+      gameInvitation.sender,
+      ' :game accept invitaion of ',
+      gameInvitation.receiver,
+      ' to palay in room : ',
+      gameInvitation.game_room,
+    );
+    const firstPlayersSockets = GlobalService.UsersEventsSockets.get(
+      gameInvitation.receiver,
+    );
+    const secondPlayerSockets = GlobalService.UsersEventsSockets.get(
+      gameInvitation.sender,
+    );
+
+    firstPlayersSockets?.forEach((socketsID) => {
+      this.Server.to(socketsID).emit('STAR_PLAYING', {
+        hello: 'hello',
+      });
+    });
+    setTimeout(() => {
+      secondPlayerSockets?.forEach((socketsID) => {
+        this.Server.to(socketsID).emit('STAR_PLAYING', {
+          hello: 'hello',
+        });
+      });
+    }, 200);
   }
 
   getUserIdFromJWT(cookies: string): string {

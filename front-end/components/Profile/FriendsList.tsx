@@ -19,7 +19,7 @@ const FriendsList: React.FC = ({id: {id: string}}) => {
 	// const [friendsIds, setFriendsIds] = useState<any[] | null>(null);
 
 	useEffect(() => {
-		state.eventsSocket.current.on("A_USER_STATUS_UPDATED", (user: any) => {
+		state.eventsSocket.on("A_USER_STATUS_UPDATED", (user: any) => {
 			console.log("user status updated");
 			fetchFriends();})
 			// fetchfriends();
