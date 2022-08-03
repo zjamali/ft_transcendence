@@ -1,4 +1,3 @@
-import { JwtAuthGuard } from './../auth/jwt-auth.guard';
 import {
   Body,
   Controller,
@@ -19,37 +18,38 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Express, Request, Response } from 'express';
 import RequestWithUser from './requestWithUser.interface';
 import { saveImageToStorage } from './helpers/image-storage';
+import JwtTwoFactorGuard from 'src/auth/jwt-2fa-auth.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtTwoFactorGuard)
   getUsers() {
     return this.usersService.getUsers();
   }
 
   @Post('create')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtTwoFactorGuard)
   createUser(@Body() createUserDto: any) {
     return this.usersService.createUser(createUserDto);
   }
 
   @Get('id/:id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtTwoFactorGuard)
   findUserById(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
 
   @Get('me')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtTwoFactorGuard)
   getme(@Req() req: RequestWithUser) {
     return { ...req.user };
   }
 
   @Post('send')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtTwoFactorGuard)
   sendRequest(
     @Req() req: RequestWithUser,
     @Body() body: { relatedUserId: string },
@@ -58,7 +58,7 @@ export class UsersController {
   }
 
   @Post('accept')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtTwoFactorGuard)
   acceptRequest(
     @Req() req: RequestWithUser,
     @Body() body: { relatedUserId: string },
@@ -67,7 +67,7 @@ export class UsersController {
   }
 
   @Post('unfriend')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtTwoFactorGuard)
   unfriend(
     @Req() req: RequestWithUser,
     @Body() body: { relatedUserId: string },
@@ -82,20 +82,20 @@ export class UsersController {
     return this.usersService.getFriends(id);
   }
 
-  // @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtTwoFactorGuard)
   // @Get('friends')
   // getFriends(@Req() req: RequestWithUser) {
   //   return this.usersService.getFriends(req.user.id);
   // }
 
   @Get('blocked')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtTwoFactorGuard)
   getBolckedUsers(@Req() req: RequestWithUser) {
     return this.usersService.getBolckedUsers(req.user.id);
   }
 
   @Post('block')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtTwoFactorGuard)
   blockUser(
     @Req() req: RequestWithUser,
     @Body() body: { relatedUserId: string },
@@ -104,7 +104,7 @@ export class UsersController {
   }
 
   @Post('unblock')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtTwoFactorGuard)
   unblockUser(
     @Req() req: RequestWithUser,
     @Body() body: { relatedUserId: string },
@@ -117,37 +117,37 @@ export class UsersController {
   //   return this.usersService.getSentRequests(id);
   // }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtTwoFactorGuard)
   @Get('sentrequests')
   getSentRequests(@Req() req: RequestWithUser) {
     return this.usersService.getSentRequests(req.user.id);
   }
 
-  // @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtTwoFactorGuard)
   // @Get('recievedrequests')
   // getRecievedRequests(@Param('id') id: string) {
   //   return this.usersService.getReceivedRequests(id);
   // }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtTwoFactorGuard)
   @Get('recievedrequests')
   getRecievedRequests(@Req() req: RequestWithUser) {
     return this.usersService.getReceivedRequests(req.user.id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtTwoFactorGuard)
   @Get('blockedUsers')
   getBlockedUsers(@Req() req: RequestWithUser) {
     return this.usersService.getBolckedUsers(req.user.id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtTwoFactorGuard)
   @Get('blockedByUsers')
   getBlockedByUsers(@Req() req: RequestWithUser) {
     return this.usersService.getBlockedByUsers(req.user.id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtTwoFactorGuard)
   @Post('updateProfile')
   @UseInterceptors(FileInterceptor('file', saveImageToStorage))
   updateProfile(
@@ -183,13 +183,13 @@ export class UsersController {
   }
 
   @Get('uploads/:imgId')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtTwoFactorGuard)
   getImage(@Res() res: Response, @Param('imgId') imgId: string) {
     res.sendFile(imgId, { root: './uploads' });
   }
 
   @Get('logOut')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtTwoFactorGuard)
   public logOut(@Req() req: Request, @Res() res: Response) {
     this.usersService.logOut(res);
   }
