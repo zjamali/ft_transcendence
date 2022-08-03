@@ -11,6 +11,7 @@ import { MessagesModule } from './chat/messages/messages.module';
 import { RoomsModule } from './chat/rooms/rooms.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ShutDownModule } from './users/shutdown.module';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { ShutDownModule } from './users/shutdown.module';
     ChatModule,
     ScheduleModule.forRoot(),
     ShutDownModule,
+    GameModule,
   ],
 })
 export class AppModule {}

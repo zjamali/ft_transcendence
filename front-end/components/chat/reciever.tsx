@@ -7,6 +7,7 @@ import RoomAvatar from "react-avatar";
 import { isContact } from "../../utils/utils";
 import ChannelManagement from "./ChannelManagemet";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function Reciever({
 	joinRoom,
@@ -17,6 +18,7 @@ export default function Reciever({
 	leaveRoom: () => void;
 	chatSocket: any;
 }) {
+	const router = useRouter();
 	const { state, setIsUserJoinedChannel } = useContext(AppContext);
 
 	useEffect(() => {
@@ -26,6 +28,16 @@ export default function Reciever({
 			);
 		}
 	}, [state.receiver, state.Channels]);
+
+	const gameHandleInvite = () => {
+		if (state.eventsSocket.current)
+			state.eventsSocket.current.emit("send_game_invitaion_to_server", {
+				sender: `${state.mainUser.id}`,
+				receiver: `${state.receiver.id}`,
+				game_room: `${state.mainUser.id}${state.receiver.id}`,
+			});
+		router.push('/game');
+	};
 
 	return (
 		<>
@@ -40,9 +52,9 @@ export default function Reciever({
 						<h3>{`${state.receiver.firstName} ${state.receiver.lastName}`}</h3>
 						<p>@{state.receiver.userName}</p>
 					</div>
-					<Link href={'/game'}>
+					<div onClick={gameHandleInvite}>
 						<a>invite to game</a>
-					</Link>
+					</div>
 				</div>
 			) : (
 				<>

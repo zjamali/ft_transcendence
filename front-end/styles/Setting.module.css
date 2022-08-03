@@ -1,0 +1,98 @@
+@import url("https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Kanit:wght@500&family=Outfit:wght@100;500&family=Press+Start+2P&family=Work+Sans:wght@100;200;300;400;500;600;700;800&display=swap");
+
+.container {
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.container .box {
+    background-color: #000;
+    color: #FFFF;
+    width: 50%;
+    border-radius: 20px;
+}
+
+.container .box .title {
+    text-align: center;
+    margin-bottom: 100px;
+    letter-spacing: 5px;
+    font-family: "Press Start 2P", cursive;
+}
+
+.container .box .field {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 80px;
+}
+.container .box:last-child {
+    text-align: center;
+}
+.container .box .field div {
+    display: flex;
+    flex-direction: column;
+}
+
+.container .box .field label {
+    margin-right: 5px;
+    margin-bottom: 20px;
+    font-family: "Press Start 2P", cursive;
+    color: gray;
+}
+.container .box .field select {
+    width: 400px;
+    padding: 8px 0 8px 5px;
+    border-radius: 5px;
+}
+
+.container .apply, .container .cancel {
+    position: relative;
+    top: 0;
+    width: 15%;
+    cursor: pointer;
+    text-decoration: none !important;
+    outline: none !important;
+    font-family: "Press Start 2P", cursive;
+    font-size: 15px;
+    line-height: 1.5em;
+    letter-spacing: 0.1em;
+    text-shadow: 2px 2px 1px #348628, -2px 2px 1px #348628, 2px -2px 1px #348628,
+      -2px -2px 1px #348628, 0px 2px 1px #348628, 0px -2px 1px #348628,
+      0px 4px 1px #1d4c16, 2px 4px 1px #1d4c16, -2px 4px 1px #1d4c16;
+    border: none;
+    margin: 15px 80px 30px;
+    background: repeating-linear-gradient(
+      45deg,
+      #54d440,
+      #54d440 5px,
+      #52cc3f 5px,
+      #52cc3f 10px
+    );
+    border-bottom: 3px solid rgba(40, 117, 29, 0.5);
+    border-top: 3px solid rgba(255, 255, 255, 0.3);
+    color: #fff !important;
+    border-radius: 8px;
+    padding: 8px 15px 10px;
+    box-shadow: 0 6px 0 #348628, 0 8px 1px 1px rgba(0, 0, 0, 0.3),
+      0 10px 0 5px #2a6d20, 0 12px 0 5px #39822e, 0 15px 0 5px #1d4c16,
+      0 15px 1px 6px rgba(0, 0, 0, 0.3);
+}
+
+.container .apply::before, .container .cancel::before {
+    content: "";
+  height: 10%;
+  position: absolute;
+  width: 40%;
+  background: #fff;
+  right: 13%;
+  top: -3%;
+  border-radius: 99px;
+}
+
+.container .apply:hover, .container .cancel:hover {
+    top: 2px;
+  box-shadow: 0 4px 0 #348628, 0 6px 1px 1px rgba(0, 0, 0, 0.3),
+    0 8px 0 5px #2a6d20, 0 10px 0 5px #39822e, 0 13px 0 5px #1d4c16,
+    0 13px 1px 6px rgba(0, 0, 0, 0.3);
+}
