@@ -9,12 +9,14 @@ import { User } from "../../../utils/interfaces";
 import { useRouter } from "next/router";
 import DefaultData from "../../../components/Profile/DefaultData"
 
+type Props = {};
 
-export default function UserProfile() {
+export default function UserProfile({}: Props) {
 	const [user, setUser] = useState<User | null>(null);
-	const { state, setMainUser } = useContext(AppContext);
-	const roote = useRouter();
-	const { userId } = roote.query;
+	const [userFriends, setUserFriends] = useState([]);
+	const { state, setMainUser,friends  } = useContext(AppContext);
+	const router = useRouter();
+	const { userId } = router.query;
 	useEffect(() => {
 		axios
 			.get("http://localhost:5000/users/me", { withCredentials: true })
@@ -47,27 +49,26 @@ export default function UserProfile() {
 	return (
 		<>
 			{state.mainUser && user && (
-						<div className="profile-content">
-							<div className="profile-wall">
-								<div className="profile-wall-bg"></div>
-								<div className="profile-wall-img-user">
-									{user && (
-										<Image
-											loader={() => `${user.image}`}
-											unoptimized={true}
-											src={`${user.image}`}
-											alt="user avatar"
-											layout="fill"
-										/>
-									)}
-									{/* <img src={user.image} alt="user image" /> */}
-									{/* <img src={state.mainUser.image} className="profile-wall-img-user" /> */}
-								</div>
-								{/* <MainUserNav setActive={setActive} setOpenModal={setOpenModal}/> */}
-								<OtherUserNav />
-							</div>
-								<DefaultData />
+
+				<div className="profile-content">
+					<div className="profile-wall">
+						<div className="profile-wall-bg"></div>
+						<div className="profile-wall-img-user">
+							{user && (
+								<Image
+									loader={() => `${user.image}`}
+									unoptimized={true}
+									src={`${user.image}`}
+									alt="user avatar"
+									layout="fill"
+								/>
+							)}
 						</div>
+						<OtherUserNav   userName={user.userName} id={user.id}/>
+					</div>
+					<DefaultData id={user.id} />
+				</div>
+
 			)}
 		</>
 	);

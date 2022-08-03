@@ -25,9 +25,9 @@ const Profile = () => {
 	const renderComponent = (active: String) => {
 		switch (active) {
 			case "DefaultData":
-				return <DefaultData />;
+				return <DefaultData id={state.mainUser.id}/>;
 			case "Friends":
-				return <FriendsList />;
+				return <FriendsList id={state.mainUser.id}/>;
 			case "History":
 				return <HistoryList />;
 		}

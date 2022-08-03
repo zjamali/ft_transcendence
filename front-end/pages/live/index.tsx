@@ -25,7 +25,7 @@ export function LiveHome(props: any) {
       <ParticleBackground />
       {games.length !== 0 ? (
         games.map((game, index) => {
-          return <LiveGame key={index} game={game} socket={props.socket} />;
+          return <LiveGame key={index} game={game} socket={socket} />;
         })
       ) : (
         <div className={styles.empty}>

@@ -37,7 +37,7 @@ function LiveGame(props: any) {
               </button>
             </div>
           </div>
-        </div>) : <Game />
+        </div>) : <Game  />
       }
     </>
   )

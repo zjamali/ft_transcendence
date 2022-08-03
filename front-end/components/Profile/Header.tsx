@@ -7,7 +7,7 @@ import { useContext, useEffect, useRef } from "react";
 import { AppContext } from "../../context/AppContext";
 import { io } from "socket.io-client";
 
-const Header = () => {
+const Header = (props) => {
 	const { state } = useContext(AppContext);
 	const userName: string = state.mainUser.userName;
 	const src: string = state.mainUser.image;
@@ -35,7 +35,7 @@ const Header = () => {
 			</div>
 			<div className="left-items">
 				<div className="notifications-container">
-					<DropDNotifications />
+					<DropDNotifications state={props.state} />
 				</div>
 				<div className="user-container">
 					<DropDown userName={userName} image={src} />

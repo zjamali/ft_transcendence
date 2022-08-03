@@ -18,7 +18,14 @@ import { gameSate } from './Classes/gameState';
 import { Player } from './Classes/player';
 import { GameService } from './game.service';
 
-@WebSocketGateway(5001, { cors: { origin: '*' } })
+@WebSocketGateway({
+  cors: {
+    origin: 'http://localhost:3000',
+    allowedHeaders: ['my-custom-header'],
+    credentials: true,
+  },
+  namespace: 'game',
+})
 export class GameGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
