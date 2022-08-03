@@ -14,8 +14,12 @@ const Header = (props) => {
 
 	useEffect(() => {
 		state.eventsSocket.on("A_PROFILE_UPDATE", (user: any) => {
+			console.log("update profile image : ", user);
 			setMainUser({ ...user });
 		});
+		return () => {
+			state.eventsSocket.off("A_PROFILE_UPDATE");
+		};
 	}, []);
 
 	return (

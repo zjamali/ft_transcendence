@@ -32,10 +32,12 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 		fetchFriends();
 		fetchBlocked();
 		state.eventsSocket.on("UPDATE_DATA", () => {
-			console.log("wa zabi ");
 			fetchFriends();
 			fetchBlocked();
 		});
+		return () => {
+			state.eventsSocket.off("A_PROFILE_UPDATE");
+		};
 	});
 
 	async function fetchFriends() {

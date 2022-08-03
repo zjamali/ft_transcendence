@@ -65,6 +65,9 @@ const DropDNotifications: React.FC = (props) => {
 		state.eventsSocket.on("NEW_FRIEND_REQUEST", () => {
 			fetchFriendsRequest();
 		});
+		return (()=> {
+			state.eventsSocket.off("NEW_FRIEND_REQUEST");
+		})
 	}, []);
 
 	const fetchFriendsRequest = () => {

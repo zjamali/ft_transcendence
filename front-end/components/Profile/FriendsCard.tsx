@@ -8,16 +8,13 @@ import axios from "axios";
 import { useState, useContext, useEffect } from "react";
 import { AppContext } from "../../context/AppContext";
 
-const FriendsCard = ({id } : {id: string}) => {
+const FriendsCard = ({ id }: { id: string }) => {
 	async function fetchFriends() {
 		try {
 			axios
-				.get(
-					`http://localhost:5000/users/id/${id}/friends`,
-					{
-						withCredentials: true,
-					}
-				)
+				.get(`http://localhost:5000/users/id/${id}/friends`, {
+					withCredentials: true,
+				})
 				.then((res) => {
 					// console.log('all users :', res.data)
 					setFriends([...res.data]);
@@ -53,8 +50,13 @@ const FriendsCard = ({id } : {id: string}) => {
 			console.log("updated");
 			fetchFriends();
 		});
-		
+
 		fetchFriends();
+
+		return () => {
+			state.eventsSocket.off("A_USER_STATUS_UPDATED");
+			state.eventsSocket.off("UPDATE_DATA");
+		};
 	}, []);
 
 	const [friends, setFriends] = useState<any[] | null>(null);
@@ -112,16 +114,56 @@ const FriendsCard = ({id } : {id: string}) => {
 					};
 					const fuserName: string = friend.userName;
 					const fimage: string = friend.image;
-					const friendId: string = friend.id
-					const currentId: string = id
-					let correctPath: string = '/users/' + friendId
+					const friendId: string = friend.id;
+					const currentId: string = id;
+					let correctPath: string = "/users/" + friendId;
 					// const userSrc: string = "/users/" + friendId
-					console.log("------>", friend.id, id, state.mainUser.id)
-					if (currentId !== state.mainUser.id)
-					{
+					console.log("------>", friend.id, id, state.mainUser.id);
+					if (currentId !== state.mainUser.id) {
 						return (
-							<div className="friends-card" key={friend.id} >
+							<div className="friends-card" key={friend.id}>
 								<div className="friends-card-img-name">
+									<div className="friends-card-img">
+										<Image
+											loader={() => fimage}
+											src={fimage}
+											unoptimized={true}
+											alt="img-user"
+											layout="fill"
+										/>
+									</div>
+									<div
+										style={{
+											fontSize: "18px",
+											fontWeight: "250",
+										}}
+									>
+										{fuserName}
+									</div>
+								</div>
+								<div className="friends-card-state">
+									{setStateOffFriend(
+										friend.isPlaying
+											? 1
+											: friend.isOnline
+											? 2
+											: 3
+									)}
+								</div>
+							</div>
+						);
+					}
+					return (
+						<Link
+							href={{
+								pathname: "users/[userId]",
+								query: { userId: `${friend.id}` },
+							}}
+							key={friendId}
+						>
+							<a>
+								<div className="friends-card" key={friend.id}>
+									<div className="friends-card-img-name">
 										<div className="friends-card-img">
 											<Image
 												loader={() => fimage}
@@ -129,67 +171,32 @@ const FriendsCard = ({id } : {id: string}) => {
 												unoptimized={true}
 												alt="img-user"
 												layout="fill"
-												/>
+											/>
 										</div>
 										<div
 											style={{
 												fontSize: "18px",
 												fontWeight: "250",
 											}}
-											>
+										>
 											{fuserName}
 										</div>
 									</div>
 									<div className="friends-card-state">
 										{setStateOffFriend(
 											friend.isPlaying
-											? 1
-											: friend.isOnline
-											? 2
-											: 3
-											)}
-									</div>
-								</div>
-						)
-					}
-					return (
-							<Link  href={{pathname: 'users/[userId]',query: { userId: `${friend.id}`}}} key={friendId}>
-								<a>
-									<div className="friends-card" key={friend.id} >
-										<div className="friends-card-img-name">
-											<div className="friends-card-img">
-												<Image
-													loader={() => fimage}
-													src={fimage}
-													unoptimized={true}
-													alt="img-user"
-													layout="fill"
-													/>
-											</div>
-											<div
-												style={{
-													fontSize: "18px",
-													fontWeight: "250",
-												}}
-												>
-												{fuserName}
-											</div>
-										</div>
-										<div className="friends-card-state">
-											{setStateOffFriend(
-												friend.isPlaying
 												? 1
 												: friend.isOnline
 												? 2
 												: 3
-												)}
-										</div>
+										)}
 									</div>
-								</a>
-							</Link>
+								</div>
+							</a>
+						</Link>
 					);
 				})}
-		</div>	
+		</div>
 	);
 };
 

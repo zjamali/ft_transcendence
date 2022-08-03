@@ -40,8 +40,12 @@ export function HomeGame() {
 
 		state.eventsSocket.on("STAR_PLAYING", (payload: any) => {
 			console.log(" start the game");
-      gameInviteDefHandler();
+			gameInviteDefHandler();
 		});
+		return () => {
+			state.eventsSocket.off("GAME_INVITATION");
+			state.eventsSocket.off("STAR_PLAYING");
+		};
 	}, []);
 
 	// socket.on("Playing", (payload: any) => {

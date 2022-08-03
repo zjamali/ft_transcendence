@@ -37,12 +37,12 @@ const Profile = () => {
 	}, []);
 
 	useEffect(() => {
-
-		
-
 		setOpenModal(router.query.edit_profile ? true : false);
 	}, [router]);
-
+	useEffect(() => {
+		if (!openModal)
+			Router.push("/");
+	}, [openModal]);
 
 	const src = state.mainUser?.image;
 	

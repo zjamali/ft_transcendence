@@ -153,7 +153,10 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     console.log('user update profile id  : ', userId);
     const user = await this.userService.findOne(userId);
-    this.Server.to(client.id).emit('A_PROFILE_UPDATE', { ...user });
+    const userSockets = GlobalService.UsersEventsSockets.get(userId);
+    userSockets?.forEach((socket) => {
+      this.Server.to(socket).emit('A_PROFILE_UPDATE', { ...user });
+    });
     client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user });
   }
   @SubscribeMessage('I_UPDATE_MY_DATA')

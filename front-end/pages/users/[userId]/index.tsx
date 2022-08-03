@@ -8,6 +8,7 @@ import OtherUserNav from "../../../components/Profile/OtherUserNav";
 import { User } from "../../../utils/interfaces";
 import { useRouter } from "next/router";
 import DefaultData from "../../../components/Profile/DefaultData";
+import NotFound from "../../notFound";
 
 type Props = {};
 
@@ -31,40 +32,51 @@ export default function UserProfile({}: Props) {
 			});
 
 		state.eventsSocket.on("UPDATE_DATA", () => {
-			console.log("re render page --------->")
 			axios
-			.get("http://localhost:5000/users/me", { withCredentials: true })
-			.then((res) => {
-				if (res.status === 200) {
-					setMainUser({ ...res.data });
-					userData();
-				}
-			})
-			.catch(() => {
-				console.log("ee");
-			});
-		})
+				.get("http://localhost:5000/users/me", {
+					withCredentials: true,
+				})
+				.then((res) => {
+					if (res.status === 200) {
+						setMainUser({ ...res.data });
+						userData();
+					}
+				})
+				.catch(() => {
+					console.log("ee");
+				});
+		});
+		return () => {
+			state.eventsSocket.off("A_PROFILE_UPDATE");
+		};
 	}, []);
-	
+
 	function userData() {
 		axios
 			.get(`http://localhost:5000/users/id/${userId}`, {
 				withCredentials: true,
 			})
-			.then((res) => {
+			.then(async (res) => {
 				if (res.status === 200) {
-					setUser({ ...res.data });
+						setUser({ ...res.data });
 				}
+				else
+					setUser(null);
 			})
 			.catch(() => {
 				console.log("eee");
 			});
-		}
-		
-		console.log("re render page ");
+	}
+	async function fetchUsersBlockedBy() {
+		return await axios.get("http://localhost:5000/users/blockedByUsers", {
+			withCredentials: true,
+		});
+	}
+
+	console.log("re render page ");
 	return (
 		<>
-			{state.mainUser && user && (
+			{state.mainUser && user ? (
 				<div className="profile-content">
 					<div className="profile-wall">
 						<div className="profile-wall-bg"></div>
@@ -88,6 +100,8 @@ export default function UserProfile({}: Props) {
 					</div>
 					<DefaultData id={user.id} />
 				</div>
+			) : (
+				<NotFound />
 			)}
 		</>
 	);

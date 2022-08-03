@@ -2,6 +2,7 @@ import { diskStorage } from 'multer';
 
 // import * as fs from 'fs';
 import * as path from 'path';
+import { uuid } from 'uuidv4';
 // import * as FileType from 'file-type';
 import RequestWithUser from '../requestWithUser.interface';
 // import { from, Observable, of, switchMap } from 'rxjs';
@@ -21,7 +22,7 @@ export const saveImageToStorage = {
     destination: './uploads',
     filename: (req: RequestWithUser, file, cb) => {
       const fileExtension: string = path.extname(file.originalname);
-      const fileName: string = req.user.id + fileExtension;
+      const fileName: string = uuid() + fileExtension;
 
       console.log('from filename function');
       console.log(file);

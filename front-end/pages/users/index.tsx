@@ -80,6 +80,10 @@ const Users = () => {
 		});
 		fetchAllUsers();
 		fetchFriends();
+		return () => {
+			state.eventsSocket.off("A_USER_STATUS_UPDATED");
+			state.eventsSocket.off("A_PROFILE_UPDATE");
+		};
 	}, []);
 
 	function fetchAllUsers() {
