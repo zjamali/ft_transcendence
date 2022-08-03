@@ -293,7 +293,7 @@ export class UsersService {
 
     return this.usersRepository.update(currUser.id, {
       userName: givenUserName,
-      image: imagePath,
+      image: 'http://localhost:5000/users/' + imagePath,
     });
   }
 

@@ -2,13 +2,10 @@ import { JwtAuthGuard } from './../auth/jwt-auth.guard';
 import {
   Body,
   Controller,
-  FileTypeValidator,
   Get,
   HttpException,
   HttpStatus,
-  MaxFileSizeValidator,
   Param,
-  ParseFilePipe,
   ParseFilePipeBuilder,
   Post,
   Req,
@@ -19,7 +16,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Express, Request, Response, response } from 'express';
+import { Express, Request, Response } from 'express';
 import RequestWithUser from './requestWithUser.interface';
 import { saveImageToStorage } from './helpers/image-storage';
 
@@ -183,6 +180,12 @@ export class UsersController {
       body.givenUserName,
       file.path,
     );
+  }
+
+  @Get('uploads/:imgId')
+  @UseGuards(JwtAuthGuard)
+  getImage(@Res() res: Response, @Param('imgId') imgId: string) {
+    res.sendFile(imgId, { root: './uploads' });
   }
 
   @Get('logOut')
