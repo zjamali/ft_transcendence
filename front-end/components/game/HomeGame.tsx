@@ -33,15 +33,19 @@ export function HomeGame() {
 	};
 
 	useEffect(() => {
-		state.eventsSocket.current.on("GAME_INVITATION", () => {
+		state.eventsSocket.on("GAME_INVITATION", () => {
 			console.log("wewewewe");
 			setAccepGame(true);
 		});
 
-		state.eventsSocket.current.on("STAR_PLAYING", (payload: any) => {
+		state.eventsSocket.on("STAR_PLAYING", (payload: any) => {
 			console.log(" start the game");
-      gameInviteDefHandler();
+			gameInviteDefHandler();
 		});
+		return () => {
+			state.eventsSocket.off("GAME_INVITATION");
+			state.eventsSocket.off("STAR_PLAYING");
+		};
 	}, []);
 
 	// socket.on("Playing", (payload: any) => {
@@ -79,7 +83,7 @@ export function HomeGame() {
 	};
 
 	const gameHandleAcceptInvite = () => {
-		state.eventsSocket.current.emit("accept_game_invitaion_to_server", {
+		state.eventsSocket.emit("accept_game_invitaion_to_server", {
 			sender: "48868",
 			receiver: `${state.mainUser.id}`,
 			game_room: `4886851077`,
@@ -87,8 +91,8 @@ export function HomeGame() {
 	};
 
 	const gameHandleInvite = () => {
-		if (state.eventsSocket.current)
-			state.eventsSocket.current.emit("send_game_invitaion_to_server", {
+		if (state.eventsSocket)
+			state.eventsSocket.emit("send_game_invitaion_to_server", {
 				sender: state.mainUser.id,
 				receiver: "51077",
 				game_room: "4886851077",

@@ -470,6 +470,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   async handleDisconnect(client: Socket) {
+    if (!client.handshake.headers.cookie) return;
     const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
     this.chatService.removeUserChatSocket(user_id, client.id);
   }

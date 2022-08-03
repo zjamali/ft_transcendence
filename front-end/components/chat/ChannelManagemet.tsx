@@ -113,7 +113,7 @@ function ManageMembers(props: any) {
 	function removeChannelPassword(e: any) {
 		e.preventDefault();
 		/// check current password is correct
-		props.chatSocket.current.emit(
+		props.chatSocket.emit(
 			"CHECK_ROOM_PASSWORD",
 			{
 				room_id: `${props.room.id}`,
@@ -124,7 +124,7 @@ function ManageMembers(props: any) {
 					setIsCurrentPasswordCorrect(false);
 					return;
 				} else {
-					props.chatSocket.current.emit("ROOM_REMOVE_PASSWORD", {
+					props.chatSocket.emit("ROOM_REMOVE_PASSWORD", {
 						admin_id: state.mainUser.id,
 						room_id: props.room.id,
 					});
@@ -134,7 +134,7 @@ function ManageMembers(props: any) {
 		);
 		// if (isPasswordCorrect)
 		// {
-		//   props.chatSocket.current.emit('ROOM_REMOVE_PASSWORD', {
+		//   props.chatSocket.emit('ROOM_REMOVE_PASSWORD', {
 		//     admin_id: `${state.mainUser.id}`,
 		//     room_id: `${props.room.id}`,
 		//   })
@@ -236,7 +236,7 @@ function ManageMembers(props: any) {
 		e.preventDefault();
 		if (roomSettingOption.value === "delete" && loadingRoomDataIsDone) {
 			console.log("delete channel");
-			props.chatSocket.current.emit("DELETE_ROOM", {
+			props.chatSocket.emit("DELETE_ROOM", {
 				admin_id: `${state.mainUser.id}`,
 				room_id: `${props.room.id}`,
 			});
@@ -248,7 +248,7 @@ function ManageMembers(props: any) {
 			selectedKickedUserOption
 		) {
 			/// 'ROOM_KICKED_USER';
-			props.chatSocket.current.emit("ROOM_KICKED_USER", {
+			props.chatSocket.emit("ROOM_KICKED_USER", {
 				admin_id: `${state.mainUser.id}`,
 				room_id: `${props.room.id}`,
 				new_kicked: selectedKickedUserOption,
@@ -261,7 +261,7 @@ function ManageMembers(props: any) {
 			selectedBannedsOption
 		) {
 			/// 'ROOM_banne_USER';
-			props.chatSocket.current.emit("ROOM_BAN_A_USER", {
+			props.chatSocket.emit("ROOM_BAN_A_USER", {
 				admin_id: `${state.mainUser.id}`,
 				room_id: `${props.room.id}`,
 				banned: selectedBannedsOption,
@@ -270,7 +270,7 @@ function ManageMembers(props: any) {
 		}
 		if (roomSettingOption.value === "muted" && loadingRoomDataIsDone) {
 			console.log("mute a user 77777777777");
-			props.chatSocket.current.emit("ROOM_MUTE_USERS", {
+			props.chatSocket.emit("ROOM_MUTE_USERS", {
 				admin_id: `${state.mainUser.id}`,
 				room_id: `${props.room.id}`,
 				muted_user: selectedMutedusersOption,
@@ -284,7 +284,7 @@ function ManageMembers(props: any) {
 			selectedAdminsOption
 		) {
 			/// 'ROOM_SET_ADMIN';
-			props.chatSocket.current.emit("ROOM_ADMINS_STATUS", {
+			props.chatSocket.emit("ROOM_ADMINS_STATUS", {
 				admin_id: `${state.mainUser.id}`,
 				room_id: `${props.room.id}`,
 				new_admins: [...selectedAdminsOption],
@@ -297,7 +297,7 @@ function ManageMembers(props: any) {
 				if (!validatePassword.test(updatePassword)) {
 					setIsNewPasswordCorrects(false);
 				} else {
-					props.chatSocket.current.emit("ROOM_ADD_PASSWORD", {
+					props.chatSocket.emit("ROOM_ADD_PASSWORD", {
 						admin_id: `${state.mainUser.id}`,
 						room_id: `${props.room.id}`,
 						password: updatePassword,
@@ -306,7 +306,7 @@ function ManageMembers(props: any) {
 				}
 				return;
 			}
-			props.chatSocket.current.emit(
+			props.chatSocket.emit(
 				"CHECK_ROOM_PASSWORD",
 				{
 					room_id: `${props.room.id}`,
@@ -320,7 +320,7 @@ function ManageMembers(props: any) {
 						if (!validatePassword.test(updatePassword)) {
 							setIsNewPasswordCorrects(false);
 						} else {
-							props.chatSocket.current.emit(
+							props.chatSocket.emit(
 								"ROOM_UPDATE_PASSWORD",
 								{
 									admin_id: `${state.mainUser.id}`,
@@ -337,26 +337,26 @@ function ManageMembers(props: any) {
 	}
 
 	useEffect(() => {
-		props.chatSocket.current.on("connect_failed", () => {
-			console.log(
-				"Sorry, there seems to be an issue with the connection!"
-			);
-		});
-		props.chatSocket.current.on("connect_error", () => {
-			console.log(
-				"Sorry, there seems to be an issue with the connection!"
-			);
-		});
-		props.chatSocket.current.on("connect_failed", () => {
-			console.log(
-				"Sorry, there seems to be an issue with the connection!"
-			);
-		});
-		props.chatSocket.current.on("disconnect", () => {
-			console.log(
-				"Sorry, there seems to be an issue with the connection!"
-			);
-		});
+		// props.chatSocket.on("connect_failed", () => {
+		// 	console.log(
+		// 		"Sorry, there seems to be an issue with the connection!"
+		// 	);
+		// });
+		// props.chatSocket.on("connect_error", () => {
+		// 	console.log(
+		// 		"Sorry, there seems to be an issue with the connection!"
+		// 	);
+		// });
+		// props.chatSocket.on("connect_failed", () => {
+		// 	console.log(
+		// 		"Sorry, there seems to be an issue with the connection!"
+		// 	);
+		// });
+		// props.chatSocket.on("disconnect", () => {
+		// 	console.log(
+		// 		"Sorry, there seems to be an issue with the connection!"
+		// 	);
+		// });
 
 		return () => {};
 	}, []);
@@ -611,7 +611,7 @@ function JoinProtectedRoom(props: any) {
 		e.preventDefault();
 		if (password.length) {
 			setValidatePasswordState(false);
-			props.chatSocket.current.emit(
+			props.chatSocket.emit(
 				"CHECK_ROOM_PASSWORD",
 				{ room_id: props.room_id, password: password },
 				(responce: any) => {

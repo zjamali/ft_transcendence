@@ -5,8 +5,11 @@ import IconButton from '@mui/material/IconButton';
 import { acceptFriendRequest, unfriend } from "../../utils/utils";
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 import CloseIcon from '@mui/icons-material/Close';
+import { useContext } from "react";
+import {AppContext} from "../../context/AppContext";
 
-const Notification = (props) => {
+const Notification = (props : any) => {
+	const {state} = useContext(AppContext)
 	return (
 		<div>
 			<MenuItem  style={{color: "#919eab", height: '40px'}}>
@@ -16,10 +19,10 @@ const Notification = (props) => {
 				<div style={{marginLeft: '10px', display: 'flex', flexDirection: 'row', alignItems: 'center', }}>
 					<div>{props.user.userName}</div>
 					<div style={{marginLeft: '80px'}}>
-					<IconButton color="error" onClick={(e)=> {e.preventDefault(); unfriend(props.user.id) }}>
+					<IconButton color="error" onClick={(e)=> {e.preventDefault(); unfriend(state.mainUser.id ,props.user.id) }}>
 						<CloseIcon/>
 					</IconButton>
-					<IconButton color="success" onClick={(e)=> {e.preventDefault(); acceptFriendRequest(props.user.id)  }}>
+					<IconButton color="success" onClick={(e)=> {e.preventDefault(); acceptFriendRequest(state.mainUser.id ,props.user.id)  }}>
 						<DoneRoundedIcon/>
 					</IconButton>
 					</div>

@@ -514,6 +514,10 @@
   align-content: center;
   justify-content: center;
 }
+.loginContainner svg
+{
+  height: 150px;
+}
 .loginContainner div
 {
   display: flex;

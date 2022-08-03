@@ -27,7 +27,7 @@ export function CreateChannel({
   )
 
   function createRoom(newRoom: Channel) {
-    state.chatSocket.current.emit('CREATE_CHANNEL', newRoom)
+    state.chatSocket.emit('CREATE_CHANNEL', newRoom)
     setModalIsOpen(false)
   }
 

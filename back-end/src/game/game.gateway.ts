@@ -1,9 +1,6 @@
-import { type } from 'os';
-import { Inject, Logger } from '@nestjs/common';
+import { Inject, Logger, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import {
-  ConnectedSocket,
-  MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
   OnGatewayInit,
@@ -12,6 +9,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UsersService } from 'src/users/users.service';
 import { Game } from './Classes/game';
 import { gameSate } from './Classes/gameState';
@@ -64,11 +62,12 @@ export class GameGateway
   afterInit(server: any) {
     this.logger.log('Initial');
   }
-
+  @UseGuards(JwtAuthGuard)
   handleConnection(client: Socket, ...args: any[]) {
     /* 
     if the user has watcher stat: emit "send_games" with GameGateway.game array to be rendered in the frontend
      */
+    
     this.logger.log('Connect Success ' + `${client.id}`);
   }
 

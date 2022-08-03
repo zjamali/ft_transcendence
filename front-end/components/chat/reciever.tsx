@@ -30,8 +30,8 @@ export default function Reciever({
 	}, [state.receiver, state.Channels]);
 
 	const gameHandleInvite = () => {
-		if (state.eventsSocket.current)
-			state.eventsSocket.current.emit("send_game_invitaion_to_server", {
+		if (state.eventsSocket)
+			state.eventsSocket.emit("send_game_invitaion_to_server", {
 				sender: `${state.mainUser.id}`,
 				receiver: `${state.receiver.id}`,
 				game_room: `${state.mainUser.id}${state.receiver.id}`,

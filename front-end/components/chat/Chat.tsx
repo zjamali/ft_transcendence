@@ -49,61 +49,44 @@ export default function Chat() {
 	/*  Event Sockets namespace  */
 
 	useEffect(() => {
-		console.log("chat update");
-		//////
-		/* creation Sockets start */
-		if (!state.eventsSocket.current) {
-			state.eventsSocket.current = io("http://localhost:5000/events", {
-				withCredentials: true,
-			});
-		}
-		if (!state.chatSocket.current) {
-			state.chatSocket.current = io("http://localhost:5000/chat", {
-				withCredentials: true,
-			});
-		}
-		try {
-			state.eventsSocket.current.on(
-				"A_USER_STATUS_UPDATED",
-				(user: any) => {
-					console.log("user status updated");
-					setContactStatus(user.isOnline, user);
-				}
-			);
-			state.chatSocket.current.on("A_CHANNELS_STATUS_UPDATED", () => {
-				fetchAllChannels();
-			});
-
-			state.chatSocket.current.on("A_CHANNELS_YOU_KICKED", () => {
-				setIsUserJoinedChannel(false);
-				setReceiver(null);
-				fetchAllChannels();
-			});
-			state.chatSocket.current.on("YOU_GET_MUTED", () => {
-				console.log("some  one get muted :::  999999");
-				fetchAllChannels();
-			});
-			state.chatSocket.current.on("YOU_GET_UNMUTED", () => {
-				console.log("some  one get unmuted :::  pppppp");
-				fetchAllChannels();
-			});
-			state.chatSocket.current.on("A_CHANNELS_YOU_BANNED", () => {
-				setIsUserJoinedChannel(false);
-				setReceiver(null);
-				fetchAllChannels();
-			});
-			state.chatSocket.current.on("ADMINS_STATUS_UPDATED", () => {
-				console.log("a admins status updated ");
-				fetchAllChannels();
-			});
-		} catch (error) {
-			console.log("sockets error", error);
-		}
+		state.eventsSocket.on("A_USER_STATUS_UPDATED", (user: any) => {
+			console.log("user status updated");
+			setContactStatus(user.isOnline, user);
+		});
+		state.chatSocket.on("A_CHANNELS_STATUS_UPDATED", () => {
+			fetchAllChannels();
+		});
+		state.chatSocket.on("A_CHANNELS_YOU_KICKED", () => {
+			setIsUserJoinedChannel(false);
+			setReceiver(null);
+			fetchAllChannels();
+		});
+		state.chatSocket.on("YOU_GET_MUTED", () => {
+			console.log("some  one get muted :::  999999");
+			fetchAllChannels();
+		});
+		state.chatSocket.on("YOU_GET_UNMUTED", () => {
+			console.log("some  one get unmuted :::  pppppp");
+			fetchAllChannels();
+		});
+		state.chatSocket.on("A_CHANNELS_YOU_BANNED", () => {
+			setIsUserJoinedChannel(false);
+			setReceiver(null);
+			fetchAllChannels();
+		});
+		state.chatSocket.on("ADMINS_STATUS_UPDATED", () => {
+			console.log("a admins status updated ");
+			fetchAllChannels();
+		});
 
 		return () => {
-			console.log("close sockets");
-			// state.eventsSocket.current.disconnect();
-			// state.chatSocket.cureent.disconnect();
+			state.eventsSocket.off("A_USER_STATUS_UPDATED");
+			state.chatSocket.off("A_CHANNELS_STATUS_UPDATED");
+			state.chatSocket.off("A_CHANNELS_YOU_KICKED");
+			state.chatSocket.off("YOU_GET_MUTED");
+			state.chatSocket.off("YOU_GET_UNMUTED");
+			state.chatSocket.off("A_CHANNELS_YOU_BANNED");
+			state.chatSocket.off("ADMINS_STATUS_UPDATED");
 		};
 	}, []);
 

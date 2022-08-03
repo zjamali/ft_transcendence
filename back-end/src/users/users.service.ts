@@ -298,14 +298,14 @@ export class UsersService {
   }
 
   async setTwoFactorAuthenticationSecret(userId: string, secret: string) {
-    return this.usersRepository.update(userId, {
+    return await this.usersRepository.update(userId, {
       twoFactorAuthenticationSecret: secret,
     });
   }
 
   async turnOnTwoFactorAuthentication(userId: string) {
     console.log(userId);
-    return this.usersRepository.update(
+    return await this.usersRepository.update(
       { id: userId },
       {
         isTwoFactorAuthenticationEnabled: true,

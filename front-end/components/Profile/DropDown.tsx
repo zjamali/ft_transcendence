@@ -13,9 +13,9 @@ import intra from "../../public/42.jpg";
 import Link from "next/link";
 import axios from "axios";
 import { AppContext } from "../../context/AppContext";
-import { useRouter } from "next/router";
 import Router from "next/router";
 import cookies, { useCookies } from "react-cookie";
+import PersonIcon from '@mui/icons-material/Person';
 interface DropDown {
 	userName: string;
 	image: string;
@@ -32,9 +32,9 @@ const DropDown: React.FC<DropDown> = ({ userName, image }) => {
 	};
 	const [cookies, setCookie, removeCookie] = useCookies(["access_token"]);
 	const handleLogOut = (e: any) => {
-		state.chatSocket.current?.close();
-		state.eventsSocket.current?.emit("LOG_OUT");
-		state.eventsSocket.current?.close();
+		state.chatSocket?.close();
+		state.eventsSocket?.emit("LOG_OUT");
+		state.eventsSocket?.close();
 		removeCookie("access_token");
 		setLogin(false);
 		setMainUser(null);
@@ -109,7 +109,11 @@ const DropDown: React.FC<DropDown> = ({ userName, image }) => {
 			>
 				<Link href="/">
 					<MenuItem autoFocus={false} style={{ color: "#919eab" }}>
-						<Avatar /> {userName}
+						{/* <Avatar /> */}
+						<ListItemIcon style={{ color: "#919eab" }}>
+						<PersonIcon fontSize="small"/>
+						</ListItemIcon>
+						 {userName}
 					</MenuItem>
 				</Link>
 				<Divider />

@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Post,
   Req,
   Res,
@@ -54,10 +55,10 @@ export class TwoFactorAuthenticationController {
     const { access_token } = this.jwtAuthService.signWith2FA(req.user, true);
     res.cookie('access_token', access_token);
 
-    return req.user;
+    return res.status(HttpStatus.OK).send('success');
   }
 
-  @Post('turnOn')
+  @Get('turnOn')
   @UseGuards(JwtAuthGuard)
   async turnOnTwoFactorAuthentication(
     @Req() req: RequestWithUser,
@@ -66,26 +67,29 @@ export class TwoFactorAuthenticationController {
   ) {
     console.log('watiting 1', req.user);
     const isCodeValid =
-      await this.twoFactorAuthService.isTwoFactorAuthenticationCodeValid(
+      this.twoFactorAuthService.isTwoFactorAuthenticationCodeValid(
         twoFactorAuthenticationCode,
         req.user,
       );
     console.log('watiting 2');
 
+    console.log(' is code valide : ', isCodeValid);
     if (!isCodeValid) {
       throw new UnauthorizedException('Wrong two factor authentication');
+    } else {
+      await this.usersService.turnOnTwoFactorAuthentication(req.user.id);
+      const { access_token } = this.jwtAuthService.signWith2FA(req.user, true);
+      res.cookie('access_token', access_token);
+      return res.status(HttpStatus.OK).send(access_token);
     }
-    console.log('watiting 3');
+    // console.log('watiting 3');
 
-    // await this.usersService.turnOnTwoFactorAuthentication(req.user.id);
-    console.log('watiting 4');
+    // console.log('watiting 4');
 
-    // const { access_token } = this.jwtAuthService.signWith2FA(req.user, true);
-    console.log('watiting 5');
+    // console.log('watiting 5');
 
-    // res.cookie('access_token', access_token);
-    console.log('watiting 6');
-    return req.user;
+    // console.log('watiting 6');
+    return 'successs';
   }
 
   @Post('turnOff')

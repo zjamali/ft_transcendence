@@ -39,10 +39,14 @@ const Profile = () => {
 	useEffect(() => {
 		setOpenModal(router.query.edit_profile ? true : false);
 	}, [router]);
-
+	useEffect(() => {
+		if (!openModal)
+			Router.push("/");
+	}, [openModal]);
 
 	const src = state.mainUser?.image;
-
+	
+	console.log("path------------>", src)
 	return (
 		<div className="profile-content">
 			<div className="profile-wall">
