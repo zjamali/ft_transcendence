@@ -19,13 +19,14 @@ export class AuthService {
 
     const user = await this.usersService.findOne(userId);
     if (user && user.isTwoFactorAuthenticationEnabled == false) {
-      console.log('user already exist');
+      console.log('user does already exist');
       url = 'http://localhost:3000';
     } else if (user && user.isTwoFactorAuthenticationEnabled == true) {
-      url = 'http://localhost:3000/2fa';
-      res.redirect(url);
+      url = 'http://localhost:3000?twoFa=true';
     } else {
-      console.log('user doesnt exist');
+      console.log(
+        'user does not exist, I will create it and insert it into DB',
+      );
       url = 'http://localhost:3000?edit_profile=true';
       this.usersService.createUser(req.user);
     }
@@ -44,7 +45,7 @@ export class AuthService {
     // console.log(req.user);
 
     // console.log(access_token);
-    const { access_token } = this.jwtAuthService.login(req.user);
+    const { access_token } = this.jwtAuthService.signWith2FA(req.user, false);
     res.cookie('access_token', access_token);
     res.redirect(url);
 

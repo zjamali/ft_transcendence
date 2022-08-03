@@ -1,38 +1,48 @@
-import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { Injectable } from '@nestjs/common';
-import User from 'src/users/user.entity';
 
-type JwtPayload = { id: string; username: string };
+type Jwt2FAPayload = { id: string; isSecondFactorAuthenticated: boolean };
+// type JwtPayload = { id: string; username: string };
 
 @Injectable()
 export class JwtAuthService {
-  constructor(
-    private readonly jwtService: JwtService,
-    private readonly usersService: UsersService,
-  ) {}
+  constructor(private readonly jwtService: JwtService) {}
 
-  async validateUser(payload: JwtPayload): Promise<User> {
-    const { id } = payload;
-    try {
-      const user = await this.usersService.findOne(id);
-      if (!user) {
-        return null;
-      }
-      return user;
-    } catch {
-      return null;
-    }
-  }
+  // async validateUser(payload: JwtPayload): Promise<User> {
+  //   const { id } = payload;
+  //   try {
+  //     const user = await this.usersService.findOne(id);
+  //     if (!user) {
+  //       return null;
+  //     }
+  //     return user;
+  //   } catch {
+  //     return null;
+  //   }
+  // }
 
-  login(user) {
+  signWith2FA(user, isAuthenticated = false) {
     // console.log('user from login in JwtAuthService: ');
     // console.log(user);
-    const payload: JwtPayload = { username: user.userName, id: user.id };
+    const payload: Jwt2FAPayload = {
+      id: user.id,
+      isSecondFactorAuthenticated: isAuthenticated,
+    };
     // console.log('payload:');
     // console.log(payload);
     return {
       access_token: this.jwtService.sign(payload),
     };
   }
+
+  // sign(user) {
+  //   // console.log('user from login in JwtAuthService: ');
+  //   // console.log(user);
+  //   const payload: JwtPayload = { username: user.userName, id: user.id };
+  //   // console.log('payload:');
+  //   // console.log(payload);
+  //   return {
+  //     access_token: this.jwtService.sign(payload),
+  //   };
+  // }
 }
