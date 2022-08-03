@@ -1,17 +1,28 @@
 import axios from "axios";
+import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
 import twoFA from "/styles/Chat.module.css";
 
 export default function TwoFactorAuth(props: any) {
 	const [twoFaCode, setTwoFaCode] = useState("");
+	const router = useRouter();
 
 	async function Submit2FA(e) {
 		e.preventDefault();
-		const responce = await axios.post(
-			"http://localhost:5000/2fa/authenticate",
-			{ twoFactorAuthenticationCode: twoFaCode },
-			{ withCredentials: true }
-		);
+
+		try {
+			await axios.post(
+				"http://localhost:5000/2fa/authenticate",
+				{ twoFactorAuthenticationCode: twoFaCode },
+				{ withCredentials: true }
+			).then((data) => {
+				console.log("data : ", data);
+				router.push("/?login=true")
+			})
+			
+		} catch (error) {
+			console.log("2fa error");
+		}
 	}
 
 	return (

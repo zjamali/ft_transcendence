@@ -34,7 +34,7 @@ export class TwoFactorAuthenticationService {
     return toFileStream(stream, otpauthUrl);
   }
 
-  async isTwoFactorAuthenticationCodeValid(
+  isTwoFactorAuthenticationCodeValid(
     twoFactorAuthenticaionCode: string,
     user: User,
   ) {
