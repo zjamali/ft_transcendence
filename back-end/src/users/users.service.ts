@@ -3,13 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Response } from 'express';
 import { Repository } from 'typeorm/repository/Repository';
 import Friend, { State } from './friend.entity';
-// import { Connection } from 'typeorm';
 import User from './user.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
-    // @InjectConnection() private readonly connection: Connection
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
     @InjectRepository(Friend)
@@ -274,6 +272,21 @@ export class UsersService {
 
     const receivedRequests = this.usersRepository.query(sql, [userId]);
     return receivedRequests;
+  }
+
+  async getMatchesHistory(userId: string) {
+    const sql = `SELECT * FROM public.Games WHERE "firstPlayer" = $1 OR "secondPlayer" = $1`;
+
+    const matchesHistory = await this.usersRepository.query(sql, [userId]);
+    // const return_data =[...matchHistory].map(async (match) => {
+    //   match.firstPlayer = await this.usersRepository.findOne(match.firstPlayer);
+    //   match.secondPlayer = await this.usersRepository.findOne(
+    //     match.secondPlayer,
+    //   );
+    // }
+    // });
+    // console.log(return_data);
+    return matchesHistory;
   }
 
   async updateProfile(

@@ -7,10 +7,18 @@ export class AddGameDto {
   @IsNotEmpty()
   @IsString()
   firstPlayer: string;
+  @IsString()
+  firstPlayerImage: string;
+  @IsString()
+  firstPlayerUserName: string;
 
   @IsNotEmpty()
   @IsString()
   secondPlayer: string;
+  @IsString()
+  secondPlayerImage: string;
+  @IsString()
+  secondPlayerUserName: string;
 
   @IsNotEmpty()
   @IsNumber()

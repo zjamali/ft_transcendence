@@ -68,6 +68,10 @@ export class Game {
     gameDta.id = this._id;
     gameDta.firstPlayer = this._player_One.getUserId();
     gameDta.secondPlayer = this._player_Two.getUserId();
+    gameDta.firstPlayerImage = this._player_One.getAvatar();
+    gameDta.secondPlayerImage = this._player_Two.getAvatar();
+    gameDta.firstPlayerUserName = this._player_One.getUsername();
+    gameDta.secondPlayerUserName = this._player_Two.getUsername();
     gameDta.scoreFirst = this._player_One.getScore();
     gameDta.scoreSecond = this._player_Two.getScore();
     this._gameService.insertGame(gameDta);

@@ -67,9 +67,9 @@ export class Player {
     return (this._score = score);
   }
   public setAvatar(avatar: string): void {
-    this._avatar = avatar
+    this._avatar = avatar;
   }
   public getAvatar(): string {
-    return (this._avatar);
+    return this._avatar;
   }
 }
