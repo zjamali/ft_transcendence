@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { authenticator } from 'otplib';
 import User from 'src/users/user.entity';
@@ -38,6 +38,10 @@ export class TwoFactorAuthenticationService {
     twoFactorAuthenticaionCode: string,
     user: User,
   ) {
+    if (!user.twoFactorAuthenticationSecret)
+      throw new UnauthorizedException(
+        'you must generate a 2fa QRcode for the current user',
+      );
     return authenticator.verify({
       token: twoFactorAuthenticaionCode,
       secret: user.twoFactorAuthenticationSecret,
