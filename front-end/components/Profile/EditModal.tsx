@@ -125,11 +125,30 @@ const EditModal: React.FC<EditModalProps> = ({
 		// Request made to the backend api
 		// Send formData object
 		try {
-			if (!twoFAChecked)
-				axios.post("http://localhost:5000/2fa/turnOff", {
-					withCredentials: true,
-				});
-			if (userName && imageData) {
+			if (twoFAChecked) {
+				if (!state.mainUser.isTwoFactorAuthenticationEnabled) {
+					setOpen2FAModal(true);
+				} else {
+					if (userName && imageData) {
+						axios
+							.post(
+								"http://localhost:5000/users/updateProfile",
+								formData,
+								{
+									withCredentials: true,
+								}
+							)
+							.then((response) => {
+								closeModal(false);
+								console.log("upload data : ", response);
+								state.eventsSocket.emit(
+									"I_UPDATE_MY_PROFILE",
+									state.mainUser.id
+								);
+							});
+					}
+				}
+			} else {
 				axios
 					.post(
 						"http://localhost:5000/users/updateProfile",
@@ -217,16 +236,7 @@ const EditModal: React.FC<EditModalProps> = ({
 							control={<Android12Switch />}
 							checked={twoFAChecked}
 							onClick={() => {
-								// if (
-								// 	!state.mainUser
-								// 		.isTwoFactorAuthenticationEnabled
-								// ) {
-								// 	setOpen2FAModal(true);
-								// } else {
-								// 	setTwoFAChecked(false);
-								// }
 								setTwoFAChecked(!twoFAChecked);
-								if (!twoFAChecked) setOpen2FAModal(true);
 							}}
 						/>
 					</div>

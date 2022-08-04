@@ -12,10 +12,13 @@ export default function Layout(props: any) {
 	const router = useRouter();
 	console.log("router : >> ", router.pathname);
 	useEffect(() => {
+		socket.connect();
+		// console.log(socket.io.opts.query.data);
+		
 		return () => {
 			eventsSocket.disconnect();
 			chatSocket.disconnect();
-			socket.disconnect();
+			// socket.disconnect();
 		};
 	}, []);
 

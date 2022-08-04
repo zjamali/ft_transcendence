@@ -10,18 +10,21 @@ export class Player {
   private _isInterval: NodeJS.Timer;
   private userId: string;
   private username: string;
+  private _avatar: string;
 
   constructor(
     socket: Socket,
     isLeftSide: boolean,
     userId: string = '',
     username: string = '',
+    avatar: string = '',
   ) {
     this._socket = socket;
     this._score = 0;
     this._isLesftSide = isLeftSide;
     this.userId = userId;
     this.username = username;
+    this._avatar = avatar;
     if (isLeftSide) {
       this._paddle = new Paddle(GameVariable._left_Paddle_X);
     } else {
@@ -62,5 +65,11 @@ export class Player {
   }
   public setScore(score: number): number {
     return (this._score = score);
+  }
+  public setAvatar(avatar: string): void {
+    this._avatar = avatar
+  }
+  public getAvatar(): string {
+    return (this._avatar);
   }
 }

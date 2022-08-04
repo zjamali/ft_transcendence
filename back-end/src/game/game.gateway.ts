@@ -140,75 +140,76 @@ export class GameGateway
   async hundle_join_match(client: Socket, payload: any) {
     this.logger.log('Join Match ' + `${client.id} `);
 
-    const userPayload: any = this.jwtService.decode(payload.access_token);
-    console.log(userPayload);
+    // const userPayload: any = this.jwtService.decode(payload.access_token);
+    const user: any = payload.user;
+    console.log('user => ',payload.user);
 
     //NOTE - Check If the same client not add in Set of socket
 
-    if (payload.type === 'invitaion') {
-      console.log('join invitation game ', payload.room);
+    // if (payload.type === 'invitaion') {
+    //   console.log('join invitation game ', payload.room);
 
-      const firstSocket = this.privateGame.get(payload.room);
-      console.log('first  game socket : ', firstSocket);
-      const userData = await this.usersService.findOne(userPayload.id);
-      if (userData.id === userPayload.id) return;
-      console.log('user Data : ', userData);
-      if (!firstSocket) {
-        this.privateGame.set(payload.room, [client]);
-        this.privateGameUser.set(payload.room, {
-          ...userPayload,
-          avater: userData.image,
-        });
-      } else {
-        const firstUserData = this.privateGameUser.get(payload.room);
-        this.privateGameUser.set(payload.room, [
-          firstUserData,
-          { ...userPayload, avater: userData.image },
-        ]);
-        this.privateGame.set(payload.room, [...firstSocket, client]);
-      }
+    //   const firstSocket = this.privateGame.get(payload.room);
+    //   console.log('first  game socket : ', firstSocket);
+    //   const userData = await this.usersService.findOne(userPayload.id);
+    //   if (userData.id === userPayload.id) return;
+    //   console.log('user Data : ', userData);
+    //   if (!firstSocket) {
+    //     this.privateGame.set(payload.room, [client]);
+    //     this.privateGameUser.set(payload.room, {
+    //       ...userPayload,
+    //       avater: userData.image,
+    //     });
+    //   } else {
+    //     const firstUserData = this.privateGameUser.get(payload.room);
+    //     this.privateGameUser.set(payload.room, [
+    //       firstUserData,
+    //       { ...userPayload, avater: userData.image },
+    //     ]);
+    //     this.privateGame.set(payload.room, [...firstSocket, client]);
+    //   }
 
-      if (this.privateGame.get(payload.room).length === 1) return;
+    //   if (this.privateGame.get(payload.room).length === 1) return;
 
-      console.log(
-        'game room socket : ',
-        this.privateGameUser.get(payload.room),
-      );
+    //   console.log(
+    //     'game room socket : ',
+    //     this.privateGameUser.get(payload.room),
+    //   );
 
-      const firstUser = this.privateGameUser.get(payload.room)[0];
-      console.log('firsUser : ', firstUser);
-      const secondeUser = this.privateGameUser.get(payload.room)[1];
-      console.log(' seconde User ', secondeUser);
-      this.server.emit('Playing', {
-        playing: true,
-        first: {
-          username: firstUser.username,
-          avatar: firstUser.avater,
-        },
-        second: {
-          username: secondeUser.username,
-          avatar: secondeUser.avater,
-        },
-      });
+    //   const firstUser = this.privateGameUser.get(payload.room)[0];
+    //   console.log('firsUser : ', firstUser);
+    //   const secondeUser = this.privateGameUser.get(payload.room)[1];
+    //   console.log(' seconde User ', secondeUser);
+    //   this.server.emit('Playing', {
+    //     playing: true,
+    //     first: {
+    //       username: firstUser.username,
+    //       avatar: firstUser.avater,
+    //     },
+    //     second: {
+    //       username: secondeUser.username,
+    //       avatar: secondeUser.avater,
+    //     },
+    //   });
 
-      this.playerOne = new Player(
-        this.privateGame.get(payload.room)[0],
-        true,
-        firstUser.id,
-        firstUser.username,
-      );
-      this.playerTwo = new Player(
-        this.privateGame.get(payload.room)[1],
-        false,
-        secondeUser.id,
-        secondeUser.username,
-      );
-      /// delete instaed games
-      this.privateGame.delete(payload.room);
-      this.privateGameUser.delete(payload.room);
-      console.log('private game :', this.privateGame);
-      console.log('private game  users :', this.privateGameUser);
-    } else {
+    //   this.playerOne = new Player(
+    //     this.privateGame.get(payload.room)[0],
+    //     true,
+    //     firstUser.id,
+    //     firstUser.username,
+    //   );
+    //   this.playerTwo = new Player(
+    //     this.privateGame.get(payload.room)[1],
+    //     false,
+    //     secondeUser.id,
+    //     secondeUser.username,
+    //   );
+    //   /// delete instaed games
+    //   this.privateGame.delete(payload.room);
+    //   this.privateGameUser.delete(payload.room);
+    //   console.log('private game :', this.privateGame);
+    //   console.log('private game  users :', this.privateGameUser);
+    // } else {
       if (this.socketArr.has(client)) {
         return;
       }
@@ -217,11 +218,11 @@ export class GameGateway
 
       //NOTE - Add User In Array
 
-      const userData = await this.usersService.findOne(userPayload.id);
+      // const userData = await this.usersService.findOne(userPayload.id);
 
       this.userArr.push({
-        ...userPayload,
-        avatar: userData.image,
+       ...user,
+        avatar: user.image,
       });
       if (this.userArr.length === 1) return;
       //NOTE - Check if Set Of Socket (i means player) to stock is 2
@@ -269,7 +270,7 @@ export class GameGateway
       //   second.username,
       // );
       //NOTE - Create new instance of game and game is start in constructor
-    }
+    //}
     console.log('create game instance :::::::::::>');
     const newGame = new Game(
       this.playerOne,

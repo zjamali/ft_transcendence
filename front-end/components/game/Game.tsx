@@ -6,6 +6,7 @@ import { GameObj } from "../../Library/gameObject";
 import style from "../../styles/Game.module.css";
 import socket from "../../Library/Socket";
 import { Loading } from "@nextui-org/react";
+import {data} from './HomeGame'
 
 interface GameProps {
   data: Data;
@@ -14,8 +15,8 @@ interface GameProps {
 }
 
 export function Game(props: GameProps) {
-  const { data, currentState, setCurrentState } = props;
-
+  const { currentState, setCurrentState } = props;
+  
   const canvasRef: any = useRef();
   const initialState: GameObj = {
     ball: {

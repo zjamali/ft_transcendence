@@ -1,52 +1,59 @@
 @import url("https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Kanit:wght@500&family=Outfit:wght@100;500&family=Press+Start+2P&family=Work+Sans:wght@100;200;300;400;500;600;700;800&display=swap");
 
-.container {
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
-}
 
-.container .box {
+.box {
     background-color: #000;
     color: #FFFF;
     width: 50%;
     border-radius: 20px;
+    border: 1px solid #FFFF;
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 40px 0;
 }
 
-.container .box .title {
+.box .title {
     text-align: center;
     margin-bottom: 100px;
     letter-spacing: 5px;
     font-family: "Press Start 2P", cursive;
 }
 
-.container .box .field {
+.box .field {
     display: flex;
     align-items: center;
     justify-content: space-around;
     margin-bottom: 80px;
 }
-.container .box:last-child {
+.box:last-child {
     text-align: center;
 }
-.container .box .field div {
+.box .field div {
     display: flex;
     flex-direction: column;
 }
 
-.container .box .field label {
+.box .field label {
     margin-right: 5px;
     margin-bottom: 20px;
     font-family: "Press Start 2P", cursive;
     color: gray;
 }
-.container .box .field select {
+.box .field select {
     width: 400px;
     padding: 8px 0 8px 5px;
     border-radius: 5px;
 }
 
-.container .apply, .container .cancel {
+.btns {
+    display: flex;
+    justify-content: center
+}
+
+.apply, .cancel {
     position: relative;
     top: 0;
     width: 15%;
@@ -79,7 +86,7 @@
       0 15px 1px 6px rgba(0, 0, 0, 0.3);
 }
 
-.container .apply::before, .container .cancel::before {
+.apply::before, .cancel::before {
     content: "";
   height: 10%;
   position: absolute;
@@ -90,7 +97,7 @@
   border-radius: 99px;
 }
 
-.container .apply:hover, .container .cancel:hover {
+.apply:hover, .cancel:hover {
     top: 2px;
   box-shadow: 0 4px 0 #348628, 0 6px 1px 1px rgba(0, 0, 0, 0.3),
     0 8px 0 5px #2a6d20, 0 10px 0 5px #39822e, 0 13px 0 5px #1d4c16,

@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Overpass:wght@500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap");
+@import url("https:fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+
+.setting {
+    letter-spacing: 3px;
+    font-family: 'Press Start 2P';
+    background: black;
+    color: white;
+    width: 60%;
+    max-width: 1200px;
+    min-width: 600px;
+    margin: auto;
+    margin-top: 10%;
+    padding: 30px;
+    border-radius: 10px;
+    border: 1px solid white;
+}
+
+.setting div {
+    padding: 30px;
+}
+
+
+.userInput {
+    font-family: 'Overpass', sans-serif;
+    color: white;
+    background: transparent;
+    border: 2px solid white;
+    border-radius: 10px;
+    padding: 15px 0 15px 15px ;
+    font-size: larger;
+    outline: none;
+    width: 45%;
+}
+
+
+ .userName {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 50px;
+}
+
+
+
+.btnedit{
+    padding: 15px 0 15px 15px ;
+    font-family: inherit;
+	display: inline-block;
+	margin:5px;
+    font-weight: bold;
+    background-color: lightgray;
+    text-shadow: -1px -1px black, 1px 1px white;
+    color: gray;
+    -webkit-border-radius: 7px;
+	-moz-border-radius: 7px;
+	-o-border-radius: 7px;
+	border-radius: 7px;
+    box-shadow: 0 .2em gray; 
+    cursor: pointer;
+    width: 30%;
+}
+
+.btnedit:hover{
+    background-color: rgb(251, 251, 251);
+}
+
+.avatar {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+    
+.imgAvatar {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+}
+
+.imgAvatar:hover {
+    opacity: 0.7;
+}
+.twoFactorAuth {
+    color: white;
+    line-height: 20px;
+    gap: 50px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.twoFactorAuth p {
+    font-size: xx-small;
+    font-weight: 100;
+    margin-top: 20px;
+    margin-left: 20px;
+    line-height: 1.5;
+}
+
+.twoFactorAuth label {
+    margin-top: 20px;
+    font-weight: 100;
+}
+
+.file {
+    opacity: 0;
+    width: 100px;
+    height: 100px;
+    position: absolute;
+}
+
+
+.fileInput label {
+    display: block;
+    position: relative;
+    width: 300px;
+    height: 50px;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform .2s ease-out;
+}
+
+.qrCode{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+

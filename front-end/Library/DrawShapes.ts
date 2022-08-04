@@ -1,13 +1,13 @@
 import { Data } from "./Data";
 
 export function drawGame(context: object, data: Data) {
-  drawRect(0, 0, data.get_Width(), data.get_Height(), "#000", context);
+  drawRect(0, 0, data.get_Width(), data.get_Height(), data.get_mapColor(), context);
   drawBorder(
     0,
     0,
     data.get_Width(),
     0,
-    "#FFF",
+    data.get_borderColor(),
     data.get_borderHeight(),
     context
   );
@@ -16,7 +16,7 @@ export function drawGame(context: object, data: Data) {
     data.get_Height(),
     data.get_Width(),
     data.get_Height(),
-    "#FFF",
+    data.get_borderColor(),
     data.get_borderHeight(),
     context
   );
@@ -24,14 +24,14 @@ export function drawGame(context: object, data: Data) {
     data.get_Score_One(),
     data.get_Width() / 4,
     data.get_Height() / 5,
-    "#FFF",
+    data.get_textColor(),
     context
   );
   drawTextTwo(
     data.get_Score_Two(),
     (3 * data.get_Width()) / 4,
     data.get_Height() / 5,
-    "#FFF",
+    data.get_textColor(),
     context
   );
   drawSeparator(
@@ -40,7 +40,7 @@ export function drawGame(context: object, data: Data) {
     data.get_Trace_Width(),
     data.get_Trace_Height(),
     data.get_traceHeight(),
-    "#FFF",
+    data.get_traceColor(),
     context,
     data.get_Height()
   );
@@ -49,7 +49,7 @@ export function drawGame(context: object, data: Data) {
     data.get_PddleLeft_Y(),
     data.get_Paddle_Width(),
     data.get_Paddle_Height(),
-    "#FFF",
+    data.get_paddleColor(),
     context
   );
   drawRect(
@@ -57,14 +57,14 @@ export function drawGame(context: object, data: Data) {
     data.get_PddleRight_Y(),
     data.get_Paddle_Width(),
     data.get_Paddle_Height(),
-    "#FFF",
+    data.get_paddleColor(),
     context
   );
   DrawCircle(
     data.get_Ball_X(),
     data.get_Ball_Y(),
     data.get_Ball_Radius(),
-    "#ffff00",
+    data.get_ballColor(),
     context
   );
 }

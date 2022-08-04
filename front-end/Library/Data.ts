@@ -49,10 +49,18 @@ export class Data {
   private trace_Height: number;
   //NOTE - Details Resolution
   private typeRes: TypeRes;
-  //NOTE - Details Canvas users
+  //NOTE - Number of Watchers
   private watchers: number;
+  //NOTE - Details Users
   private userOne: UserInGame;
   private userTwo: UserInGame;
+  //NOTE - Details Color Game
+  private mapColor: string;
+  private paddleColor: string;
+  private ballColor: string;
+  private borderColor: string;
+  private textColor: string;
+  private traceColor: string
 
   constructor(width: number, height: number) {
     this.cWidth = width;
@@ -82,6 +90,12 @@ export class Data {
     this.trace_Height = 10;
     this.userOne = { username: "", avatar: "" };
     this.userTwo = { username: "", avatar: "" };
+    this.mapColor = "#000";
+    this.paddleColor = "#FFF";
+    this.ballColor = "#ffff00";
+    this.borderColor = "#FFF";
+    this.textColor = "#FFF";
+    this.traceColor = "#FFF";
   }
 
   public get_userOne(): UserInGame {
@@ -90,7 +104,6 @@ export class Data {
 
   public set_userOne(userOne: UserInGame): void {
     this.userOne = userOne;
-    // this.userOne.avatar = "http://localhost:5000/images.png";
   }
 
   public get_userTwo(): UserInGame {
@@ -99,7 +112,6 @@ export class Data {
 
   public set_userTwo(userTwo: UserInGame): void {
     this.userTwo = userTwo;
-    // this.userTwo.avatar = "http://localhost:5000/images.png";
   }
   public get_Width(): number {
     return this.cWidth;
@@ -232,5 +244,41 @@ export class Data {
   }
   public set_isMidlle(isMiddle: boolean): void {
     this.isMidlle = isMiddle;
+  }
+  public get_mapColor(): string {
+    return this.mapColor;
+  }
+  public set_mapColor(color: string): void {
+    this.mapColor = color;
+  }
+  public get_paddleColor(): string {
+    return this.paddleColor;
+  }
+  public set_paddleColor(color: string): void {
+    this.paddleColor = color;
+  }
+  public get_ballColor(): string {
+    return this.ballColor;
+  }
+  public set_ballColor(color: string): void {
+    this.ballColor = color;
+  }
+  public get_borderColor(): string {
+    return this.borderColor;
+  }
+  public set_borderColor(color: string): void {
+    this.borderColor = color;
+  }
+  public get_textColor(): string {
+    return this.textColor;
+  }
+  public set_textColor(color: string): void {
+    this.textColor = color;
+  }
+  public get_traceColor(): string {
+    return this.traceColor;
+  }
+  public set_traceColor(color: string): void {
+    this.traceColor = color;
   }
 }
