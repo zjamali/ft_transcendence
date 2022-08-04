@@ -289,11 +289,23 @@ export class UsersService {
     return matchesHistory;
   }
 
-  async updateProfile(
-    currUser: User,
-    givenUserName: string,
-    imagePath: string,
-  ) {
+  async updateAvatar(currUser: User, imagePath: string) {
+    // const foundedUser: User = await this.usersRepository.findOne({
+    //   where: { userName: givenUserName },
+    // });
+
+    // if (foundedUser && foundedUser.id != currUser.id)
+    //   throw new HttpException(
+    //     'UserName is already taken',
+    //     HttpStatus.FORBIDDEN,
+    //   );
+
+    return this.usersRepository.update(currUser.id, {
+      image: 'http://localhost:5000/users/' + imagePath,
+    });
+  }
+
+  async updateUserName(currUser: User, givenUserName: string) {
     const foundedUser: User = await this.usersRepository.findOne({
       where: { userName: givenUserName },
     });
@@ -306,7 +318,6 @@ export class UsersService {
 
     return this.usersRepository.update(currUser.id, {
       userName: givenUserName,
-      image: 'http://localhost:5000/users/' + imagePath,
     });
   }
 

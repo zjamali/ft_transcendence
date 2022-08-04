@@ -12,8 +12,6 @@ export class AuthService {
   ) {}
 
   async intraLogin(@Req() req: RequestWithUser, @Res() res: Response) {
-    // console.log('Now I am in intraLogin(req)');
-    // console.log(req.user);
     let url: string;
     const userId: string = req.user.id;
 
