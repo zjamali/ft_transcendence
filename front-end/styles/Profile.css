@@ -553,6 +553,12 @@
 	height: 15%;
 	background-color: var(--primary-color);
 	overflow-x: auto;
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none;
+}
+
+.profile-wall-nav::-webkit-scrollbar {
+	display: none
 }
 .profile-wall-nav img {
 	object-fit: cover;
@@ -781,12 +787,13 @@
 
 	.profile-wall-nav {
 		justify-content: space-around;
+		height: 45px;
 		/* animation: justify-content var(--animation-duration) var(--animation-timing-curve); */
 	}
 
 	.profile-wall-img-user {
 		left: 40.6%;
-		top: 30%;
+		top: 35%;
 		width: 95px;
 		height: 95px;
 		transition-duration: 450ms;
@@ -809,6 +816,16 @@
 		width: 92%;
 		flex-direction: column;
 	}
+	.profile-wall-img-user {
+		width: 95px;
+		height: 95px;
+		transition-duration: 450ms; 
+		transition-timing-function: ease-in-out;
+	}
+
+	.profile-wall-nav {
+		height: 45px;
+	}
 
 	.profile-data-row1,
 	.profile-data-row2 {
@@ -830,6 +847,7 @@
 	}
 
 	.profile-wall-nav {
+		height: 45px;
 		justify-content: space-around;
 		/* animation: justify-content var(--animation-duration) var(--animation-timing-curve); */
 	}

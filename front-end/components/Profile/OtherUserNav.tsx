@@ -75,7 +75,7 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 				})
 				.then((res) => {
 					console.log("other blocked  : ", res.data);
-					if (res.data.lenght === 0) setIsBlockedUser(false);
+					if ([...res.data].length === 0) setIsBlockedUser(false);
 					[...res.data].map((User: any) => {
 						if (User.userName === props.userName) {
 							setIsBlockedUser(true);
@@ -89,10 +89,16 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 		}
 	}
 	const [open, setOpen] = useState(false);
+	// const [openUnfriend, setOpenUnfriend] = useState(false);
 
 	const handleClick = () => {
 		setOpen(true);
 	};
+
+	// const handleClickUnf = () => {
+	// 	setOpenUnfriend(true)
+	// 	alert("testesttest")
+	// }
 
 	const handleClose = (
 		event?: React.SyntheticEvent | Event,
@@ -110,7 +116,7 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 			<div style={{ fontWeight: "400", color: "white" }}>
 				{props.userName}
 			</div>
-			<div>
+			<div className="block-or-unblock">
 				{!isblockedUser ? (
 					<Button
 						variant="outlined"
@@ -146,7 +152,7 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 						startIcon={<RemoveCircleIcon />}
 						onClick={(e) => {
 							e.preventDefault();
-							unBlockUser(props.id);
+							unBlockUser(state.mainUser.id, props.id);
 						}}
 					>
 						Unblock
@@ -154,7 +160,7 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 				)}
 			</div>
 			<div className="add-or-remove">
-				{!isFriend ? (
+				{!isblockedUser ? (!isFriend ? (
 					<Stack spacing={2} sx={{ width: "100%" }}>
 						<Button
 							variant="outlined"
@@ -173,6 +179,7 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 							onClick={(e) => {
 								e.preventDefault();
 								addFriend(state.mainUser.id, props.id);
+								// if (!isFriend)
 								handleClick();
 							}}
 						>
@@ -192,10 +199,8 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 								Friend request sent !
 							</Alert>
 						</Snackbar>
-					</Stack>
-				) : (
-					<Stack spacing={2} sx={{ width: "100%" }}>
-						<Button
+					</Stack>) 
+				: (<Button
 							variant="outlined"
 							color="error"
 							size="small"
@@ -209,27 +214,12 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 							onClick={(e) => {
 								e.preventDefault();
 								unfriend(state.mainUser.id, props.id);
-								handleClick();
+								// handleClickUnf();
 							}}
 						>
 							Unfriend
-						</Button>
-						<Snackbar
-							open={open}
-							autoHideDuration={2200}
-							onClose={handleClose}
-						>
-							<Alert
-								variant="outlined"
-								onClose={handleClose}
-								severity="error"
-								sx={{ width: "100%", color: "#c24543" }}
-							>
-								Friend removed !
-							</Alert>
-						</Snackbar>
-					</Stack>
-				)}
+					</Button>)) : null
+				}
 			</div>
 		</div>
 	);
