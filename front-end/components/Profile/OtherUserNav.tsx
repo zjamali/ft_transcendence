@@ -75,7 +75,7 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 				})
 				.then((res) => {
 					console.log("other blocked  : ", res.data);
-					if (res.data.lenght === 0) setIsBlockedUser(false);
+					if ([...res.data].length === 0) setIsBlockedUser(false);
 					[...res.data].map((User: any) => {
 						if (User.userName === props.userName) {
 							setIsBlockedUser(true);
@@ -152,7 +152,7 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 						startIcon={<RemoveCircleIcon />}
 						onClick={(e) => {
 							e.preventDefault();
-							unBlockUser(props.id);
+							unBlockUser(state.mainUser.id, props.id);
 						}}
 					>
 						Unblock
@@ -218,7 +218,7 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 							}}
 						>
 							Unfriend
-					</Button>)) : <></>
+					</Button>)) : null
 				}
 			</div>
 		</div>

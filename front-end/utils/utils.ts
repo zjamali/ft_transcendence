@@ -71,7 +71,7 @@ export function blockUser(blocker:string ,  relatedUserId: string) {
       eventsSocket.emit("BLOCK_A_USER", {blocker, target : relatedUserId})
 		});
 }
-export function unBlockUser(relatedUserId: string) {
+export function unBlockUser(unblocker:string ,relatedUserId: string) {
 	axios
 		.post(
 			"http://localhost:5000/users/unblock",
@@ -80,5 +80,6 @@ export function unBlockUser(relatedUserId: string) {
 		)
 		.then((data) => {
 			console.log("unblock  request :", data);
+			eventsSocket.emit("UNBLOCK_A_USER", {unblocker, target : relatedUserId})
 		});
 }

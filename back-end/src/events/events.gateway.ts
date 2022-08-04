@@ -216,6 +216,13 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     this.Server.emit('UPDATE_DATA');
   }
+  @SubscribeMessage('UNBLOCK_A_USER')
+  async unblockUser(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() blockUser: {unblocker: string; target: string },
+  ) {
+    this.Server.emit('UPDATE_DATA');
+  }
 
   getUserIdFromJWT(cookies: string): string {
     const decodedJwtAccessToken: any = this.jwtService.decode(

@@ -100,12 +100,14 @@ const Users = () => {
 							)
 						);
 					} else {
+						console.log("blocked by : ", blockedby.data);
 						let filtredUsers: User[] = [];
 						[...blockedby.data].forEach((BlockedByuser) => {
-							allUsers.forEach((user) => {
-								if (BlockedByuser.id != user.id) {
+							console.log();
+							[...res.data].forEach((user) => {
+								 if (BlockedByuser.id != user.id) {
 									filtredUsers.push(user);
-								}
+							 }
 							});
 						});
 						setAllUsers(
