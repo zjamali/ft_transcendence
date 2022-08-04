@@ -239,22 +239,24 @@ export class GameGateway
         }
         this.server.emit('Playing', {
           playing: true,
-          first: { username: first.username, avatar: first.avatar },
-          second: { username: second.username, avatar: second.avatar },
+          first: { username: first.userName, avatar: first.avatar },
+          second: { username: second.userName, avatar: second.avatar },
         });
 
         this.playerOne = new Player(
           itSock.next().value,
           true,
           first.id,
-          first.username,
+          first.userName,
         );
+        this.playerOne.setAvatar(first.avatar);
         this.playerTwo = new Player(
           itSock.next().value,
           false,
           second.id,
-          second.username,
-        );
+          second.userName,
+          );
+          this.playerTwo.setAvatar(second.avatar);
       }
 
       // this.playerOne = new Player(

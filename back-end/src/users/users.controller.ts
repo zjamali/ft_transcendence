@@ -148,6 +148,12 @@ export class UsersController {
   }
 
   @UseGuards(JwtTwoFactorGuard)
+  @Get('MatchesHistory')
+  getMatchesHistory(@Body() body: { id: string }) {
+    return this.usersService.getMatchesHistory(body.id);
+  }
+
+  @UseGuards(JwtTwoFactorGuard)
   @Post('updateProfile')
   @UseInterceptors(FileInterceptor('file', saveImageToStorage))
   updateProfile(
@@ -182,10 +188,10 @@ export class UsersController {
     );
   }
 
-  @Get('uploads/:imgId')
+  @Get('uploads/:imgName')
   @UseGuards(JwtTwoFactorGuard)
-  getImage(@Res() res: Response, @Param('imgId') imgId: string) {
-    res.sendFile(imgId, { root: './uploads' });
+  getImage(@Res() res: Response, @Param('imgName') imgName: string) {
+    res.sendFile(imgName, { root: './uploads' });
   }
 
   @Get('logOut')
