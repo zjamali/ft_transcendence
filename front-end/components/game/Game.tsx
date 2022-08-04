@@ -178,6 +178,7 @@ export function Game(props: GameProps) {
       if (data.get_State() === StateGame.OVER) setCurrentState(StateGame.OVER);
 
       socket.on("gameState", (newState: any) => {
+        // console.log("state", newState)
         setGameState(newState);
       });
     }

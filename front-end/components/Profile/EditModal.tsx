@@ -20,18 +20,19 @@ const CssTextField = styled(TextField)({
 	"& label.Mui-focused": {
 		color: "#ff3030",
 	},
+	"&  .MuiFormHelperText-root.Mui-error": {
+		color: 'white',
+		backgroundColor: 'white'
+	},
 	"& .MuiInputLabel-root": {
 		color: "white",
 	},
 	"&  .MuiInputBase-root": {
 		color: "#919eab",
 	},
-
-	" &.MuiFormHelperText-root.Mui-error": {
-		backgroundColor: "white",
-		color: "white",
+	"& .MuiFormHelperText-root": {
+		color: '#919eab',
 	},
-
 	"&  .MuiInputBase-root: hover": {
 		color: "white",
 	},
@@ -100,7 +101,11 @@ const EditModal: React.FC<EditModalProps> = ({
 
 	// const test: string = state.mainUser.userName;
 	const primary = red[500];
+	const CHAR_LIMIT:number = 8
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+	const [values, setValues] = React.useState({
+		name: `${state.mainUser.userName}`
+	  });
 	const open = Boolean(anchorEl);
 	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
@@ -223,10 +228,14 @@ const EditModal: React.FC<EditModalProps> = ({
 					<div className="modal-data-input">
 						<CssTextField
 							label="Username"
+							inputProps={{
+								maxLength: `${CHAR_LIMIT}`
+							}}
+							helperText={`${userName.length}/${CHAR_LIMIT}`}
 							defaultValue={userName}
 							size="small"
-							helperText="test"
 							onChange={(e) => setUserName(e.target.value)}
+							
 						/>
 					</div>
 					<div className="modal-two-factor">
@@ -249,6 +258,7 @@ const EditModal: React.FC<EditModalProps> = ({
 							color="success"
 							onClick={(e) => {
 								editProfilePicture(e);
+								// closeModal(false)
 							}}
 						>
 							Confirm
