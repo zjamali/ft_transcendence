@@ -14,6 +14,7 @@ export default function Layout(props: any) {
 	useEffect(() => {
 		socket.connect();
 		// console.log(socket.io.opts.query.data);
+
 		
 		return () => {
 			eventsSocket.disconnect();

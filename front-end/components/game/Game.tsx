@@ -208,7 +208,7 @@ export function Game(props: GameProps) {
   }, []);
 
   return (
-    <>
+    <div className="profile-content">
       {currentState === StateGame.WAIT ? (
         <div className={style.container}>
           <h1>LOADING</h1>
@@ -239,7 +239,6 @@ export function Game(props: GameProps) {
               <span>{data.get_userOne().username}</span>
             </div>
             <div>
-              { console.log("image :", data.get_userTwo().avatar)}
               <img
                 src={data.get_userTwo().avatar}
                 alt="User_Two"
@@ -250,7 +249,7 @@ export function Game(props: GameProps) {
         </div>
       )}
       {currentState === StateGame.OVER && <GameOver curData={data} />}
-    </>
+    </div>
   );
 }
 
