@@ -154,14 +154,14 @@ export class UsersController {
   }
 
   @UseGuards(JwtTwoFactorGuard)
-  @Post('updateProfile')
+  @Post('updateAvatar')
   @UseInterceptors(FileInterceptor('file', saveImageToStorage))
   updateProfile(
     @Req() req: RequestWithUser,
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addFileTypeValidator({
-          fileType: 'png|jpg|jpeg',
+          fileType: 'png|jpg|jpeg|gif',
         })
         .addMaxSizeValidator({
           maxSize: 500000000000,
@@ -171,21 +171,26 @@ export class UsersController {
         }),
     )
     file: Express.Multer.File,
-    @Body() body: { givenUserName: string },
   ) {
     console.log(file);
     const fileName = file?.filename;
     if (!fileName)
       throw new HttpException(
-        'File extension must be one of [.png, .jpg, .jpeg]',
+        'File extension must be one of [.png, .jpg, .gif, .jpeg]',
         HttpStatus.FORBIDDEN,
       );
 
-    return this.usersService.updateProfile(
-      req.user,
-      body.givenUserName,
-      file.path,
-    );
+    return this.usersService.updateAvatar(req.user, file.path);
+  }
+
+  @UseGuards(JwtTwoFactorGuard)
+  @Post('updateUserName')
+  updateUserName(
+    @Req() req: RequestWithUser,
+    @Body() body: { givenUserName: string },
+  ) {
+    console.log(body.givenUserName);
+    return this.usersService.updateUserName(req.user, body.givenUserName);
   }
 
   @Get('uploads/:imgName')

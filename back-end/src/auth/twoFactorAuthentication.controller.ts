@@ -65,31 +65,29 @@ export class TwoFactorAuthenticationController {
     @Res() res: Response,
     @Body() { twoFactorAuthenticationCode },
   ) {
-    console.log('watiting 1', req.user);
     const isCodeValid =
       this.twoFactorAuthService.isTwoFactorAuthenticationCodeValid(
         twoFactorAuthenticationCode,
         req.user,
       );
+
     console.log('watiting 2');
 
     console.log(' is code valide : ', isCodeValid);
     if (!isCodeValid) {
       throw new UnauthorizedException('Wrong two factor authentication');
-    } else {
-      await this.usersService.turnOnTwoFactorAuthentication(req.user.id);
-      const { access_token } = this.jwtAuthService.signWith2FA(req.user, true);
-      res.cookie('access_token', access_token);
-      return res.status(HttpStatus.OK).send(access_token);
     }
+
+    await this.usersService.turnOnTwoFactorAuthentication(req.user.id);
+    const { access_token } = this.jwtAuthService.signWith2FA(req.user, true);
+    res.cookie('access_token', access_token);
+    return res.status(HttpStatus.OK).send(access_token);
+
     // console.log('watiting 3');
-
     // console.log('watiting 4');
-
     // console.log('watiting 5');
-
     // console.log('watiting 6');
-    return 'successs';
+    // return 'successs';
   }
 
   @Post('turnOff')

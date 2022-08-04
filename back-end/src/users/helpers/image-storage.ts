@@ -1,6 +1,6 @@
 import { diskStorage } from 'multer';
 
-// import * as fs from 'fs';
+import * as fs from 'fs';
 import * as path from 'path';
 import { uuid } from 'uuidv4';
 // import * as FileType from 'file-type';
@@ -8,13 +8,14 @@ import RequestWithUser from '../requestWithUser.interface';
 // import { from, Observable, of, switchMap } from 'rxjs';
 
 // type validFileExtension = 'png' | 'jpg' | 'jpeg';
-type validMimeType = 'image/png' | 'image/jpg' | 'image/jpeg';
+type validMimeType = 'image/png' | 'image/jpg' | 'image/jpeg' | 'image/gif';
 
 // const validFileExtensions: validFileExtension[] = ['png', 'jpg', 'jpeg'];
 const validMimeTypes: validMimeType[] = [
   'image/png',
   'image/jpg',
   'image/jpeg',
+  'image/gif',
 ];
 
 export const saveImageToStorage = {
@@ -24,18 +25,25 @@ export const saveImageToStorage = {
       const fileExtension: string = path.extname(file.originalname);
       const fileName: string = uuid() + fileExtension;
 
+      const pathIndex = req.user.image.indexOf('uploads');
+      const oldImgPath = './' + req.user.image.slice(pathIndex);
+      if (fs.existsSync(oldImgPath)) {
+        console.log('Yeah old img does exist in ./uploads folder');
+        fs.unlinkSync(oldImgPath);
+      }
+
       console.log('from filename function');
       console.log(file);
       cb(null, fileName);
     },
   }),
-  // fileFilter: (_req, file, cb) => {
-  //   console.log('from fileFilter function');
-  //   console.log(file);
-  //   // console.log(FileType.fileTypeFromFile(file));
-  //   const allowedMimeTypes: validMimeType[] = validMimeTypes;
-  //   allowedMimeTypes.includes(file.mimetype) ? cb(null, true) : cb(null, false);
-  // },
+  fileFilter: (_req, file, cb) => {
+    console.log('from fileFilter function');
+    console.log(file);
+    // console.log(FileType.fileTypeFromFile(file));
+    const allowedMimeTypes: validMimeType[] = validMimeTypes;
+    allowedMimeTypes.includes(file.mimetype) ? cb(null, true) : cb(null, false);
+  },
 };
 
 // export const isFileExtensionSafe = (
