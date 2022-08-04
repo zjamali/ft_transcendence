@@ -111,65 +111,77 @@ export function HomeGame() {
 				game_room: "4886851077",
 			});
 	};
+	
+	/* {!isSetting && <Setting setSetting={setSetting} data={data}/>}
+	{!isGame ? (
+		<div className={styles.container}>
+		<div className={styles.game}>
+			<img src="/pingpong.png" alt="Ping Pong Game" />
+		</div>
+		<div className={styles.about}>
+			<div>
+			<h1>
+				Ping
+				<img
+				src="/racket.png"
+				alt="racket"
+				width="80px"
+				height="60px"
+				/>
+				Pong
+			</h1>
+			<p>
+				PING PON is a table
+				tennis game where you can enjoy a real match experience.
+				<br />
+				You can enjoy the feeling of an actual table tennis by tossing
+				and serving the ball, and hitting back to a different direction
+				by adjusting the angle of the racket.
+				<br />
+				You can discorver it by yourself &nbsp;
+				<span className={styles.emoji}>😉</span>
+			</p>
+			<div className={styles.btn}>
+				<button className={styles.btnDef} onClick={handleGame}>
+				PLAY
+				</button>
+				<button className={styles.btnObs} onClick={handleSetting}>
+				SETTING
+				</button>
+		{accepGame && (
+			<button
+				className={styles.btnObs}
+				onClick={gameHandleAcceptInvite}
+			>
+				accept invitation
+			</button>
+		)}
+			</div>
+			</div>
+		</div>
+		</div>
+	) : (
+		<Game
+		data={data}
+		currentState={currentState}
+		setCurrentState={setCurrentState}
+		/>
+	)} */
 
 	return (
-		<>
-		{!isSetting && <Setting setSetting={setSetting} data={data}/>}
-      {!isGame ? (
-        <div className={styles.container}>
-          <div className={styles.game}>
-            <img src="/pingpong.png" alt="Ping Pong Game" />
-          </div>
-          <div className={styles.about}>
-            <div>
-              <h1>
-                Ping
-                <img
-                  src="/racket.png"
-                  alt="racket"
-                  width="80px"
-                  height="60px"
-                />
-                Pong
-              </h1>
-              <p>
-                PING PON is a table
-                tennis game where you can enjoy a real match experience.
-                <br />
-                You can enjoy the feeling of an actual table tennis by tossing
-                and serving the ball, and hitting back to a different direction
-                by adjusting the angle of the racket.
-                <br />
-                You can discorver it by yourself &nbsp;
-                <span className={styles.emoji}>😉</span>
-              </p>
-              <div className={styles.btn}>
-                <button className={styles.btnDef} onClick={handleGame}>
-                  PLAY
-                </button>
-                <button className={styles.btnObs} onClick={handleSetting}>
-                  SETTING
-                </button>
-		  {accepGame && (
-			  <button
-				  className={styles.btnObs}
-				  onClick={gameHandleAcceptInvite}
-			  >
-				  accept invitation
-			  </button>
-		  )}
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <Game
-          data={data}
-          currentState={currentState}
-          setCurrentState={setCurrentState}
-        />
-      )}
-			
-		</>
-	);
+		<div style={{ height: 'calc(100vh - 430px', width: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#212b36', position: 'relative', top: '50px', border: '1px solid #555f6a', borderRadius: '12px'}}>
+			{!isSetting && <Setting setSetting={setSetting} data={data} />}
+			{!isGame ? 
+				(
+				<div className="Home-game" style={{width: '80%', height: '100%', display: 'flex', flexDirection: 'column'}}>
+					<div style={{color: '#919eab', display: 'flex', alignItems: 'center', justifyContent: 'center'}}><h1 style={{fontWeight: '500', fontSize: '70px'}}>Ping Pong Game</h1></div>
+					<div style={{height: '600px'}}>body</div>
+					<div>foot</div>
+				</div>
+				)
+				: 
+				(<Game data={data} currentState={currentState} setCurrentState={setCurrentState} />)
+			}
+		</div>
+	)
 }
