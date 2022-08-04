@@ -7,9 +7,17 @@ export class Games {
 
   @Column()
   firstPlayer: string;
+  @Column()
+  firstPlayerImage: string;
+  @Column()
+  firstPlayerUserName: string;
 
   @Column()
   secondPlayer: string;
+  @Column()
+  secondPlayerImage: string;
+  @Column()
+  secondPlayerUserName: string;
 
   @Column()
   scoreFirst: number;
