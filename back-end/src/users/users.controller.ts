@@ -148,9 +148,9 @@ export class UsersController {
   }
 
   @UseGuards(JwtTwoFactorGuard)
-  @Get('MatchesHistory')
-  getMatchesHistory(@Body() body: { id: string }) {
-    return this.usersService.getMatchesHistory(body.id);
+  @Get(':id/MatchesHistory')
+  getMatchesHistory(@Param('id') id: string) {
+    return this.usersService.getMatchesHistory(id);
   }
 
   @UseGuards(JwtTwoFactorGuard)

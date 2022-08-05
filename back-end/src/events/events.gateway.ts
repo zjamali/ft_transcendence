@@ -143,6 +143,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.Server.to(socketsID).emit('STAR_PLAYING', {
           room_id: gameInvitation.game_room,
         });
+        this.userService.setUserPlayingStatus(gameInvitation.sender, true);
       });
     }, 2000);
     setTimeout(() => {
@@ -150,6 +151,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.Server.to(socketsID).emit('STAR_PLAYING', {
           room_id: gameInvitation.game_room,
         });
+        this.userService.setUserPlayingStatus(gameInvitation.receiver, true);
       });
     }, 2000);
   }
@@ -226,7 +228,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('UNBLOCK_A_USER')
   async unblockUser(
     @ConnectedSocket() client: Socket,
-    @MessageBody() blockUser: {unblocker: string; target: string },
+    @MessageBody() blockUser: { unblocker: string; target: string },
   ) {
     this.Server.emit('UPDATE_DATA');
   }

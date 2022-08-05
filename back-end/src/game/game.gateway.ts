@@ -175,14 +175,14 @@ export class GameGateway
           itSock.next().value,
           true,
           first.id,
-          first.username,
+          first.userName,
           first.avatar,
         );
         this.playerTwo = new Player(
           itSock.next().value,
           false,
           second.id,
-          second.username,
+          second.userName,
           second.avatar,
         );
 
