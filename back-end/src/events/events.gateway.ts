@@ -229,6 +229,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     senderSockets?.forEach((socketsID) => {
       this.Server.to(socketsID).emit('UPDATE_DATA');
     });
+    this.Server.emit('UPDATE_DATA');
   }
   @SubscribeMessage('DENY_FREIND_REQUEST')
   async denyFriendRequest(
