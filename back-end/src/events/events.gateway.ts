@@ -89,7 +89,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   gameInvitation(
     @ConnectedSocket() client: Socket,
     @MessageBody()
-    gameInvitation: { sender: any; receiver: string; game_room: string },
+    gameInvitation: { sender: any; receiver: any; game_room: string },
   ) {
     console.log(
       '%%%%%%%%%',
@@ -100,14 +100,14 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       gameInvitation.game_room,
     );
     const InviteduserSockets = GlobalService.UsersEventsSockets.get(
-      gameInvitation.receiver,
+      gameInvitation.receiver.id,
     );
     // if (Inviteduser) {
     //   console.log('invited user is :', Inviteduser);
     // }
-    InviteduserSockets.forEach((invitedSocketId) => {
+    InviteduserSockets?.forEach((invitedSocketId) => {
       this.Server.to(invitedSocketId).emit('GAME_INVITATION', {
-        hello: 'hello',
+        ...gameInvitation.sender,
       });
     });
     console.log('InviteduserSockets : ', InviteduserSockets);
@@ -127,24 +127,33 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       gameInvitation.game_room,
     );
     const firstPlayersSockets = GlobalService.UsersEventsSockets.get(
-      gameInvitation.receiver,
-    );
-    const secondPlayerSockets = GlobalService.UsersEventsSockets.get(
       gameInvitation.sender,
     );
-
+    const secondPlayerSockets = GlobalService.UsersEventsSockets.get(
+      gameInvitation.receiver,
+    );
     firstPlayersSockets?.forEach((socketsID) => {
-      this.Server.to(socketsID).emit('STAR_PLAYING', {
-        hello: 'hello',
+      this.Server.to(socketsID).emit('game_invitation_accepted', {
+        room_id: gameInvitation.game_room,
       });
     });
+
+    setTimeout(() => {
+      firstPlayersSockets?.forEach((socketsID) => {
+        this.Server.to(socketsID).emit('STAR_PLAYING', {
+          room_id: gameInvitation.game_room,
+        });
+        this.userService.setUserPlayingStatus(gameInvitation.sender, true);
+      });
+    }, 2000);
     setTimeout(() => {
       secondPlayerSockets?.forEach((socketsID) => {
         this.Server.to(socketsID).emit('STAR_PLAYING', {
-          hello: 'hello',
+          room_id: gameInvitation.game_room,
         });
+        this.userService.setUserPlayingStatus(gameInvitation.receiver, true);
       });
-    }, 200);
+    }, 2000);
   }
   @SubscribeMessage('I_UPDATE_MY_PROFILE')
   async profileUpdate(
@@ -168,6 +177,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const user = await this.userService.findOne(userId);
     this.Server.to(client.id).emit('A_UPDATE_MY_DATA', { ...user });
     client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user });
+    client.broadcast.emit('UPDATE_DATA');
   }
   @SubscribeMessage('SEND_FRIEND_REQUEST')
   async sendFriendRequest(
@@ -189,7 +199,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const targetSockets = GlobalService.UsersEventsSockets.get(
       friendRequest.accpter,
     );
-    const target = await this.userService.findOne(friendRequest.accpter);
     targetSockets?.forEach((socketsID) => {
       this.Server.to(socketsID).emit('UPDATE_DATA');
     });
@@ -197,7 +206,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const senderSockets = GlobalService.UsersEventsSockets.get(
       friendRequest.relatedUserId,
     );
-    const sender = await this.userService.findOne(friendRequest.relatedUserId);
     senderSockets?.forEach((socketsID) => {
       this.Server.to(socketsID).emit('UPDATE_DATA');
     });
@@ -219,7 +227,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('UNBLOCK_A_USER')
   async unblockUser(
     @ConnectedSocket() client: Socket,
-    @MessageBody() blockUser: {unblocker: string; target: string },
+    @MessageBody() blockUser: { unblocker: string; target: string },
   ) {
     this.Server.emit('UPDATE_DATA');
   }
