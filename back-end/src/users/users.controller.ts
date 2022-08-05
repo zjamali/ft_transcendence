@@ -185,12 +185,12 @@ export class UsersController {
 
   @UseGuards(JwtTwoFactorGuard)
   @Post('updateUserName')
-  updateUserName(
+  async updateUserName(
     @Req() req: RequestWithUser,
     @Body() body: { givenUserName: string },
   ) {
     console.log(body.givenUserName);
-    return this.usersService.updateUserName(req.user, body.givenUserName);
+    return await this.usersService.updateUserName(req.user, body.givenUserName);
   }
 
   @Get('uploads/:imgName')
