@@ -143,7 +143,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.Server.to(socketsID).emit('STAR_PLAYING', {
           room_id: gameInvitation.game_room,
         });
-        this.userService.setUserPlayingStatus(gameInvitation.sender, true);
+        // this.userService.setUserPlayingStatus(gameInvitation.sender, true);
       });
     }, 2000);
     setTimeout(() => {
@@ -151,10 +151,29 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.Server.to(socketsID).emit('STAR_PLAYING', {
           room_id: gameInvitation.game_room,
         });
-        this.userService.setUserPlayingStatus(gameInvitation.receiver, true);
+        // this.userService.setUserPlayingStatus(gameInvitation.receiver, true);
+        this.Server.emit('UPDATE_DATA');
       });
     }, 2000);
   }
+
+  @SubscribeMessage('GAME_START')
+  async setPlayersStatusSTART(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() playerId,
+  ) {
+    this.userService.setUserPlayingStatus(playerId, true);
+    this.Server.emit('UPDATE_DATA');
+  }
+  @SubscribeMessage('GAME_OVER')
+  async setPlayersStatusOVER(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() playerId,
+  ) {
+    this.userService.setUserPlayingStatus(playerId, false);
+    this.Server.emit('UPDATE_DATA');
+  }
+
   @SubscribeMessage('I_UPDATE_MY_PROFILE')
   async profileUpdate(
     @ConnectedSocket() client: Socket,
