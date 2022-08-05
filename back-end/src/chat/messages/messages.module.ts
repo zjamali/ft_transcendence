@@ -1,4 +1,3 @@
-import { UsersService } from 'src/users/users.service';
 import { UsersModule } from './../../users/users.module';
 import { RoomsService } from './../rooms/rooms.service';
 import { RoomsModule } from './../rooms/rooms.module';
@@ -12,7 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 @Module({
   imports: [TypeOrmModule.forFeature([Message]), RoomsModule, UsersModule],
   controllers: [MessagesController],
-  providers: [MessagesService, JwtService, RoomsService, UsersService],
+  providers: [MessagesService, JwtService, RoomsService],
   exports: [MessagesService, TypeOrmModule],
 })
 export class MessagesModule {}
