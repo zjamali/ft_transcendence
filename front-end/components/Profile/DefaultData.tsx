@@ -32,18 +32,20 @@ const DefaultData = ({ id }: { id: string }) => {
 					///
 					let winScore = 0;
 					let loseScore = 0;
-					[...res.data].forEach((match) => {
-						if (match.scoreFirst < match.scoreSecond) {
-							if (match.firstPlayer === state.mainUser.id)
-								winScore += 1;
-							else loseScore += 1;
-						} else {
-							if (match.scoreSecond === state.mainUser.id)
-								winScore += 1;
-							else {
-								loseScore += 1;
+					console.log("all matches : ",res.data);
+					console.log("id : ", id);
+					[...res.data]?.forEach((match) => {
+							if (match.scoreFirst > match.scoreSecond) {
+								if (match.firstPlayer === id)
+									winScore += 1;
+								else loseScore += 1;
+							} else {
+								if (match.secondPlayer === id)
+									winScore += 1;
+								else {
+									loseScore += 1;
+								}
 							}
-						}
 					});
 					setWin(winScore);
 					setLose(loseScore);
@@ -62,7 +64,7 @@ const DefaultData = ({ id }: { id: string }) => {
 				</div>
 				<div className="statics-games">
 					<div className="statics-win">
-						<h3 className="h3-statics">{lose}</h3>
+						<h3 className="h3-statics">{lose > 100 ? "+100": lose}</h3>
 						<div
 							style={{
 								display: "flex",
@@ -89,7 +91,7 @@ const DefaultData = ({ id }: { id: string }) => {
 					</div>
 					<hr className="hr-line" />
 					<div className="statics-loss">
-						<h3 className="h3-statics">{win}</h3>
+						<h3 className="h3-statics">{win > 100 ? "+100": win}</h3>
 						<div
 							style={{
 								display: "flex",

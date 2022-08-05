@@ -74,7 +74,11 @@ export class Game {
     gameDta.secondPlayerUserName = this._player_Two.getUsername();
     gameDta.scoreFirst = this._player_One.getScore();
     gameDta.scoreSecond = this._player_Two.getScore();
-    this._gameService.insertGame(gameDta);
+    this._gameService.insertGame({
+      ...gameDta,
+      scoreFirst: this._player_Two.getScore(),
+      scoreSecond: this._player_One.getScore(),
+    });
   }
 
   public gameStateFunc(): gameSate {

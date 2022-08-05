@@ -67,7 +67,7 @@ const HistoryCard = ({ match }: {match : any}) => {
 							startIcon={<VideogameAssetIcon />}
 							endIcon={<VideogameAssetIcon />}
 						>
-							{match.scoreSecond} vs {match.scoreFirst}
+						{match.scoreFirst} vs 	{match.scoreSecond}
 						</Button>
 					</h4>
 				</div>

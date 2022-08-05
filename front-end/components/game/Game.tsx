@@ -8,6 +8,7 @@ import socket from "../../Library/Socket";
 import { Loading } from "@nextui-org/react";
 import { data } from "./HomeGame";
 import { AppContext } from "../../context/AppContext";
+import { CircularProgress } from "@mui/material";
 
 interface GameProps {
 	data: Data;
@@ -223,35 +224,32 @@ export function Game(props: GameProps) {
 	}, []);
 
 	return (
-		<div className="profile-content">
+		<div style={{width: '100%', height: '100%'}}>
 			{currentState === StateGame.WAIT ? (
-				<div className={style.container}>
-					<h1>LOADING</h1>
-					<Loading
-						className={style.load}
-						color="white"
-						type="spinner"
-						size="xl"
-					/>
+				<div style={{width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'col'}}>
+          {/* <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}> */}
+					<h1 style={{fontFamily: 'Deltha, sans-serif', position: 'relative', bottom: '10px'}}>LOADING</h1>
+          <CircularProgress color="inherit"/>
+          {/* </div> */}
 				</div>
 			) : (
-				<div className={style.container}>
-					<div className={style.info}>
+				<div className={style.container} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+					{/* <div className={style.info}>
 						<h1>Players: &uarr; &darr;</h1>
-					</div>
+					</div> */}
 					<canvas
 						className={style.myCanvas}
 						width={data.get_Width()}
 						height={data.get_Height()}
 						ref={canvasRef}
 					></canvas>
-					<div className={style.users}>
-						<div>
+					<div className={style.users} style={{fontFamily: 'Deltha, sans-serif'}}>
+						<div >
 							<img
 								src={data.get_userOne().avatar}
 								alt="User_One"
 							/>
-							<span>{data.get_userOne().username}</span>
+							{data.get_userOne().username}
 						</div>
 						<div>
 							<img

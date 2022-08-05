@@ -24,8 +24,8 @@ export function PingPong(props: any) {
 	}, []);
 
 	return (
-		<div className="game-content ">
-			<ParticleBackground />
+		<div className="profile-content " style={{ height: '50%', alignItems: 'center', justifyContent: 'center'}}>
+			{/* <ParticleBackground /> */}
 			{state.mainUser && <HomeGame />}
 		</div>
 	);

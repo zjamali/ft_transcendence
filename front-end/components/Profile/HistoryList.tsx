@@ -6,6 +6,8 @@ import HistoryCard from "./HistoryCard";
 const HistoryList = (props: any) => {
 	const [matches, setMatches] = useState<any[]>([]);
 	const { state } = useContext(AppContext);
+	const [lose, setLose] = useState(0);
+	const [win, setWin] = useState(0)
 	useEffect(() => {
 		console.log("matches history : ");
 		fetchMatchs();
@@ -18,13 +20,33 @@ const HistoryList = (props: any) => {
 		console.log("fetch matches ::->");
 		try {
 			axios
-				.get(
-					`http://localhost:5000/users/${props.id}/MatchesHistory`,
-					{ withCredentials: true }
-					// { withCredentials: true }
-				)
+				.get(`http://localhost:5000/users/${props.id}/MatchesHistory`, {
+					withCredentials: true,
+				})
 				.then((res) => {
+					// setFriendsIds([...res.data].map((user)=>  user.id));
+					console.log("matchs : ", res);
 					setMatches(res.data);
+					///
+					let winScore = 0;
+					let loseScore = 0;
+					console.log("all matches : ",res.data);
+					[...res.data]?.forEach((match) => {
+						if (match.scoreFirst > match.scoreSecond) {
+							if (match.firstPlayer === state.mainUser.id)
+								loseScore += 1;
+							else winScore += 1;
+						} else {
+							if (match.scoreSecond === state.mainUser.id)
+								loseScore += 1;
+							else {
+								winScore += 1;
+							}
+						}
+					});
+					setWin(winScore);
+					setLose(loseScore);
+					///
 				});
 		} catch {
 			console.log("CANT GET ALL matches ");
@@ -42,11 +64,11 @@ const HistoryList = (props: any) => {
 		>
 			<div className="profile-data-row1" style={{ width: "100%" }}>
 				<div className="statics-header">
-					<h4>Game Statics</h4>
+					<h4></h4>
 				</div>
 				<div className="statics-games">
 					<div className="statics-win">
-						<h3 className="h3-statics">10</h3>
+						<h3 className="h3-statics">{lose > 100 ? "+100": lose}</h3>
 						<div
 							style={{
 								display: "flex",
@@ -73,7 +95,7 @@ const HistoryList = (props: any) => {
 					</div>
 					<hr className="hr-line" />
 					<div className="statics-loss">
-						<h3 className="h3-statics">0</h3>
+						<h3 className="h3-statics">{win > 100 ? "+100": win}</h3>
 						<div
 							style={{
 								display: "flex",

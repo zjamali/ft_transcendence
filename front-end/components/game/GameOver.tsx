@@ -4,15 +4,17 @@ import style from "../../styles/GameOver.module.css";
 import { data } from "./HomeGame";
 import { Data } from "../../Library/Data";
 import socket from "../../Library/Socket";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AppContext } from "../../context/AppContext";
 export function GameOver({ curData }: any) {
 	/*
 	 ** set user status ins playing off :
 	 */
 	const { state } = useContext(AppContext);
-
-	state.eventsSocket.emit("GAME_OVER", state.mainUser.id);
+	useEffect(() => {
+		state.eventsSocket.emit("GAME_OVER", state.mainUser.id);
+	}, [])
+	
 	/*
 	 */
 
