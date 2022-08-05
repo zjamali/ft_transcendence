@@ -336,6 +336,15 @@ export class UsersService {
       },
     );
   }
+  async setUserPlayingStatus(userId: string, status: boolean) {
+    console.log(userId);
+    return await this.usersRepository.update(
+      { id: userId },
+      {
+        isPlaying: status,
+      },
+    );
+  }
 
   async turnOffTwoFactorAuthentication(userId: string) {
     return this.usersRepository.update(userId, {

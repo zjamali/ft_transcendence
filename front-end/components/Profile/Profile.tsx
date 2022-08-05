@@ -31,7 +31,7 @@ const Profile = () => {
 			case "Friends":
 				return <FriendsList id={state.mainUser.id} />;
 			case "History":
-				return <HistoryList />;
+				return <HistoryList  id={state.mainUser.id} />;
 		}
 	};
 	useEffect(() => {

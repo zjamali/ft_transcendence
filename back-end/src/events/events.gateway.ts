@@ -143,6 +143,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.Server.to(socketsID).emit('STAR_PLAYING', {
           room_id: gameInvitation.game_room,
         });
+        this.userService.setUserPlayingStatus(gameInvitation.sender, true);
       });
     }, 2000);
     setTimeout(() => {
@@ -150,6 +151,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.Server.to(socketsID).emit('STAR_PLAYING', {
           room_id: gameInvitation.game_room,
         });
+        this.userService.setUserPlayingStatus(gameInvitation.receiver, true);
       });
     }, 2000);
   }
@@ -175,6 +177,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const user = await this.userService.findOne(userId);
     this.Server.to(client.id).emit('A_UPDATE_MY_DATA', { ...user });
     client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user });
+    client.broadcast.emit('UPDATE_DATA');
   }
   @SubscribeMessage('SEND_FRIEND_REQUEST')
   async sendFriendRequest(
@@ -196,7 +199,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const targetSockets = GlobalService.UsersEventsSockets.get(
       friendRequest.accpter,
     );
-    const target = await this.userService.findOne(friendRequest.accpter);
     targetSockets?.forEach((socketsID) => {
       this.Server.to(socketsID).emit('UPDATE_DATA');
     });
@@ -204,7 +206,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const senderSockets = GlobalService.UsersEventsSockets.get(
       friendRequest.relatedUserId,
     );
-    const sender = await this.userService.findOne(friendRequest.relatedUserId);
     senderSockets?.forEach((socketsID) => {
       this.Server.to(socketsID).emit('UPDATE_DATA');
     });
@@ -226,7 +227,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('UNBLOCK_A_USER')
   async unblockUser(
     @ConnectedSocket() client: Socket,
-    @MessageBody() blockUser: {unblocker: string; target: string },
+    @MessageBody() blockUser: { unblocker: string; target: string },
   ) {
     this.Server.emit('UPDATE_DATA');
   }

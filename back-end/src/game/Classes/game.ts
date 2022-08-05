@@ -43,7 +43,7 @@ export class Game {
       ) => void;
     },
   ) {
-    this._id = uuid();
+    // this._id = uuid();
     this.server = server;
     this.sendGames = sendGames;
     this._player_One = player_One;
