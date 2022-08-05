@@ -1,3 +1,6 @@
+@import url('http://fonts.cdnfonts.com/css/btc-gaming');
+@import url('http://fonts.cdnfonts.com/css/deltha');
+
 :root {
 	--wall-color: #161c24;
 	--hover-color: #3b1f25;
@@ -765,6 +768,7 @@
 	background-color: rgba(0, 0, 0, 0.6);
 	z-index: 1000;
 }
+
 
 /* .MuiMenu-paper {
 } */
