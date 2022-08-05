@@ -43,7 +43,7 @@ export class Game {
       ) => void;
     },
   ) {
-    this._id = uuid();
+    // this._id = uuid();
     this.server = server;
     this.sendGames = sendGames;
     this._player_One = player_One;
@@ -74,7 +74,11 @@ export class Game {
     gameDta.secondPlayerUserName = this._player_Two.getUsername();
     gameDta.scoreFirst = this._player_One.getScore();
     gameDta.scoreSecond = this._player_Two.getScore();
-    this._gameService.insertGame(gameDta);
+    this._gameService.insertGame({
+      ...gameDta,
+      scoreFirst: this._player_Two.getScore(),
+      scoreSecond: this._player_One.getScore(),
+    });
   }
 
   public gameStateFunc(): gameSate {

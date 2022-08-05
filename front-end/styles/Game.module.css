@@ -10,7 +10,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 98vh;
+  /* height: 98vh; */
 }
 
 .container h1 {
@@ -53,3 +53,12 @@
   border-radius: 50%;
   margin-right: 15px;
 }
+
+/*Game style*/
+
+/* .homePageGame {
+  width: '90%'; 
+  height: '100%'; 
+  display: 'flex'; 
+  flex-direction: column
+} */

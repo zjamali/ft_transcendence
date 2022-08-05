@@ -98,7 +98,7 @@ export default function UserProfile({}: Props) {
 							/>
 						)}
 					</div>
-					<DefaultData id={user.id} />
+					<DefaultData id={userId} />
 				</div>
 			) : (
 				<NotFound />

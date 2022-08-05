@@ -664,6 +664,26 @@
 	flex-direction: column;
 	z-index: 1000;
 }
+.invite-modal
+{
+	background-color: var(--primary-color);
+	width: 350px;
+	height: 200px;
+	/* max-width: 500px;
+	max-height: 450px; */
+	top: 20%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	/* border: 0.1px solid white; */
+	border-radius: 12px;
+	position: fixed;
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
+	flex-direction: column;
+	z-index: 1000;
+}
+
 .modal-picture {
 	width: 300px;
 	height: 150px;
@@ -769,6 +789,15 @@
 	z-index: 1000;
 }
 
+/* Game style :*/
+
+
+.home-game-content {
+	width: 90%; 
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
 
 /* .MuiMenu-paper {
 } */

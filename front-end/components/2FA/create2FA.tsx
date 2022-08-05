@@ -148,14 +148,11 @@ const Active2FA: React.FC<EditModalProps> = ({ closeModal2FA }) => {
 				)
 				.then((response) => {
 					console.log("add qr code  : ", response);
-					if (response.status === 200) {
-						console.log(" 99999 => success ");
 						closeModal2FA(false);
 						state.eventsSocket.emit(
 							"I_UPDATE_MY_PROFILE",
 							state.mainUser.id
 						);
-					}
 				});
 		} catch (error) {
 			console.log("error : ", error);

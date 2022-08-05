@@ -10,6 +10,7 @@ import {
 } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import User from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { Game } from './Classes/game';
 import { gameSate } from './Classes/gameState';
@@ -39,8 +40,8 @@ export class GameGateway
   private socketArr: Set<Socket> = new Set<Socket>();
   private userArr: any[] = [];
 
-  private privateGame: Map<string, Socket[]> = new Map();
-  private privateGameUser: Map<string, any[]> = new Map();
+  private privateRoomGameSockets: Map<string, Socket[]> = new Map();
+  private privateGameUser: Map<string, User[]> = new Map();
 
   @WebSocketServer() server: {
     emit: (
@@ -67,7 +68,7 @@ export class GameGateway
     /* 
     if the user has watcher stat: emit "send_games" with GameGateway.game array to be rendered in the frontend
      */
-    
+
     this.logger.log('Connect Success ' + `${client.id}`);
   }
 
@@ -117,12 +118,14 @@ export class GameGateway
 
   @SubscribeMessage('downPaddle')
   hundle_down_paddle(client: Socket, payload: string) {
+    console.log('paddle down d zab');
     const gameFound = GameGateway.game.find((gm) => {
       return (
         gm.get_PlayerOne().getSocket() === client ||
         gm.get_PlayerTwo().getSocket() === client
       );
     });
+    console.log('game founds :', gameFound);
     if (gameFound) {
       const player = gameFound.get_GamePlayer(client);
       if (payload === 'down') player.getPaddle().down('down');
@@ -137,102 +140,28 @@ export class GameGateway
   }
 
   @SubscribeMessage('join_match')
-  async hundle_join_match(client: Socket, payload: any) {
+  hundle_join_match(client: Socket, payload: any) {
     this.logger.log('Join Match ' + `${client.id} `);
-
-    // const userPayload: any = this.jwtService.decode(payload.access_token);
     const user: any = payload.user;
-    console.log('user => ',payload.user);
 
-    //NOTE - Check If the same client not add in Set of socket
-
-    // if (payload.type === 'invitaion') {
-    //   console.log('join invitation game ', payload.room);
-
-    //   const firstSocket = this.privateGame.get(payload.room);
-    //   console.log('first  game socket : ', firstSocket);
-    //   const userData = await this.usersService.findOne(userPayload.id);
-    //   if (userData.id === userPayload.id) return;
-    //   console.log('user Data : ', userData);
-    //   if (!firstSocket) {
-    //     this.privateGame.set(payload.room, [client]);
-    //     this.privateGameUser.set(payload.room, {
-    //       ...userPayload,
-    //       avater: userData.image,
-    //     });
-    //   } else {
-    //     const firstUserData = this.privateGameUser.get(payload.room);
-    //     this.privateGameUser.set(payload.room, [
-    //       firstUserData,
-    //       { ...userPayload, avater: userData.image },
-    //     ]);
-    //     this.privateGame.set(payload.room, [...firstSocket, client]);
-    //   }
-
-    //   if (this.privateGame.get(payload.room).length === 1) return;
-
-    //   console.log(
-    //     'game room socket : ',
-    //     this.privateGameUser.get(payload.room),
-    //   );
-
-    //   const firstUser = this.privateGameUser.get(payload.room)[0];
-    //   console.log('firsUser : ', firstUser);
-    //   const secondeUser = this.privateGameUser.get(payload.room)[1];
-    //   console.log(' seconde User ', secondeUser);
-    //   this.server.emit('Playing', {
-    //     playing: true,
-    //     first: {
-    //       username: firstUser.username,
-    //       avatar: firstUser.avater,
-    //     },
-    //     second: {
-    //       username: secondeUser.username,
-    //       avatar: secondeUser.avater,
-    //     },
-    //   });
-
-    //   this.playerOne = new Player(
-    //     this.privateGame.get(payload.room)[0],
-    //     true,
-    //     firstUser.id,
-    //     firstUser.username,
-    //   );
-    //   this.playerTwo = new Player(
-    //     this.privateGame.get(payload.room)[1],
-    //     false,
-    //     secondeUser.id,
-    //     secondeUser.username,
-    //   );
-    //   /// delete instaed games
-    //   this.privateGame.delete(payload.room);
-    //   this.privateGameUser.delete(payload.room);
-    //   console.log('private game :', this.privateGame);
-    //   console.log('private game  users :', this.privateGameUser);
-    // } else {
+    if (!payload.room_id) {
+      console.log('user => ', payload.user);
+      //NOTE - Check If the same client not add in Set of socket
       if (this.socketArr.has(client)) {
         return;
       }
+
       //NOTE - Add Client Socket In Set
       this.socketArr.add(client);
 
       //NOTE - Add User In Array
+      this.userArr.push({ ...user, avatar: user.image });
 
-      // const userData = await this.usersService.findOne(userPayload.id);
-
-      this.userArr.push({
-       ...user,
-        avatar: user.image,
-      });
-      if (this.userArr.length === 1) return;
       //NOTE - Check if Set Of Socket (i means player) to stock is 2
       const itSock = this.socketArr.values();
       const [first, second] = this.userArr;
-      console.log('first: ', first);
-      console.log('second: ', second);
 
       if (this.userArr.length > 1) {
-        console.log('*********************** there is two players ');
         if (first.id === second.id) {
           this.userArr.splice(this.userArr.indexOf(first), 1);
           return;
@@ -242,56 +171,122 @@ export class GameGateway
           first: { username: first.userName, avatar: first.avatar },
           second: { username: second.userName, avatar: second.avatar },
         });
-
         this.playerOne = new Player(
           itSock.next().value,
           true,
           first.id,
           first.userName,
+          first.avatar,
         );
-        this.playerOne.setAvatar(first.avatar);
         this.playerTwo = new Player(
           itSock.next().value,
           false,
           second.id,
           second.userName,
-          );
-          this.playerTwo.setAvatar(second.avatar);
+          second.avatar,
+        );
+
+        //NOTE - Create new instance of game and game is start in constructor
+        const newGame = new Game(
+          this.playerOne,
+          this.playerTwo,
+          this.gameService,
+          this.sendGames,
+          this.server,
+        );
+
+        GameGateway.game.push(newGame);
+        this.sendGames(this.server);
+
+        this.socketArr.delete(newGame.get_PlayerOne().getSocket());
+        this.socketArr.delete(newGame.get_PlayerTwo().getSocket());
+        this.userArr.splice(0, this.userArr.length);
+
+        console.log('Game length: ' + GameGateway.game.length);
+        console.log('Socket size: ' + this.socketArr.size);
+        console.log('user size: ' + this.userArr.length);
+      }
+    } else {
+      console.log('user => ', payload.user, ' room : ', payload.room_id);
+      //NOTE - Check If the same client not add in Set of socket
+      if (this.privateGameUser.has(payload.room_id)) {
+        [...this.privateGameUser.get(payload.room_id)]?.forEach((user) => {
+          if (user.id == payload.user.id) {
+            console.log('user already exist');
+            return;
+          }
+        });
       }
 
-      // this.playerOne = new Player(
-      //   itSock.next().value,
-      //   true,
-      //   first.id,
-      //   first.username,
-      // );
-      // this.playerTwo = new Player(
-      //   itSock.next().value,
-      //   false,
-      //   second.id,
-      //   second.username,
-      // );
-      //NOTE - Create new instance of game and game is start in constructor
-    //}
-    console.log('create game instance :::::::::::>');
-    const newGame = new Game(
-      this.playerOne,
-      this.playerTwo,
-      this.gameService,
-      this.sendGames,
-      this.server,
-    );
+      if (this.privateRoomGameSockets.has(payload.room_id)) {
+        this.privateRoomGameSockets.set(payload.room_id, [
+          ...this.privateRoomGameSockets.get(payload.room_id),
+          client,
+        ]);
+        this.privateGameUser.set(payload.room_id, [
+          ...this.privateGameUser.get(payload.room_id),
+          payload.user,
+        ]);
+      } else {
+        this.privateRoomGameSockets.set(payload.room_id, [client]);
+        this.privateGameUser.set(payload.room_id, [payload.user]);
+      }
+      console.log(
+        'invited game  users : ',
+        this.privateGameUser.get(payload.room_id),
+      );
 
-    GameGateway.game.push(newGame);
-    this.sendGames(this.server);
+      if (
+        [...this.privateRoomGameSockets.get(payload.room_id)].length > 1 &&
+        [...this.privateGameUser.get(payload.room_id)].length > 1
+      ) {
+        console.log('start the game      0000000000');
 
-    this.socketArr.delete(newGame.get_PlayerOne().getSocket());
-    this.socketArr.delete(newGame.get_PlayerTwo().getSocket());
-    this.userArr.splice(0, this.userArr.length);
+        this.server.emit('Playing', {
+          playing: true,
+          first: {
+            username: this.privateGameUser.get(payload.room_id)[0].userName,
+            avatar: this.privateGameUser.get(payload.room_id)[0].image,
+          },
+          second: {
+            username: this.privateGameUser.get(payload.room_id)[1].userName,
+            avatar: this.privateGameUser.get(payload.room_id)[1].image,
+          },
+        });
 
-    console.log('Game length: ' + GameGateway.game.length);
-    console.log('Socket size: ' + this.socketArr.size);
-    console.log('user size: ' + this.userArr.length);
+        this.playerOne = new Player(
+          [...this.privateRoomGameSockets.get(payload.room_id)][0],
+          true,
+          this.privateGameUser.get(payload.room_id)[0].id,
+          this.privateGameUser.get(payload.room_id)[0].userName,
+          this.privateGameUser.get(payload.room_id)[0].image,
+        );
+        this.playerTwo = new Player(
+          [...this.privateRoomGameSockets.get(payload.room_id)][1],
+          false,
+          this.privateGameUser.get(payload.room_id)[1].id,
+          this.privateGameUser.get(payload.room_id)[1].userName,
+          this.privateGameUser.get(payload.room_id)[1].image,
+        );
+
+        //NOTE - Create new instance of game and game is start in constructor
+        const newGame = new Game(
+          this.playerOne,
+          this.playerTwo,
+          this.gameService,
+          this.sendGames,
+          this.server,
+        );
+        GameGateway.game.push(newGame);
+        this.sendGames(this.server);
+
+        this.privateGameUser.delete(payload.room_id);
+        this.privateRoomGameSockets.delete(payload.room_id);
+        console.log('Game length: ' + GameGateway.game.length);
+        console.log('Socket size: ' + this.socketArr.size);
+        console.log('user size: ' + this.userArr.length);
+      }
+    }
   }
 
   @SubscribeMessage('send_games')

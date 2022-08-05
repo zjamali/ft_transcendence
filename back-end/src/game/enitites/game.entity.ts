@@ -1,8 +1,8 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Games {
-  @PrimaryColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Column()
@@ -28,3 +28,4 @@ export class Games {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date: Date;
 }
+
