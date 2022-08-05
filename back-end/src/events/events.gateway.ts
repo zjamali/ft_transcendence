@@ -186,6 +186,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.Server.to(socket).emit('A_PROFILE_UPDATE', { ...user });
     });
     client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user });
+    this.Server.emit('UPDATE_DATA');
   }
   @SubscribeMessage('I_UPDATE_MY_DATA')
   async userUpdateData(
