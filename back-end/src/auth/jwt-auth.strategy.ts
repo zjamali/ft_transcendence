@@ -4,7 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
 import { UsersService } from 'src/users/users.service';
 
-type JwtPayload = { id: string; username: string };
+type JwtPayload = { id: string; isSecondFactorAuthenticated: boolean };
 
 @Injectable()
 export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {

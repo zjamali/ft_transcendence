@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable, Res } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Response } from 'express';
+import { GameService } from 'src/game/game.service';
 import { Repository } from 'typeorm/repository/Repository';
 import Friend, { State } from './friend.entity';
 import User from './user.entity';
@@ -12,6 +13,7 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
     @InjectRepository(Friend)
     private readonly friendsRepository: Repository<Friend>,
+    private readonly gameService: GameService,
   ) {}
 
   getUsers() {
@@ -278,31 +280,15 @@ export class UsersService {
     const sql = `SELECT * FROM public.Games WHERE "firstPlayer" = $1 OR "secondPlayer" = $1`;
 
     const matchesHistory = await this.usersRepository.query(sql, [userId]);
-    // const return_data =[...matchHistory].map(async (match) => {
-    //   match.firstPlayer = await this.usersRepository.findOne(match.firstPlayer);
-    //   match.secondPlayer = await this.usersRepository.findOne(
-    //     match.secondPlayer,
-    //   );
-    // }
-    // });
-    // console.log(return_data);
     return matchesHistory;
   }
 
   async updateAvatar(currUser: User, imagePath: string) {
-    // const foundedUser: User = await this.usersRepository.findOne({
-    //   where: { userName: givenUserName },
-    // });
-
-    // if (foundedUser && foundedUser.id != currUser.id)
-    //   throw new HttpException(
-    //     'UserName is already taken',
-    //     HttpStatus.FORBIDDEN,
-    //   );
-
-    return this.usersRepository.update(currUser.id, {
-      image: 'http://localhost:5000/users/' + imagePath,
+    const imgPathWithLink: string = 'http://localhost:5000/users/' + imagePath;
+    await this.usersRepository.update(currUser.id, {
+      image: imgPathWithLink,
     });
+    await this.gameService.updatePlayerImage(currUser.id, imgPathWithLink);
   }
 
   async updateUserName(currUser: User, givenUserName: string) {
@@ -316,9 +302,10 @@ export class UsersService {
         HttpStatus.FORBIDDEN,
       );
 
-    return this.usersRepository.update(currUser.id, {
+    await this.usersRepository.update(currUser.id, {
       userName: givenUserName,
     });
+    await this.gameService.updatePlayerUserName(currUser.id, givenUserName);
   }
 
   async setTwoFactorAuthenticationSecret(userId: string, secret: string) {
