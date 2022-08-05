@@ -791,12 +791,98 @@
 
 /* Game style :*/
 
+.home-game-container {
+	height: calc(100vh - 330px);
+	width: 80%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #212b36;
+	position: relative;
+	top: 50px;
+	border: 1px solid #555f6a;
+	border-radius: 12px;
+}
 
 .home-game-content {
 	width: 90%; 
 	height: 100%;
 	display: flex;
 	flex-direction: column;
+}
+
+.game-header {
+	font-family: Deltha, sans-serif;
+	font-weight: 900; 
+	font-size: 70px;
+	position: relative;
+	bottom: 50px;
+	transition: 500ms ease-in-out
+}
+
+.game-container-data {
+	height: 85%;
+	display: flex;
+	flex-direction: row;
+	
+}
+
+.game-text {
+	width: 100%;
+	margin-left: 50px;
+	color: #555f6a;
+	line-height: 30px;
+	font-family: Deltha, sans-serif;
+	font-size: 20px;
+	transition: 500ms ease-in-out
+}
+
+.game-buttons {
+	width: 100%;
+	height: 60px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+}
+
+.text-buttons-container {
+	width: 50%;
+	height: 100%;
+	border-left: 0.1px solid #919eab;
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
+	padding: 15px;
+	flex-direction: column;
+}
+
+@media (max-width: 1200px) {
+	.game-container-data {
+		flex-direction: column;
+		align-items: center;
+		transition: 500ms ease-in-out;
+	}
+
+	.home-game-content {
+		font-size: 50px;
+	}
+
+	.game-header {
+		bottom: 30px;
+		font-size: 50px;
+		transition: 500ms ease-in-out;
+	}
+	.text-buttons-container {
+		border: none;
+		width: 80%;
+	}
+
+	.game-text {
+		margin-left: 20px;
+		font-size: 15px;
+		transition: 500ms ease-in-out
+	}
+
 }
 
 /* .MuiMenu-paper {
