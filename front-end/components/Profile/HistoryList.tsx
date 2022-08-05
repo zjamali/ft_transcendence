@@ -1,25 +1,30 @@
 import axios from "axios";
-import { useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AppContext } from "../../context/AppContext";
 import HistoryCard from "./HistoryCard";
 
-const HistoryList = (props : any) => {
+const HistoryList = (props: any) => {
+	const [matches, setMatches] = useState<any[]>([]);
+	const { state } = useContext(AppContext);
 	useEffect(() => {
 		console.log("matches history : ");
 		fetchMatchs();
+		state.eventsSocket.on("UPDATE_DATA", () => {
+			fetchMatchs();
+		});
 	}, []);
 
 	async function fetchMatchs() {
-		console.log("fetch matches ::->")
+		console.log("fetch matches ::->");
 		try {
 			axios
 				.get(
-					`http://localhost:5000/users/MatchesHistory`,
-					{ withCredentials: true, params: { id: `${props.id}` } }
+					`http://localhost:5000/users/${props.id}/MatchesHistory`,
+					{ withCredentials: true }
 					// { withCredentials: true }
 				)
 				.then((res) => {
-					// setFriendsIds([...res.data].map((user)=>  user.id));
-					console.log("matchs : ", res);
+					setMatches(res.data);
 				});
 		} catch {
 			console.log("CANT GET ALL matches ");
@@ -100,7 +105,12 @@ const HistoryList = (props : any) => {
 					<h4>Match History</h4>
 				</div>
 				<div className="list-of-friends">
-					{/* <HistoryCard match={} /> */}
+					{matches?.map((match) => {
+						console.log("matches ::: ", match);
+						return (
+							<HistoryCard match={{ ...match }} key={match.id} />
+						);
+					})}
 				</div>
 			</div>
 		</div>

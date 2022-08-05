@@ -177,6 +177,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const user = await this.userService.findOne(userId);
     this.Server.to(client.id).emit('A_UPDATE_MY_DATA', { ...user });
     client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user });
+    client.broadcast.emit('UPDATE_DATA');
   }
   @SubscribeMessage('SEND_FRIEND_REQUEST')
   async sendFriendRequest(
@@ -198,7 +199,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const targetSockets = GlobalService.UsersEventsSockets.get(
       friendRequest.accpter,
     );
-    const target = await this.userService.findOne(friendRequest.accpter);
     targetSockets?.forEach((socketsID) => {
       this.Server.to(socketsID).emit('UPDATE_DATA');
     });
@@ -206,7 +206,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const senderSockets = GlobalService.UsersEventsSockets.get(
       friendRequest.relatedUserId,
     );
-    const sender = await this.userService.findOne(friendRequest.relatedUserId);
     senderSockets?.forEach((socketsID) => {
       this.Server.to(socketsID).emit('UPDATE_DATA');
     });

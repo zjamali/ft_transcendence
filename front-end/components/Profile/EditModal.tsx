@@ -21,8 +21,8 @@ const CssTextField = styled(TextField)({
 		color: "#ff3030",
 	},
 	"&  .MuiFormHelperText-root.Mui-error": {
-		color: 'white',
-		backgroundColor: 'white'
+		color: "white",
+		backgroundColor: "white",
 	},
 	"& .MuiInputLabel-root": {
 		color: "white",
@@ -31,7 +31,7 @@ const CssTextField = styled(TextField)({
 		color: "#919eab",
 	},
 	"& .MuiFormHelperText-root": {
-		color: '#919eab',
+		color: "#919eab",
 	},
 	"&  .MuiInputBase-root: hover": {
 		color: "white",
@@ -101,11 +101,11 @@ const EditModal: React.FC<EditModalProps> = ({
 
 	// const test: string = state.mainUser.userName;
 	const primary = red[500];
-	const CHAR_LIMIT:number = 8
+	const CHAR_LIMIT: number = 8;
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [values, setValues] = React.useState({
-		name: `${state.mainUser.userName}`
-	  });
+		name: `${state.mainUser.userName}`,
+	});
 	const open = Boolean(anchorEl);
 	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
@@ -118,62 +118,75 @@ const EditModal: React.FC<EditModalProps> = ({
 		e.preventDefault();
 		console.log("upload profile");
 
-		const formData = new FormData();
+		// const formData = new FormData();
 
-		//   Update the formData object
-		formData.append("file", imageData);
-		formData.append("givenUserName", userName);
+		// //   Update the formData object
+		// formData.append("file", imageData);
+		// formData.append("givenUserName", userName);
 
-		// Details of the uploaded file
-		console.log(userImage);
+		// // Details of the uploaded file
+		// console.log(userImage);
 
 		// Request made to the backend api
 		// Send formData object
-		try {
-			if (twoFAChecked) {
-				if (!state.mainUser.isTwoFactorAuthenticationEnabled) {
-					setOpen2FAModal(true);
-				} else {
-					if (userName && imageData) {
-						axios
-							.post(
-								"http://localhost:5000/users/updateProfile",
-								formData,
-								{
-									withCredentials: true,
-								}
-							)
-							.then((response) => {
-								closeModal(false);
-								console.log("upload data : ", response);
-								state.eventsSocket.emit(
-									"I_UPDATE_MY_PROFILE",
-									state.mainUser.id
-								);
-							});
-					}
-				}
-			} else {
+		if (twoFAChecked) {
+			if (!state.mainUser.isTwoFactorAuthenticationEnabled) {
+				setOpen2FAModal(true);
+			}
+		}
+		if (!twoFAChecked) {
+			if (state.mainUser.isTwoFactorAuthenticationEnabled) {
 				axios
-					.post(
-						"http://localhost:5000/users/updateProfile",
-						formData,
-						{
-							withCredentials: true,
-						}
-					)
-					.then((response) => {
-						closeModal(false);
-						console.log("upload data : ", response);
+					.post("http://localhost:5000/2fa/turnOff",{}, {
+						withCredentials: true,
+					})
+					.then((res) => {
+						console.log("turn of 2fa", res);
 						state.eventsSocket.emit(
 							"I_UPDATE_MY_PROFILE",
 							state.mainUser.id
 						);
 					});
 			}
-		} catch (error) {
-			console.log("error : ", error);
 		}
+		if (imageData !== state.mainUser.image) {
+			const formData = new FormData();
+
+			//   Update the formData object
+			formData.append("file", imageData);
+			axios
+				.post("http://localhost:5000/users/updateAvatar", formData, {
+					withCredentials: true,
+				})
+				.then((res) => {
+					state.eventsSocket.emit(
+						"I_UPDATE_MY_PROFILE",
+						state.mainUser.id
+					);
+					console.log("update avatar : ", res);
+				});
+		}
+		if (userName != state.mainUser.userName) {
+			// const formData = new FormData();
+			// formData.append("givenUserName", userName);
+			axios
+				.post(
+					"http://localhost:5000/users/updateUserName",
+					{ givenUserName: userName },
+					{
+						withCredentials: true,
+					}
+				)
+				.then((res) => {
+					console.log("update userName :", res);
+					state.eventsSocket.emit(
+						"I_UPDATE_MY_PROFILE",
+						state.mainUser.id
+					);
+				});
+		}
+		state.eventsSocket.emit("I_UPDATE_MY_PROFILE", state.mainUser.id);
+		closeModal(false);
 	};
 
 	return (
@@ -229,13 +242,12 @@ const EditModal: React.FC<EditModalProps> = ({
 						<CssTextField
 							label="Username"
 							inputProps={{
-								maxLength: `${CHAR_LIMIT}`
+								maxLength: `${CHAR_LIMIT}`,
 							}}
 							helperText={`${userName.length}/${CHAR_LIMIT}`}
 							defaultValue={userName}
 							size="small"
 							onChange={(e) => setUserName(e.target.value)}
-							
 						/>
 					</div>
 					<div className="modal-two-factor">

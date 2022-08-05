@@ -1,18 +1,21 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import {AppContext} from "../../context/AppContext";
+import { AppContext } from "../../context/AppContext";
 import FriendsCard from "./FriendsCard";
 import HistoryCard from "./HistoryCard";
 
 const DefaultData = ({ id }: { id: string }) => {
 	const [matches, setMatches] = useState<any[]>([]);
-	const {state} = useContext(AppContext)
+	const { state } = useContext(AppContext);
 	const [win, setWin] = useState(0);
 	const [lose, setLose] = useState(0);
 
 	useEffect(() => {
 		console.log("matches history : ");
 		fetchMatchs();
+		state.eventsSocket.on("UPDATE_DATA", () => {
+			fetchMatchs();
+		});
 	}, []);
 
 	async function fetchMatchs() {
@@ -26,32 +29,25 @@ const DefaultData = ({ id }: { id: string }) => {
 					// setFriendsIds([...res.data].map((user)=>  user.id));
 					console.log("matchs : ", res);
 					setMatches(res.data);
-					/// 
-					let winScore = 0; 
-					let loseScore = 0; 
-					[...res.data].forEach((match)=>{
-						if (match.scoreFirst < match.scoreSecond)
-						{
+					///
+					let winScore = 0;
+					let loseScore = 0;
+					[...res.data].forEach((match) => {
+						if (match.scoreFirst < match.scoreSecond) {
 							if (match.firstPlayer === state.mainUser.id)
 								winScore += 1;
-							else
-								loseScore+=1;
-						}
-						else
-						{
+							else loseScore += 1;
+						} else {
 							if (match.scoreSecond === state.mainUser.id)
 								winScore += 1;
-							else
-							{
-								loseScore+=1;
+							else {
+								loseScore += 1;
 							}
 						}
-					})
+					});
 					setWin(winScore);
 					setLose(loseScore);
 					///
-
-
 				});
 		} catch {
 			console.log("CANT GET ALL matches ");
@@ -127,8 +123,13 @@ const DefaultData = ({ id }: { id: string }) => {
 					</div>
 					<div className="list-of-friends">
 						{matches?.map((match) => {
-							console.log("matches ::: ", match );
-							return <HistoryCard match={{...match}} key={match.id} />;
+							console.log("matches ::: ", match);
+							return (
+								<HistoryCard
+									match={{ ...match }}
+									key={match.id}
+								/>
+							);
 						})}
 					</div>
 				</div>
