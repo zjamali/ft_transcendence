@@ -32,13 +32,13 @@ export default function Reciever({
 	const gameHandleInvite = () => {
 		if (state.eventsSocket)
 			state.eventsSocket.emit("send_game_invitaion_to_server", {
-				sender: `${state.mainUser.id}`,
-				receiver: `${state.receiver.id}`,
+				sender: state.mainUser,
+				receiver: state.receiver,
 				game_room: `${state.mainUser.id}${state.receiver.id}`,
 			});
-		router.push('/game');
+		// router.push('/game');
 	};
-
+	
 	return (
 		<>
 			{isContact(state.receiver) ? (

@@ -89,7 +89,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   gameInvitation(
     @ConnectedSocket() client: Socket,
     @MessageBody()
-    gameInvitation: { sender: any; receiver: string; game_room: string },
+    gameInvitation: { sender: any; receiver: any; game_room: string },
   ) {
     console.log(
       '%%%%%%%%%',
@@ -100,14 +100,14 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       gameInvitation.game_room,
     );
     const InviteduserSockets = GlobalService.UsersEventsSockets.get(
-      gameInvitation.receiver,
+      gameInvitation.receiver.id,
     );
     // if (Inviteduser) {
     //   console.log('invited user is :', Inviteduser);
     // }
-    InviteduserSockets.forEach((invitedSocketId) => {
+    InviteduserSockets?.forEach((invitedSocketId) => {
       this.Server.to(invitedSocketId).emit('GAME_INVITATION', {
-        hello: 'hello',
+        ...gameInvitation.sender,
       });
     });
     console.log('InviteduserSockets : ', InviteduserSockets);
@@ -127,24 +127,31 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       gameInvitation.game_room,
     );
     const firstPlayersSockets = GlobalService.UsersEventsSockets.get(
-      gameInvitation.receiver,
-    );
-    const secondPlayerSockets = GlobalService.UsersEventsSockets.get(
       gameInvitation.sender,
     );
-
+    const secondPlayerSockets = GlobalService.UsersEventsSockets.get(
+      gameInvitation.receiver,
+    );
     firstPlayersSockets?.forEach((socketsID) => {
-      this.Server.to(socketsID).emit('STAR_PLAYING', {
-        hello: 'hello',
+      this.Server.to(socketsID).emit('game_invitation_accepted', {
+        room_id: gameInvitation.game_room,
       });
     });
+
+    setTimeout(() => {
+      firstPlayersSockets?.forEach((socketsID) => {
+        this.Server.to(socketsID).emit('STAR_PLAYING', {
+          room_id: gameInvitation.game_room,
+        });
+      });
+    }, 2000);
     setTimeout(() => {
       secondPlayerSockets?.forEach((socketsID) => {
         this.Server.to(socketsID).emit('STAR_PLAYING', {
-          hello: 'hello',
+          room_id: gameInvitation.game_room,
         });
       });
-    }, 200);
+    }, 2000);
   }
   @SubscribeMessage('I_UPDATE_MY_PROFILE')
   async profileUpdate(

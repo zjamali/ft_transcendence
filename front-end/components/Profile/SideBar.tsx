@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { eventsSocket } from "../../context/sockets";
+import InviteGameModale from "../game/InviteGameModale";
+import Portal from "./Portal";
 
 const menu = [
 	{
@@ -88,6 +91,9 @@ const SideBar = () => {
 	const [path, setPath] = useState("/");
 	const [sideMenu, setSideMenu] = useState([...menu]);
 	console.log("PATH : ", router.pathname);
+	const [invitSender, setInvitSender] = useState(null);
+
+	const [openInviteModal, setOpenInviteModal] = useState(false);
 
 	useEffect(() => {
 		const menu = [...sideMenu].map((item) => {
@@ -102,13 +108,29 @@ const SideBar = () => {
 		setSideMenu(newMenu);
 	}, [router.pathname]);
 
+	useEffect(() => {
+		eventsSocket.on("GAME_INVITATION", (sender) => {
+			console.log("sender : ", sender);
+			setInvitSender({ ...sender });
+			setOpenInviteModal(true);
+		});
+		eventsSocket.on("game_invitation_accepted", () => {
+			router.push("/game");
+		});
+		return () => {
+			eventsSocket.off("GAME_INVITATION");
+			eventsSocket.off("game_invitation_accepted");
+		};
+	}, []);
+
 	return (
 		<aside className="sidebar">
 			<div className="middle-sidebar">
 				<ul className="sidebar-list">
 					{sideMenu.map((item) => {
 						return (
-							<li key={sideMenu.indexOf(item)}
+							<li
+								key={sideMenu.indexOf(item)}
 								className={
 									item.active
 										? "sidebar-list-item active"
@@ -134,6 +156,14 @@ const SideBar = () => {
 					})}
 				</ul>
 			</div>
+			{openInviteModal ? (
+				<Portal>
+					<InviteGameModale
+						inviteSender={invitSender}
+						setOpenInviteModal={setOpenInviteModal}
+					/>
+				</Portal>
+			) : null}
 		</aside>
 	);
 };
