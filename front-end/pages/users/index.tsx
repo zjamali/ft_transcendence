@@ -232,7 +232,7 @@ const Users = () => {
 															sx={{
 																width: 90,
 																marginRight: 1,
-																fontSize: 11,
+																fontSize: 9.5,
 															}}
 														>
 															{" "}

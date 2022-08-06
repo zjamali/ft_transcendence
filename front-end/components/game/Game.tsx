@@ -226,11 +226,9 @@ export function Game(props: GameProps) {
 	return (
 		<div style={{width: '100%', height: '100%'}}>
 			{currentState === StateGame.WAIT ? (
-				<div style={{width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'col'}}>
-          {/* <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}> */}
-					<h1 style={{fontFamily: 'Deltha, sans-serif', position: 'relative', bottom: '10px'}}>LOADING</h1>
-          <CircularProgress color="inherit"/>
-          {/* </div> */}
+				<div className="game-loading" style={{width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
+					<h1 className="loading-header" style={{fontFamily: 'Deltha, sans-serif', position: 'relative', bottom: '10px'}}>LOADING</h1>
+          			<CircularProgress color="inherit"/>
 				</div>
 			) : (
 				<div className={style.container} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
