@@ -1,3 +1,4 @@
+import  JwtTwoFactorGuard  from 'src/auth/jwt-2fa-auth.guard';
 import { GlobalService } from './../utils/Global.service';
 import { UsersService } from 'src/users/users.service';
 import { Server, Socket } from 'socket.io';
@@ -44,11 +45,12 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // this.userService.logOut();
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtTwoFactorGuard)
   async handleConnection(client: any) {
     this.allgetwaySockets.push(client.id);
     if (!client.handshake.headers.cookie) return;
     const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
+    if (!user_id) return;
     const response = await this.eventsService.addUserEventsSocket(
       user_id,
       client.id,
@@ -64,11 +66,12 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
     console.log('getway sockets :', this.allgetwaySockets);
   }
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtTwoFactorGuard)
   async handleDisconnect(client: any) {
     // const cookies = client.handshake.headers.cookie;
     if (!client.handshake.headers.cookie) return;
     const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
+    if (!user_id) return;
     this.allgetwaySockets = this.allgetwaySockets.filter(
       (socketid) => socketid != client.id,
     );
@@ -229,6 +232,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     senderSockets?.forEach((socketsID) => {
       this.Server.to(socketsID).emit('UPDATE_DATA');
     });
+    this.Server.emit('UPDATE_DATA');
   }
   @SubscribeMessage('DENY_FREIND_REQUEST')
   async denyFriendRequest(

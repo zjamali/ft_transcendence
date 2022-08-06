@@ -56,8 +56,9 @@ export default function Chat() {
 		state.chatSocket.on("A_CHANNELS_STATUS_UPDATED", () => {
 			fetchAllChannels();
 		});
-		state.chatSocket.on("UPDATE_DATA", () => {
+		state.eventsSocket.on("UPDATE_DATA", () => {
 			fetchAllChannels();
+			setReceiver(null);
 			fetchFriends();
 		});
 		state.chatSocket.on("A_CHANNELS_YOU_KICKED", () => {
