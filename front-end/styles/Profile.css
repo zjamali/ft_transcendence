@@ -793,7 +793,9 @@
 
 .home-game-container {
 	height: calc(100vh - 330px);
+	/* height: 1000px; */
 	width: 80%;
+	min-height: 660px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -809,6 +811,8 @@
 	height: 100%;
 	display: flex;
 	flex-direction: column;
+	/* justify-content: center;
+	align-items: center; */
 }
 
 .game-header {
@@ -856,7 +860,87 @@
 	flex-direction: column;
 }
 
-@media (max-width: 1200px) {
+.game-picture {
+	width: 50%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+.game-loading {
+	width: 50%;
+	height: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.loading-header {
+	font-family: Deltha, sans-serif;
+	position: relative;
+	bottom: 10px;
+	font-size: 30px;
+}
+
+.game-settings {
+	width: 90%;
+	height: 40%;
+	min-height: 450px;
+	min-width: 270px;
+	max-width: 550px;
+	max-height: 550px;
+	/* border: 0.1px solid #919eab; */
+	border-radius: 12px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	align-items: center;
+	background-color: #333d49;
+	box-shadow:0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);; 
+}
+
+.settings-header{
+	display: flex;
+	position: relative;
+	justify-content: center;
+	align-items: center;
+	height: 10%;
+	width: 100%;
+	font-family: Deltha, sans-serif;
+	font-size: 30px;
+	color: #919eab;
+}
+
+.settings-form-data {
+	height: 60%;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: row;
+}
+
+.form-half {
+	width: 50%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-evenly;
+}
+
+.settings-buttons {
+	height: 20%;
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+	align-items: center;
+}
+
+@media (max-width: 1250px) {
 	.game-container-data {
 		flex-direction: column;
 		align-items: center;
@@ -879,10 +963,54 @@
 
 	.game-text {
 		margin-left: 20px;
-		font-size: 15px;
+		font-size: 13px;
 		transition: 500ms ease-in-out
 	}
 
+	.game-picture {
+		width: 80%;
+		height: 50%;
+	}
+
+}
+
+@media (max-width: 857px) {
+	.game-header {
+		bottom : 20px;
+		font-size: 30px;
+		transition: 500ms ease-in-out;
+	}
+
+	.text-buttons-container {
+		width: 100%;
+	}
+
+	.game-text {
+		margin-left: 10px;
+		font-size: 10px;
+		transition: 500ms ease-in-out;
+	}
+	.home-game-container {
+		width: 97%;
+		/* height: 100%; */
+	}
+}
+
+@media (max-width: 450px)
+{
+	.game-header {
+		bottom: 15px;
+		font-size: 25px;
+		transition: 500ms ease-in-out;
+	}
+
+	.home-game-container {
+		height: 100%;
+	}
+
+	.home-game-content {
+		height: 800px;
+	}
 }
 
 /* .MuiMenu-paper {

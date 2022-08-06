@@ -162,14 +162,14 @@ export function HomeGame() {
 	// </>
 	return (
 		<div className="home-game-container" >
-			{!isSetting && <Setting setSetting={setSetting} data={data} />}
+			{!isSetting ? <Setting setSetting={setSetting} data={data} /> :
 				<div className="home-game-content" >
 					<div style={{color: '#919eab', display: 'flex', alignItems: 'center', justifyContent: 'center'}}><h1 className="game-header" style={{}}>Ping Pong Game</h1></div>
 				{!isGame ? 
 					(
 						<div className="game-container-data">
-							<div style={{width: '50%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-								<div style={{width: '100%', height: '100%'}}><img src="/pingpong.png" alt="Ping Pong Game" style={{ width: '100%', height: '100%', objectFit: 'contain'}}/></div>
+							<div className="game-picture" >
+								<img src="/pingpong.png" alt="Ping Pong Game" style={{ width: '100%', height: '100%', objectFit: 'contain'}}/>
 							</div>
 							<div className="text-buttons-container">
 								<div className="game-text" >
@@ -182,8 +182,8 @@ export function HomeGame() {
 									You can discorver it by yourself &nbsp;
 								</div>
 								<div className="game-buttons">
-									<Button variant="outlined" color="warning" size="large" onClick={handleGame} startIcon={<SportsEsportsTwoToneIcon/>}>Play now</Button>
-									<Button variant="outlined" color="info" size="large" onClick={handleSetting}startIcon={<SettingsIcon/>}>Settings</Button>
+									<Button variant="outlined" sx={{'@media (max-width: 1200px)': {width: '117px', fontSize: '9px', height: '40px'}}} color="warning" size="large" onClick={handleGame} startIcon={<SportsEsportsTwoToneIcon/>}>Play now</Button>
+									<Button variant="outlined" sx={{'@media (max-width: 1200px)': {width: '100px', fontSize: '12px', height: '40px'}}} color="info" size="large" onClick={handleSetting}startIcon={<SettingsIcon sx={{fontSize: '10px'}}/>}>Settings</Button>
 								</div>
 							</div>
 						</div>
@@ -192,6 +192,7 @@ export function HomeGame() {
 					(<Game data={data} currentState={currentState} setCurrentState={setCurrentState} />)
 				}
 			</div>
+		}
 		</div>
 	)
 }
