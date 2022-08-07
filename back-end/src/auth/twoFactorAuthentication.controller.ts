@@ -8,7 +8,7 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import RequestWithUser from 'src/users/requestWithUser.interface';
+import RequestWithUser from 'src/users/interfaces/requestWithUser.interface';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { TwoFactorAuthenticationService } from './twoFactorAuthentication.service';
 import { Response } from 'express';
@@ -31,7 +31,7 @@ export class TwoFactorAuthenticationController {
         req.user,
       );
 
-    return this.twoFactorAuthService.pipeQrCodeStream(res, otpauthUrl);
+    return await this.twoFactorAuthService.pipeQrCodeStream(res, otpauthUrl);
   }
 
   @Post('authenticate')

@@ -2,7 +2,7 @@ import { Controller, Req, Get, UseGuards, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
-import RequestWithUser from 'src/users/requestWithUser.interface';
+import RequestWithUser from 'src/users/interfaces/requestWithUser.interface';
 
 @Controller('auth/42')
 export class AuthController {
@@ -10,17 +10,12 @@ export class AuthController {
 
   @Get()
   @UseGuards(AuthGuard('42'))
-  intraAuth(@Req() req: Request) {
-    console.log('blah blah blah');
-    // return 'meow';
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  intraAuth(@Req() req: Request) {}
 
   @Get('callback')
   @UseGuards(AuthGuard('42'))
-  intraAuthRedirect(@Req() req: RequestWithUser, @Res() res: Response) {
-    // console.log(req.user);
-    // return req.user;
-
-    return this.authService.intraLogin(req, res);
+  async intraAuthRedirect(@Req() req: RequestWithUser, @Res() res: Response) {
+    return await this.authService.intraLogin(req, res);
   }
 }

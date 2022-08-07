@@ -29,3 +29,4 @@ export class Games {
   date: Date;
 }
 
+export default Games;

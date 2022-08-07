@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm/repository/Repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import User from 'src/users/user.entity';
 import { GlobalService } from 'src/utils/Global.service';
+import User from 'src/users/entities/user.entity';
 
 @Injectable()
 export class EventsService {

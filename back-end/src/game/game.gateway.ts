@@ -10,12 +10,12 @@ import {
 } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import User from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { Game } from './Classes/game';
 import { gameSate } from './Classes/gameState';
 import { Player } from './Classes/player';
 import { GameService } from './game.service';
+import User from 'src/users/entities/user.entity';
 
 @WebSocketGateway({
   cors: {
