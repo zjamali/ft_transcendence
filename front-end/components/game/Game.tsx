@@ -291,23 +291,38 @@ export function Game(props: GameProps) {
 						height={data.get_Height()}
 						ref={canvasRef}
 					></canvas>
-					<div
-						className={style.users}
-						style={{ fontFamily: "Deltha, sans-serif" }}
-					>
+					<div className={style.users}>
 						<div>
 							<img
-								src={data.get_userOne().avatar}
+								src={
+									data.get_userOne().length !== 0
+										? data.get_userOne()[0].avatar
+										: "undefined"
+								}
 								alt="User_One"
 							/>
-							{data.get_userOne().username}
+							<span>
+								{data.get_userOne().length !== 0
+									? data.get_userOne()[0].username
+									: "undefined"}
+							</span>
+						</div>
+						<div className={style.watcher}>
+							<h2>WATCHERS</h2>
+							<span>{gameState.watcher_count}</span>
 						</div>
 						<div>
 							<img
-								src={data.get_userTwo().avatar}
+								src={
+									data.get_userTwo().length !== 0
+										? data.get_userTwo()[0].avatar
+										: "undefined"
+								}
 								alt="User_Two"
 							/>
-							{data.get_userTwo().username}
+							{data.get_userTwo().length !== 0
+								? data.get_userTwo()[0].username
+								: "undefined"}
 						</div>
 					</div>
 				</div>
