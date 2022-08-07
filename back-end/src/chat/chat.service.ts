@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { GlobalService } from 'src/utils/Global.service';
-import User from 'src/users/user.entity';
 
 @Injectable()
 export class ChatService {

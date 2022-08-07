@@ -44,7 +44,7 @@ export function acceptFriendRequest(accpter: string, relatedUserId: string) {
 			});
 		});
 }
-export function unfriend(denier: string,relatedUserId: string) {
+export function unfriend(denier: string, relatedUserId: string) {
 	axios
 		.post(
 			"http://localhost:5000/users/unfriend",
@@ -53,13 +53,13 @@ export function unfriend(denier: string,relatedUserId: string) {
 		)
 		.then((data) => {
 			console.log("unfreind  request :", data);
-      eventsSocket.emit("DENY_FREIND_REQUEST", {
+			eventsSocket.emit("DENY_FREIND_REQUEST", {
 				denier,
 				relatedUserId,
 			});
 		});
 }
-export function blockUser(blocker:string ,  relatedUserId: string) {
+export function blockUser(blocker: string, relatedUserId: string) {
 	axios
 		.post(
 			"http://localhost:5000/users/block",
@@ -68,10 +68,13 @@ export function blockUser(blocker:string ,  relatedUserId: string) {
 		)
 		.then((data) => {
 			console.log("block  request :", data);
-      eventsSocket.emit("BLOCK_A_USER", {blocker, target : relatedUserId})
+			eventsSocket.emit("BLOCK_A_USER", {
+				blocker,
+				target: relatedUserId,
+			});
 		});
 }
-export function unBlockUser(unblocker:string ,relatedUserId: string) {
+export function unBlockUser(unblocker: string, relatedUserId: string) {
 	axios
 		.post(
 			"http://localhost:5000/users/unblock",
@@ -80,6 +83,9 @@ export function unBlockUser(unblocker:string ,relatedUserId: string) {
 		)
 		.then((data) => {
 			console.log("unblock  request :", data);
-			eventsSocket.emit("UNBLOCK_A_USER", {unblocker, target : relatedUserId})
+			eventsSocket.emit("UNBLOCK_A_USER", {
+				unblocker,
+				target: relatedUserId,
+			});
 		});
 }

@@ -33,16 +33,16 @@ const HistoryList = (props: any) => {
 					console.log("all matches : ",res.data);
 					[...res.data]?.forEach((match) => {
 						if (match.scoreFirst > match.scoreSecond) {
-							if (match.firstPlayer === state.mainUser.id)
-								loseScore += 1;
-							else winScore += 1;
-						} else {
-							if (match.scoreSecond === state.mainUser.id)
-								loseScore += 1;
-							else {
-								winScore += 1;
-							}
-						}
+              if (match.firstPlayer === props.id)
+                winScore += 1;
+              else loseScore += 1;
+            } else {
+              if (match.secondPlayer === props.id)
+                winScore += 1;
+              else {
+                loseScore += 1;
+              }
+            }
 					});
 					setWin(winScore);
 					setLose(loseScore);

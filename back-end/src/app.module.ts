@@ -1,17 +1,17 @@
-import { ChatModule } from './chat/chat.module';
+import entities from 'src';
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ChatModule } from './chat/chat.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { JwtAuthModule } from './auth/jwt-auth.module';
-import entities from 'src';
-import { EventsModule } from './events/events.module';
-import { MessagesModule } from './chat/messages/messages.module';
-import { RoomsModule } from './chat/rooms/rooms.module';
-import { ScheduleModule } from '@nestjs/schedule';
-import { ShutDownModule } from './users/shutdown.module';
 import { GameModule } from './game/game.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { UsersModule } from './users/users.module';
+import { EventsModule } from './events/events.module';
+import { JwtAuthModule } from './auth/jwt-auth.module';
+import { RoomsModule } from './chat/rooms/rooms.module';
+import { ShutDownModule } from './users/shutdown.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MessagesModule } from './chat/messages/messages.module';
 
 @Module({
   imports: [
@@ -37,7 +37,7 @@ import { GameModule } from './game/game.module';
     MessagesModule,
     RoomsModule,
     ChatModule,
-    ScheduleModule.forRoot(),
+    ScheduleModule.forRoot(), ///Holy semicolon: What is this??
     ShutDownModule,
     GameModule,
   ],
