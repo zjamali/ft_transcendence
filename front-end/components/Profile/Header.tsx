@@ -7,7 +7,7 @@ import { useContext, useEffect, useRef } from "react";
 import { AppContext } from "../../context/AppContext";
 import { eventsSocket } from "../../context/sockets";
 
-const Header = (props) => {
+const Header = (props:any) => {
 	const { state, setMainUser } = useContext(AppContext);
 	const userName: string = state.mainUser.userName;
 	let src: string = state.mainUser.image;

@@ -161,18 +161,18 @@ export function HomeGame() {
 	// 	)}
 	// </>
 	return (
-		<div style={{ height: 'calc(100vh - 430px', width: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#212b36', position: 'relative', top: '50px', border: '1px solid #555f6a', borderRadius: '12px'}}>
-			{!isSetting && <Setting setSetting={setSetting} data={data} />}
+		<div className="home-game-container" >
+			{!isSetting ? <Setting setSetting={setSetting} data={data} /> :
 				<div className="home-game-content" >
-					<div style={{color: '#919eab', display: 'flex', alignItems: 'center', justifyContent: 'center'}}><h1 style={{fontFamily: 'Deltha, sans-serif', fontWeight: '900', fontSize: '70px', position: 'relative', bottom: '50px'}}>Ping Pong Game</h1></div>
+					<div style={{color: '#919eab', display: 'flex', alignItems: 'center', justifyContent: 'center'}}><h1 className="game-header" style={{}}>Ping Pong Game</h1></div>
 				{!isGame ? 
 					(
-						<div style={{height: '85%', display: 'flex', flexDirection: 'row'}}>
-							<div style={{width: '50%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-								<div style={{width: '100%', height: '100%'}}><img src="/pingpong.png" alt="Ping Pong Game" style={{ width: '100%', height: '100%', objectFit: 'fill'}}/></div>
+						<div className="game-container-data">
+							<div className="game-picture" >
+								<img src="/pingpong.png" alt="Ping Pong Game" style={{ width: '100%', height: '100%', objectFit: 'contain'}}/>
 							</div>
-							<div style={{width: '50%', height: '100%', borderLeft: '0.1px solid #919eab', display: 'flex', alignItems: 'center', justifyContent: 'space-evenly', fontSize: '20px', padding: '15px', flexDirection: 'column'}}>
-								<div style={{width: '100%', marginLeft: '50px', color: '#555f6a', lineHeight: '30px', fontFamily: 'Deltha, sans-serif'}}>
+							<div className="text-buttons-container">
+								<div className="game-text" >
 									PING PONG is a table tennis game where you can enjoy a real match experience.
 									<br />
 									You can enjoy the feeling of an actual table tennis by tossing
@@ -181,9 +181,9 @@ export function HomeGame() {
 									<br />
 									You can discorver it by yourself &nbsp;
 								</div>
-								<div style={{width: '100%', height: '60px', display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
-									<Button variant="outlined" color="warning" size="large" onClick={handleGame} startIcon={<SportsEsportsTwoToneIcon/>}>Play now</Button>
-									<Button variant="outlined" color="info" size="large" onClick={handleSetting}startIcon={<SettingsIcon/>}>Settings</Button>
+								<div className="game-buttons">
+									<Button variant="outlined" sx={{'@media (max-width: 1200px)': {width: '117px', fontSize: '9px', height: '40px'}}} color="warning" size="large" onClick={handleGame} startIcon={<SportsEsportsTwoToneIcon/>}>Play now</Button>
+									<Button variant="outlined" sx={{'@media (max-width: 1200px)': {width: '100px', fontSize: '12px', height: '40px'}}} color="info" size="large" onClick={handleSetting}startIcon={<SettingsIcon sx={{fontSize: '10px'}}/>}>Settings</Button>
 								</div>
 							</div>
 						</div>
@@ -192,6 +192,7 @@ export function HomeGame() {
 					(<Game data={data} currentState={currentState} setCurrentState={setCurrentState} />)
 				}
 			</div>
+		}
 		</div>
 	)
 }

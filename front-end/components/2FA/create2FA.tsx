@@ -194,7 +194,6 @@ const Active2FA: React.FC<EditModalProps> = ({ closeModal2FA }) => {
 								label="Enter Two Factor auth"
 								defaultValue={twoFAcode}
 								size="small"
-								helperText="test"
 								onChange={(e) => setTwoFAcode(e.target.value)}
 								style={{ marginLeft: "30px" }}
 							/>
