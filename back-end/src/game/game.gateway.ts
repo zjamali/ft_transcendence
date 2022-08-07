@@ -74,7 +74,7 @@ export class GameGateway
 
   handleDisconnect(client: Socket) {
     this.logger.log('Disconnected ' + `${client.id}`);
-    const gameFound = GameGateway.game.find((gm) => {
+    let gameFound = GameGateway.game.find((gm) => {
       return (
         gm.get_PlayerOne().getSocket() === client ||
         gm.get_PlayerTwo().getSocket() === client
@@ -84,9 +84,9 @@ export class GameGateway
       if (gameFound.gameStateFunc() === gameSate.PLAY) {
         gameFound.playerOutGame(client);
         gameFound.stopGame();
+        GameGateway.game.splice(GameGateway.game.indexOf(gameFound), 1);
       }
     }
-    GameGateway.game.splice(GameGateway.game.indexOf(gameFound), 1);
   }
 
   // @SubscribeMessage('resize')
@@ -193,6 +193,7 @@ export class GameGateway
           this.gameService,
           this.sendGames,
           this.server,
+          GameGateway.game,
         );
 
         GameGateway.game.push(newGame);
@@ -276,6 +277,7 @@ export class GameGateway
           this.gameService,
           this.sendGames,
           this.server,
+          GameGateway.game,
         );
         GameGateway.game.push(newGame);
         this.sendGames(this.server);
