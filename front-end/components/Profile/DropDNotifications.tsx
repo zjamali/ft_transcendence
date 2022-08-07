@@ -65,8 +65,12 @@ const DropDNotifications: React.FC = (props) => {
 		state.eventsSocket.on("NEW_FRIEND_REQUEST", () => {
 			fetchFriendsRequest();
 		});
+		state.eventsSocket.on("UPDATE_DATA", () => {
+			fetchFriendsRequest();
+		});
 		return (()=> {
 			state.eventsSocket.off("NEW_FRIEND_REQUEST");
+      state.eventsSocket.off("UPDATE_DATA");
 		})
 	}, []);
 
@@ -76,7 +80,10 @@ const DropDNotifications: React.FC = (props) => {
 				withCredentials: true,
 			})
 			.then((responce) => {
-				setRecievedrequests([...responce.data]);
+        if ([...responce.data].length)
+				  setRecievedrequests([...responce.data]);
+        else
+        setRecievedrequests([]);
 			});
 	};
 
@@ -158,7 +165,7 @@ const DropDNotifications: React.FC = (props) => {
 					Friend Requests
 				</MenuItem>
 				<Divider sx={{ color: "white" }} />
-				{recievedrequests.map((recievedrequest) => (
+				{recievedrequests?.map((recievedrequest) => (
 					<Notification
 						user={recievedrequest}
 						key={recievedrequest.id}
