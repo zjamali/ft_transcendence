@@ -12,13 +12,13 @@ import { CircularProgress } from "@mui/material";
 
 interface GameProps {
 	data: Data;
-	currentState?: StateGame;
+	currentState: StateGame;
 	setCurrentState: (state: StateGame) => void;
+	setIsGame: (isGame: boolean) => void;
 }
 
 export function Game(props: GameProps) {
-	const { currentState, setCurrentState } = props;
-
+	const { data, currentState, setCurrentState, setIsGame } = props;
 	const { state } = useContext(AppContext);
 
 	const canvasRef: any = useRef();
@@ -35,6 +35,7 @@ export function Game(props: GameProps) {
 			playerOne_Score: data.get_Score_One(),
 			playerTwo_Score: data.get_Score_Two(),
 		},
+		watcher_count: data.get_Watchers(),
 		currentState: data.get_State(),
 		isWin: data.get_Winner(),
 	};
@@ -179,6 +180,9 @@ export function Game(props: GameProps) {
 			data.set_Score_One(gameState.score.playerOne_Score);
 			data.set_Score_Two(gameState.score.playerTwo_Score);
 
+			//NOTE - Update Watchers
+			data.set_Watchers(gameState.watcher_count);
+
 			//NOTE - Update State Game if Wait OR Play OR Over
 			data.set_State(gameState.currentState);
 
@@ -189,17 +193,32 @@ export function Game(props: GameProps) {
 			drawGame(context, data);
 
 			//NOTE - Check State Game if true Display "Game Over"
-			if (data.get_State() === StateGame.OVER)
+			if (data.get_State() === StateGame.OVER) {
 				setCurrentState(StateGame.OVER);
+			}
 
 			socket.on("gameState", (newState: any) => {
-				// console.log("state", newState)
 				setGameState(newState);
 			});
+			// socket.on("deleteUsers", () => {
+			//   const findUserOne = data
+			//     .get_userOne()
+			//     .findIndex((user) => user.id === socket.id);
+			//   const findUserTwo = data
+			//     .get_userTwo()
+			//     .findIndex((user) => user.id === socket.id);
+			//   if (findUserOne && findUserTwo) {
+			//     data.get_userOne().splice(findUserOne, 1);
+			//     data.get_userTwo().splice(findUserTwo, 1);
+			//   }
+			//   console.log("after delete userOne", data.get_userOne());
+			//   console.log("after delete userTwo", data.get_userTwo());
+			//   });
 		}
 
 		return () => {
 			socket.off("gameState");
+			socket.off("deleteUsers");
 		};
 	}, [gameState, currentState]);
 
@@ -221,17 +240,48 @@ export function Game(props: GameProps) {
 		});
 
 		responseGame();
+
+		return () => {
+			socket.off("upPaddle");
+			socket.off("downPaddle");
+		};
 	}, []);
 
 	return (
-		<div style={{width: '100%', height: '100%'}}>
+		<div style={{ width: "100%", height: "100%" }}>
 			{currentState === StateGame.WAIT ? (
-				<div className="game-loading" style={{width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
-					<h1 className="loading-header" style={{fontFamily: 'Deltha, sans-serif', position: 'relative', bottom: '10px'}}>LOADING</h1>
-          			<CircularProgress color="inherit"/>
+				<div
+					className="game-loading"
+					style={{
+						width: "100%",
+						height: "100%",
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+						flexDirection: "column",
+					}}
+				>
+					<h1
+						className="loading-header"
+						style={{
+							fontFamily: "Deltha, sans-serif",
+							position: "relative",
+							bottom: "10px",
+						}}
+					>
+						LOADING
+					</h1>
+					<CircularProgress color="inherit" />
 				</div>
 			) : (
-				<div className={style.container} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+				<div
+					className={style.container}
+					style={{
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+					}}
+				>
 					{/* <div className={style.info}>
 						<h1>Players: &uarr; &darr;</h1>
 					</div> */}
@@ -241,8 +291,11 @@ export function Game(props: GameProps) {
 						height={data.get_Height()}
 						ref={canvasRef}
 					></canvas>
-					<div className={style.users} style={{fontFamily: 'Deltha, sans-serif'}}>
-						<div >
+					<div
+						className={style.users}
+						style={{ fontFamily: "Deltha, sans-serif" }}
+					>
+						<div>
 							<img
 								src={data.get_userOne().avatar}
 								alt="User_One"
@@ -259,7 +312,13 @@ export function Game(props: GameProps) {
 					</div>
 				</div>
 			)}
-			{currentState === StateGame.OVER && <GameOver curData={data} />}
+			{currentState === StateGame.OVER && (
+				<GameOver
+					data={data}
+					setIsGame={setIsGame}
+					setCurrentState={setCurrentState}
+				/>
+			)}
 		</div>
 	);
 }

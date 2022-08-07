@@ -13,6 +13,7 @@ export enum TypeRes {
 }
 
 export interface UserInGame {
+  id: string;
   username: string;
   avatar: string;
 }
@@ -52,8 +53,8 @@ export class Data {
   //NOTE - Number of Watchers
   private watchers: number;
   //NOTE - Details Users
-  private userOne: UserInGame;
-  private userTwo: UserInGame;
+  private userOne: Array<UserInGame>;
+  private userTwo: Array<UserInGame>;
   //NOTE - Details Color Game
   private mapColor: string;
   private paddleColor: string;
@@ -61,6 +62,8 @@ export class Data {
   private borderColor: string;
   private textColor: string;
   private traceColor: string
+  //NOTE - Position Users
+  private posUser: number;
 
   constructor(width: number, height: number) {
     this.cWidth = width;
@@ -88,30 +91,37 @@ export class Data {
     this.trace_Y = 0;
     this.trace_Width = 2;
     this.trace_Height = 10;
-    this.userOne = { username: "", avatar: "" };
-    this.userTwo = { username: "", avatar: "" };
+    this.userOne = [];
+    this.userTwo = [];
     this.mapColor = "#000";
     this.paddleColor = "#FFF";
     this.ballColor = "#ffff00";
     this.borderColor = "#FFF";
     this.textColor = "#FFF";
     this.traceColor = "#FFF";
+    this.posUser = -1;
   }
 
-  public get_userOne(): UserInGame {
+  public get_PosUser(): number {
+    return this.posUser;
+  }
+  public set_PosUser(pos: number): void {
+    this.posUser = pos;
+  }
+  public get_userOne(): UserInGame[] {
     return this.userOne;
   }
 
   public set_userOne(userOne: UserInGame): void {
-    this.userOne = userOne;
+    this.userOne.push(userOne);
   }
 
-  public get_userTwo(): UserInGame {
+  public get_userTwo(): UserInGame[] {
     return this.userTwo;
   }
 
   public set_userTwo(userTwo: UserInGame): void {
-    this.userTwo = userTwo;
+    this.userTwo.push(userTwo);
   }
   public get_Width(): number {
     return this.cWidth;
@@ -229,6 +239,9 @@ export class Data {
   }
   public get_Watchers(): number {
     return this.watchers;
+  }
+  public set_Watchers(watchers: number): void {
+    this.watchers = watchers;
   }
   public set_ball_Radius(radius: number): void {
     this.ballRadius = radius;

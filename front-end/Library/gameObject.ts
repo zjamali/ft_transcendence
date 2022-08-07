@@ -13,6 +13,7 @@ export interface GameObj {
       playerOne_Score: number,
       playerTwo_Score: number
     },
+    watcher_count: number,
     currentState: StateGame,
     isWin: boolean
 }

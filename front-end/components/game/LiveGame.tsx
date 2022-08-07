@@ -1,46 +1,38 @@
 import { useEffect, useState } from "react";
 import styles from "../../styles/LiveGame.module.css";
-import Game from "./Game";
+import CurrentGame from "./CurrentGame";
+import socket from "../../Library/Socket";
 
-function LiveGame(props: any) {
-  const [check, setCheck] = useState(false)
-  const hundlGame = () => {
-    console.log(props.game.gameId);
-    props.socket.emit("watchers", props.game);
-    setCheck(true);
-  };
-  useEffect(() => {
-    
-  }, [check])
+
+export function LiveGame() {
+  const [games, setGames] = useState([]);
+
+  useEffect( () => {
+      socket.on("receive_games", (data: any) => {
+      const tmp = JSON.parse(data);
+      if (tmp.hasOwnProperty("games")) {
+        setGames(tmp.games);
+      }
+    });
+    return () => {
+      socket.off("receive_games");
+    };
+  }, [games]);
+
   return (
     <>
-      {
-        !check ? (<div className={styles.container}>
-          <div className={styles.box}>
-            <div className={styles.dataOne}>
-              <img src="/noimg.png" width="200px" height="200px" />
-              <span className={styles.username}>
-                {props.game.player_1.username}
-              </span>
-              <span className={styles.score}>{props.game.player_1.score}</span>
-            </div>
-            <div className={styles.dataTwo}>
-              <img src="/noimg.png" width="200px" height="200px" />
-              <span className={styles.username}>
-                {props.game.player_2.username}
-              </span>
-              <span className={styles.score}>{props.game.player_2.score}</span>
-            </div>
-            <div className={styles.watch}>
-              <button onClick={hundlGame}>
-                <img src="/eye.png" width="30px" height="60px" />
-              </button>
-            </div>
-          </div>
-        </div>) : <Game  />
-      }
+      {games.length !== 0  ? (
+        games.map((game, index) => {
+          return <CurrentGame key={index} game={game} />;
+        })
+      ) : (
+        <div className={styles.empty}>
+          <h1>CURRENT GAMES EMPTY</h1>
+        </div>
+      )}
     </>
-  )
+  );
 }
 
 export default LiveGame;
+
