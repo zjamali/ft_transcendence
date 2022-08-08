@@ -66,7 +66,7 @@ const HistoryList = (props: any) => {
 		>
 			<div className="profile-data-row1" style={{ width: "100%" }}>
 				<div className="statics-header">
-					<h4></h4>
+					<h4>Game Statics</h4>
 				</div>
 				<div className="statics-games">
 					<div className="statics-win">

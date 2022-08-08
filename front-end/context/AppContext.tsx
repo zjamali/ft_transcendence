@@ -18,7 +18,7 @@ export const AppProvider = (props: any) => {
 	const [isUserJoinedChannel, setIsUserJoinedChannel] = useState<boolean>(
 		false
 	);
-
+	const [onlineGames, setOnlineGames] = useState([]);
 	// useEffect(() => {
 	  
 	
@@ -43,6 +43,7 @@ export const AppProvider = (props: any) => {
 					isUserJoinedChannel,
 					eventsSocket,
 					chatSocket,
+					onlineGames,
 				},
 				setLogin,
 				setMessages,
@@ -52,6 +53,7 @@ export const AppProvider = (props: any) => {
 				setFriends,
 				setMainUser,
 				setIsUserJoinedChannel,
+				setOnlineGames,
 			}}
 		>
 			{props.children}
