@@ -114,8 +114,8 @@ const SideBar = () => {
 			setInvitSender({ ...sender });
 			setOpenInviteModal(true);
 		});
-		eventsSocket.on("game_invitation_accepted", () => {
-			router.push("/game");
+		eventsSocket.on("game_invitation_accepted", (data) => {
+			router.push(`/game?roomId=${data.room_id}`);
 		});
 		return () => {
 			eventsSocket.off("GAME_INVITATION");
