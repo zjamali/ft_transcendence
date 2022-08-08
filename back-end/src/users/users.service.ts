@@ -257,7 +257,8 @@ export class UsersService {
   }
 
   async updateAvatar(currUser: User, imagePath: string) {
-    const imgPathWithLink: string = 'http://localhost:5000/users/' + imagePath;
+    const imgPathWithLink: string =
+      'http://192.168.99.121:5000/users/' + imagePath;
     await this.usersRepository.update(currUser.id, {
       image: imgPathWithLink,
     });
@@ -265,6 +266,7 @@ export class UsersService {
   }
 
   async updateUserName(currUser: User, givenUserName: string) {
+    givenUserName = givenUserName.substring(0, 8);
     const foundedUser: User = await this.usersRepository.findOne({
       where: { userName: givenUserName },
     });
@@ -319,7 +321,7 @@ export class UsersService {
 
   logOut(@Res() res: Response) {
     res.clearCookie('access_token');
-    res.redirect('http://localhost:3000');
+    res.redirect('http://192.168.99.121:3000');
   }
 
   async logOutFromAllUsers() {

@@ -20,7 +20,7 @@ type JwtPayload = { id: string; username: string };
 
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:3000',
+    origin: 'http://192.168.99.121:3000',
     allowedHeaders: ['my-custom-header'],
     credentials: true,
   },
@@ -142,7 +142,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         room_id: gameInvitation.game_room,
       });
     });
-
   }
 
   @SubscribeMessage('GAME_START')

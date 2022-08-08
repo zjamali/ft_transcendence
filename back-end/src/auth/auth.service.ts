@@ -17,12 +17,12 @@ export class AuthService {
     const user = await this.usersService.findOne(userId);
 
     if (user && user.isTwoFactorAuthenticationEnabled == false) {
-      url = 'http://localhost:3000';
+      url = 'http://192.168.99.121:3000';
     } else if (user && user.isTwoFactorAuthenticationEnabled == true) {
-      url = 'http://localhost:3000?twoFa=true';
+      url = 'http://192.168.99.121:3000?twoFa=true';
     } else {
       this.usersService.createUser(req.user);
-      url = 'http://localhost:3000?edit_profile=true';
+      url = 'http://192.168.99.121:3000?edit_profile=true';
     }
 
     const { access_token } = this.jwtAuthService.signWith2FA(req.user, false);

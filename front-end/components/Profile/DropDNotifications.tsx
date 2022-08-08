@@ -76,7 +76,7 @@ const DropDNotifications: React.FC = (props) => {
 
 	const fetchFriendsRequest = () => {
 		axios
-			.get("http://localhost:5000/users/recievedrequests", {
+			.get("http://192.168.99.121:5000/users/recievedrequests", {
 				withCredentials: true,
 			})
 			.then((responce) => {

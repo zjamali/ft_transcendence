@@ -54,9 +54,10 @@ export class EventsService {
 
   // update user status in DB
   async setUserOfflineInDb(user_id: string) {
-    await this.usersRepository.update(user_id, { isOnline: false });
+    if (user_id)
+      await this.usersRepository.update(user_id, { isOnline: false });
   }
   async setUserOnlineInDb(user_id: string) {
-    await this.usersRepository.update(user_id, { isOnline: true });
+    if (user_id) await this.usersRepository.update(user_id, { isOnline: true });
   }
 }

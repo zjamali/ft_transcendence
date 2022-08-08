@@ -19,21 +19,26 @@ export default function UserProfile({}: Props) {
 	const router = useRouter();
 	const { userId } = router.query;
 	useEffect(() => {
-		axios
-			.get("http://localhost:5000/users/me", { withCredentials: true })
-			.then((res) => {
-				if (res.status === 200) {
-					setMainUser({ ...res.data });
-					userData();
-				}
-			})
-			.catch(() => {
-				console.log("ee");
-			});
+    try{
+
+      axios
+        .get("http://192.168.99.121:5000/users/me", { withCredentials: true })
+        .then((res) => {
+          if (res.status === 200) {
+            setMainUser({ ...res.data });
+            userData();
+          }
+        })
+        .catch(() => {
+          console.log("ee");
+        });
+    }catch(e){
+
+    }
 
 		state.eventsSocket.on("UPDATE_DATA", () => {
 			axios
-				.get("http://localhost:5000/users/me", {
+				.get("http://192.168.99.121:5000/users/me", {
 					withCredentials: true,
 				})
 				.then((res) => {
@@ -43,6 +48,7 @@ export default function UserProfile({}: Props) {
 					}
 				})
 				.catch(() => {
+          setMainUser(null);
 					console.log("ee");
 				});
 		});
@@ -53,7 +59,7 @@ export default function UserProfile({}: Props) {
 
 	function userData() {
 		axios
-			.get(`http://localhost:5000/users/id/${userId}`, {
+			.get(`http://192.168.99.121:5000/users/id/${userId}`, {
 				withCredentials: true,
 			})
 			.then(async (res) => {
@@ -68,7 +74,7 @@ export default function UserProfile({}: Props) {
 			});
 	}
 	async function fetchUsersBlockedBy() {
-		return await axios.get("http://localhost:5000/users/blockedByUsers", {
+		return await axios.get("http://192.168.99.121:5000/users/blockedByUsers", {
 			withCredentials: true,
 		});
 	}

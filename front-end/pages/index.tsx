@@ -12,7 +12,7 @@ const Home: NextPage = () => {
 	const router = useRouter();
 	if (router.query.login) {
 		axios
-			.get("http://localhost:5000/users/me", { withCredentials: true })
+			.get("http://192.168.99.121:5000/users/me", { withCredentials: true })
 			.then((res) => {
 				if (res.status === 200) {
 					setMainUser({ ...res.data });
@@ -24,7 +24,7 @@ const Home: NextPage = () => {
 	}
 	useEffect(() => {
 		axios
-			.get("http://localhost:5000/users/me", { withCredentials: true })
+			.get("http://192.168.99.121:5000/users/me", { withCredentials: true })
 			.then((res) => {
 				if (res.status === 200) {
 					setMainUser({ ...res.data });

@@ -19,6 +19,7 @@ import RequestWithUser from './interfaces/requestWithUser.interface';
 import { FileInterceptor } from '@nestjs/platform-express';
 import JwtTwoFactorGuard from 'src/auth/jwt-2fa-auth.guard';
 import { saveImageToStorage } from './helpers/image-storage';
+import { BlockGuard } from './block.guard';
 
 @Controller('users')
 export class UsersController {
@@ -43,8 +44,10 @@ export class UsersController {
   }
 
   @Get('id/:id')
+  @UseGuards(BlockGuard)
   @UseGuards(JwtTwoFactorGuard)
   async findUserById(@Param('id') userId: string) {
+    console.log('meow');
     return await this.usersService.findOne(userId);
   }
 
