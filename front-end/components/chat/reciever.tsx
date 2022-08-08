@@ -57,7 +57,7 @@ export default function Reciever({
 					<div>
 						<Button
 							variant="outlined"
-							color="success"
+							color="primary"
 							size="large"
 							onClick={gameHandleInvite}
 							startIcon={<SportsEsportsTwoToneIcon />}

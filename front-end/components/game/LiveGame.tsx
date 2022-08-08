@@ -36,8 +36,8 @@ export function LiveGame() {
 				padding: "10px",
 			}}
 		>
-			{state.onlineGames.length !== 0 ? (
-				state.onlineGames.map((game, index) => {
+			{games.length !== 0 ? (
+				games.map((game, index) => {
 					return (
 						<Link
 							href={{
