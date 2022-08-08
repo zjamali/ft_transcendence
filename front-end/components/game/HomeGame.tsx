@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Data, StateGame } from "../../Library/Data";
 import socket from "../../Library/Socket";
 import { AppContext } from "../../context/AppContext";
@@ -51,25 +51,11 @@ export function HomeGame() {
 
 	useEffect(() => {
 		if (router.query && router.query.roomId) {
+			console.log("start game mother father");
 			gameInviteDefHandler(router.query.roomId);
 		}
 	}, []);
 
-	// socket.on("Playing", (payload: any) => {
-	//   if (payload.playing) {
-	//     data.set_userOne(payload.first);
-	//     data.set_userTwo(payload.second);
-	//     data.set_State(1);
-	//   }
-	// );
-	const gameObsHandler = () => {
-		// const token = Cookies.get("access_token");
-		// socket.emit("join_match", {
-		//   access_token: token,
-		//   type: "obstacle",
-		// });
-		// setIsGame(true);
-	};
 
 	const gameInviteDefHandler = async (room_id: string) => {
 		// const token = Cookies.get("access_token");
@@ -89,75 +75,9 @@ export function HomeGame() {
 		setIsGame(true);
 	};
 
-	// 	socket.on("Playing", (payload: any) => {
-	// 		if (payload.playing) {
-	// 			data.set_userOne(payload.first);
-	// 			data.set_userTwo(payload.second);
-	// 			data.set_State(1);
-	// 		}
-	// 		setCurrentState(1);
-	// 	});
-	// 	setIsGame(true);
-	// };
-
-	// <>
-	// 	{!isSetting && <Setting setSetting={setSetting} data={data} />}
-	// 	{!isGame ? (
-	// 		<div className={styles.container}>
-	// 			<div className={styles.game}>
-	// 				<img src="/pingpong.png" alt="Ping Pong Game" />
-	// 			</div>
-	// 			<div className={styles.about}>
-	// 				<div>
-	// 					<h1>
-	// 						Ping
-	// 						<img
-	// 							src="/racket.png"
-	// 							alt="racket"
-	// 							width="80px"
-	// 							height="60px"
-	// 						/>
-	// 						Pong
-	// 					</h1>
-	// 					<p>
-	// 						PING PON is a table tennis game where you can
-	// 						enjoy a real match experience.
-	// 						<br />
-	// 						You can enjoy the feeling of an actual table
-	// 						tennis by tossing and serving the ball, and
-	// 						hitting back to a different direction by
-	// 						adjusting the angle of the racket.
-	// 						<br />
-	// 						You can discorver it by yourself &nbsp;
-	// 						<span className={styles.emoji}>😉</span>
-	// 					</p>
-	// 					<div className={styles.btn}>
-	// 						<button
-	// 							className={styles.btnDef}
-	// 							onClick={handleGame}
-	// 						>
-	// 							PLAY
-	// 						</button>
-	// 						<button
-	// 							className={styles.btnObs}
-	// 							onClick={handleSetting}
-	// 						>
-	// 							SETTING
-	// 						</button>
-	// 					</div>
-	// 				</div>
-	// 			</div>
-	// 		</div>
-	// 	) : (
-	// 		<Game
-	// 			data={data}
-	// 			currentState={currentState}
-	// 			setCurrentState={setCurrentState}
-	// 		/>
-	// 	)}
-	// </>
+	const gameContainer = useRef(null);
 	return (
-		<div className="home-game-container">
+		<div ref={gameContainer} className="home-game-container">
 			{!isSetting ? (
 				<Setting setSetting={setSetting} data={data} />
 			) : (
@@ -241,6 +161,7 @@ export function HomeGame() {
 						</div>
 					) : (
 						<Game
+							gameContainer={gameContainer}
 							data={data}
 							currentState={currentState}
 							setCurrentState={setCurrentState}
