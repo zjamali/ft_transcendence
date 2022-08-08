@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "../../styles/LiveGame.module.css";
 import CurrentGame from "./CurrentGame";
 import socket from "../../Library/Socket";
@@ -18,19 +18,19 @@ export function LiveGame() {
       socket.off("receive_games");
     };
   }, [games]);
-
+  const gameContainer = useRef(null);
   return (
-    <>
+    <div  ref={gameContainer}>
       {games.length !== 0  ? (
         games.map((game, index) => {
-          return <CurrentGame key={index} game={game} />;
+          return <CurrentGame key={index} game={game}  gameContainer={gameContainer} />;
         })
       ) : (
         <div className={styles.empty}>
           <h1>CURRENT GAMES EMPTY</h1>
         </div>
       )}
-    </>
+    </div >
   );
 }
 
