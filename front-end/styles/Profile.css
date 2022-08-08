@@ -806,6 +806,7 @@
 	top: 50px;
 	border: 1px solid #555f6a;
 	border-radius: 12px;
+	transition: 300ms ease-in-out;
 }
 
 .home-game-content {
@@ -963,7 +964,7 @@
 }
 
 .g-o-lost {
-	color: --var(--active-color)
+	color: red;
 }
 
 .g-o-win {
@@ -978,6 +979,61 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+}
+
+.score-game-live {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+}
+
+.game-player {
+	position: relative;
+	width: 85px;
+	height: 85px;
+	border-radius: 50px;
+	overflow: hidden;
+	transition: 200ms ease-in-out;
+}
+
+.game-player-username {
+	font-size: 13px;
+	font-family: Deltha, sans-serif;
+}
+
+@media (max-width: 850px)
+{
+	.game-player {
+		width: 65px;
+		height: 65px;
+		transition: 200ms ease-in-out;
+	}
+
+	.game-player-username {
+		font-size: 10px
+	}
+}
+@media (max-width: 450px)
+{
+	.game-player {
+		width: 45px;
+		height: 45px;
+		transition: 200ms ease-in-out;
+	}
+
+	.game-player-username {
+		font-size: 8px
+	}
+}
+
+@media (min-width: 2150px)
+{
+	.home-game-container {
+		height: 1150px;
+		transition: 200ms ease-in-out;
+	}
 }
 
 @media (max-width: 1250px) {
@@ -1018,7 +1074,7 @@
 	.game-header {
 		bottom : 20px;
 		font-size: 30px;
-		transition: 500ms ease-in-out;
+		transition: 300ms ease-in-out;
 	}
 
 	.text-buttons-container {
