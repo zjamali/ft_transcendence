@@ -56,7 +56,6 @@ export function HomeGame() {
 		}
 	}, []);
 
-
 	const gameInviteDefHandler = async (room_id: string) => {
 		// const token = Cookies.get("access_token");
 		socket.emit("join_match", {
@@ -76,6 +75,18 @@ export function HomeGame() {
 	};
 
 	const gameContainer = useRef(null);
+
+	useEffect(() => {
+		return () => {
+			socket.emit("STOP_GAME");
+			state.eventsSocket.emit("GAME_OVER", state.mainUser.id);
+			setTimeout(() => {
+				setIsGame(false);
+				setCurrentState(StateGame.WAIT);
+				data.set_State(StateGame.WAIT);
+			}, 200);
+		};
+	}, []);
 	return (
 		<div ref={gameContainer} className="home-game-container">
 			{!isSetting ? (

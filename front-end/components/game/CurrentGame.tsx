@@ -60,7 +60,7 @@ function CurrentGame(props: any) {
 					</div>
 				</div>
 			) : (
-				<Game data={data} />
+				<Game data={data} gameContainer={props.gameContainer}/>
 			)}
 		</>
 	);

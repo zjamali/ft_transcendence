@@ -308,4 +308,22 @@ export class GameGateway
 
     if (gameFound) gameFound.addWatcher(client);
   }
+
+  @SubscribeMessage('STOP_GAME')
+  stopGame(client: Socket) {
+    this.logger.log('Disconnected ' + `${client.id}`);
+    let gameFound = GameGateway.game.find((gm) => {
+      return (
+        gm.get_PlayerOne().getSocket() === client ||
+        gm.get_PlayerTwo().getSocket() === client
+      );
+    });
+    if (gameFound) {
+      if (gameFound.gameStateFunc() === gameSate.PLAY) {
+        gameFound.playerOutGame(client);
+        gameFound.stopGame();
+        GameGateway.game.splice(GameGateway.game.indexOf(gameFound), 1);
+      }
+    }
+  }
 }

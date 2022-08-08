@@ -53,6 +53,8 @@ export function Game(props: GameProps) {
 		// 	"game container : ",
 		// 	props.gameContainer.current.clientWidth
 		// );
+		if (!props.gameContainer.current)
+			return;
 			const new_width =
 				(props.gameContainer.current.clientWidth * 95) / 100;
 				// console.log("canva width : ", new_width);
@@ -312,6 +314,7 @@ export function Game(props: GameProps) {
 			socket.off("downPaddle");
 		};
 	}, []);
+
 
 	return (
 		<div style={{ width: "100%", height: "100%" }}>
