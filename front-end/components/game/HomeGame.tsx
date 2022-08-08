@@ -26,7 +26,7 @@ export function HomeGame() {
 	const handleGame = async () => {
 		setCurrentState(StateGame.WAIT);
 		await axios
-			.get("http://localhost:5000/users/me", {
+			.get("http://192.168.99.121:5000/users/me", {
 				withCredentials: true,
 			})
 			.then((res) => {
