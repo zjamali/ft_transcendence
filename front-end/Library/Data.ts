@@ -53,8 +53,8 @@ export class Data {
   //NOTE - Number of Watchers
   private watchers: number;
   //NOTE - Details Users
-  private userOne: Array<UserInGame>;
-  private userTwo: Array<UserInGame>;
+  private userOne: UserInGame;
+  private userTwo: UserInGame;
   //NOTE - Details Color Game
   private mapColor: string;
   private paddleColor: string;
@@ -91,8 +91,8 @@ export class Data {
     this.trace_Y = 0;
     this.trace_Width = 2;
     this.trace_Height = 10;
-    this.userOne = [];
-    this.userTwo = [];
+    this.userOne = {username: "", avatar: "", id: ""};
+    this.userTwo = {username: "", avatar: "", id: ""};
     this.mapColor = "#000";
     this.paddleColor = "#FFF";
     this.ballColor = "#ffff00";
@@ -102,26 +102,18 @@ export class Data {
     this.posUser = -1;
   }
 
-  public get_PosUser(): number {
-    return this.posUser;
-  }
-  public set_PosUser(pos: number): void {
-    this.posUser = pos;
-  }
-  public get_userOne(): UserInGame[] {
+  public get_userOne(): UserInGame {
     return this.userOne;
   }
-
   public set_userOne(userOne: UserInGame): void {
-    this.userOne.push(userOne);
+    this.userOne = userOne;
   }
 
-  public get_userTwo(): UserInGame[] {
+  public get_userTwo(): UserInGame {
     return this.userTwo;
   }
-
   public set_userTwo(userTwo: UserInGame): void {
-    this.userTwo.push(userTwo);
+    this.userTwo = userTwo;
   }
   public get_Width(): number {
     return this.cWidth;
