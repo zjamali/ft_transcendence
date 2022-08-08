@@ -9,6 +9,8 @@ import { Loading } from "@nextui-org/react";
 import { data } from "./HomeGame";
 import { AppContext } from "../../context/AppContext";
 import { CircularProgress } from "@mui/material";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import Image from "next/image";
 
 interface GameProps {
 	data: Data;
@@ -56,7 +58,7 @@ export function Game(props: GameProps) {
 		if (!props.gameContainer.current)
 			return;
 			const new_width =
-				(props.gameContainer.current.clientWidth * 95) / 100;
+				(props.gameContainer.current.clientWidth * 80) / 100;
 				// console.log("canva width : ", new_width);
 			data.set_Width(new_width);
 			data.set_Height(new_width / 2);
@@ -360,7 +362,29 @@ export function Game(props: GameProps) {
 						height={data.get_Height()}
 						ref={canvasRef}
 					></canvas>
-					<div className={style.users}>
+					<div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '90%'}}>
+						<div className="score-game-live" >
+							<div className="game-player">
+								<Image loader={() => data.get_userOne().avatar} unoptimized={true} src={data.get_userOne().avatar} alt="user avatar" layout="fill"/>
+							</div>
+							<div className="game-player-username">
+								{data.get_userOne().username}
+							</div>
+						</div>
+						<div className="score-game-live">
+							<VisibilityIcon sx={{fontSize: '30px'}} /> 
+							<div className="game-player-username">{gameState.watcher_count}</div>
+						</div>
+						<div className="score-game-live" >
+							<div className="game-player-username">
+								{data.get_userTwo().username}
+							</div>
+							<div className="game-player" >
+								<Image loader={() => data.get_userTwo().avatar} unoptimized={true} src={data.get_userTwo().avatar} alt="user avatar" layout="fill"/>
+							</div>
+						</div>
+					</div>
+					{/* <div className={style.users}>
 						<div>
 							<img
 								src={data.get_userOne().avatar}
@@ -379,7 +403,7 @@ export function Game(props: GameProps) {
 							/>
 							{data.get_userTwo().username}
 						</div>
-					</div>
+					</div> */}
 				</div>
 			)}
 			{currentState === StateGame.OVER && (
