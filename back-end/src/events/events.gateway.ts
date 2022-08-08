@@ -137,24 +137,12 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         room_id: gameInvitation.game_room,
       });
     });
+    secondPlayerSockets?.forEach((socketsID) => {
+      this.Server.to(socketsID).emit('game_invitation_accepted', {
+        room_id: gameInvitation.game_room,
+      });
+    });
 
-    setTimeout(() => {
-      firstPlayersSockets?.forEach((socketsID) => {
-        this.Server.to(socketsID).emit('STAR_PLAYING', {
-          room_id: gameInvitation.game_room,
-        });
-        // this.userService.setUserPlayingStatus(gameInvitation.sender, true);
-      });
-    }, 2000);
-    setTimeout(() => {
-      secondPlayerSockets?.forEach((socketsID) => {
-        this.Server.to(socketsID).emit('STAR_PLAYING', {
-          room_id: gameInvitation.game_room,
-        });
-        // this.userService.setUserPlayingStatus(gameInvitation.receiver, true);
-        this.Server.emit('UPDATE_DATA');
-      });
-    }, 2000);
   }
 
   @SubscribeMessage('GAME_START')

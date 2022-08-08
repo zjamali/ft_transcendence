@@ -10,11 +10,13 @@ import SportsEsportsTwoToneIcon from "@mui/icons-material/SportsEsportsTwoTone";
 
 import { eventsSocket } from "../../context/sockets";
 import Game from "./Game";
+import { useRouter } from "next/router";
 
 //NOTE - Initiale data and Information about all Game like (ball, paddle, score, width, height, canvas)
 export let data = new Data(1200, 600);
 
 export function HomeGame() {
+	const router = useRouter();
 	const [isGame, setIsGame] = useState(false);
 	const [isSetting, setSetting] = useState(true);
 	const [currentState, setCurrentState] = useState(data.get_State());
@@ -48,14 +50,9 @@ export function HomeGame() {
 	};
 
 	useEffect(() => {
-		eventsSocket.on("STAR_PLAYING", (payload: any) => {
-			console.log(" start the game", payload);
-			gameInviteDefHandler(payload.room_id);
-		});
-
-		return () => {
-			eventsSocket.off("STAR_PLAYING");
-		};
+		if (router.query && router.query.roomId) {
+			gameInviteDefHandler(router.query.roomId);
+		}
 	}, []);
 
 	// socket.on("Playing", (payload: any) => {
