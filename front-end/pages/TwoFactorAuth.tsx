@@ -12,7 +12,7 @@ export default function TwoFactorAuth(props: any) {
 
 		try {
 			await axios.post(
-				"http://192.168.99.121:5000/2fa/authenticate",
+				`${process.env.SERVER_HOST}/2fa/authenticate`,
 				{ twoFactorAuthenticationCode: twoFaCode },
 				{ withCredentials: true }
 			).then((data) => {

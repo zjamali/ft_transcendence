@@ -44,7 +44,7 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 		try {
 			axios
 				.get(
-					`http://192.168.99.121:5000/users/id/${state.mainUser.id}/friends`,
+					`${process.env.SERVER_HOST}/users/id/${state.mainUser.id}/friends`,
 					{
 						withCredentials: true,
 					}
@@ -70,7 +70,7 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 	async function fetchBlocked() {
 		try {
 			axios
-				.get(`http://192.168.99.121:5000/users/blocked`, {
+				.get(`${process.env.SERVER_HOST}/users/blocked`, {
 					withCredentials: true,
 				})
 				.then((res) => {

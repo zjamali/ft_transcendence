@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
 
-const socket = io("http://192.168.99.121:5000/game");
+const socket = io(`${process.env.SERVER_HOST}/game`);
 
 export default socket;

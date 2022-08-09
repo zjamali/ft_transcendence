@@ -27,7 +27,7 @@ export default function Chat() {
 
 	async function fetchMainUser() {
 		axios
-			.get("http://192.168.99.121:5000/users/me", { withCredentials: true })
+			.get(`${process.env.SERVER_HOST}/users/me`, { withCredentials: true })
 			.then((res) => {
 				if (res.status === 200) {
 					setMainUser({ ...res.data });
@@ -103,7 +103,7 @@ export default function Chat() {
 		try {
 			axios
 				.get(
-					`http://192.168.99.121:5000/users/id/${state.mainUser.id}/friends`,
+					`${process.env.SERVER_HOST}/users/id/${state.mainUser.id}/friends`,
 					{
 						withCredentials: true,
 					}
@@ -125,7 +125,7 @@ export default function Chat() {
 		}
 		try {
 			axios
-				.get("http://192.168.99.121:5000/rooms", { withCredentials: true })
+				.get(`${process.env.SERVER_HOST}/rooms`, { withCredentials: true })
 				.then((res) => {
 					console.log("all channels :", res.data);
 					if (res.data) {

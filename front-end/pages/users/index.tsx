@@ -56,7 +56,7 @@ const Users = () => {
 
 	useEffect(() => {
 		axios
-			.get("http://192.168.99.121:5000/users/me", { withCredentials: true })
+			.get(`${process.env.SERVER_HOST}/users/me`, { withCredentials: true })
 			.then((res) => {
 				if (res.status === 200) {
 					setMainUser({ ...res.data });
@@ -88,7 +88,7 @@ const Users = () => {
 
 	function fetchAllUsers() {
 		axios
-			.get("http://192.168.99.121:5000/users", { withCredentials: true })
+			.get(`${process.env.SERVER_HOST}/users`, { withCredentials: true })
 			.then(async (res) => {
 				if (res.status === 200) {
 					// console.log("all users", res.data)
@@ -123,7 +123,7 @@ const Users = () => {
 			});
 	}
 	async function fetchUsersBlockedBy() {
-		return await axios.get("http://192.168.99.121:5000/users/blockedByUsers", {
+		return await axios.get(`${process.env.SERVER_HOST}/users/blockedByUsers`, {
 			withCredentials: true,
 		});
 	}
@@ -131,7 +131,7 @@ const Users = () => {
 		try {
 			axios
 				.get(
-					`http://192.168.99.121:5000/users/id/${state.mainUser.id}/friends`,
+					`${process.env.SERVER_HOST}/users/id/${state.mainUser.id}/friends`,
 					{
 						withCredentials: true,
 					}

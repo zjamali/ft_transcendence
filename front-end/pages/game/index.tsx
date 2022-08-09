@@ -9,7 +9,7 @@ export function PingPong(props: any) {
 	useEffect(() => {
 		if (state.mainUser) {
 			axios
-				.get("http://192.168.99.121:5000/users/me", {
+				.get(`${process.env.SERVER_HOST}/users/me`, {
 					withCredentials: true,
 				})
 				.then((res) => {

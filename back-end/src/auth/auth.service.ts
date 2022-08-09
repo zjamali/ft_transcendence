@@ -3,12 +3,14 @@ import { Injectable, Req, Res } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { Response } from 'express';
 import RequestWithUser from 'src/users/interfaces/requestWithUser.interface';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtAuthService: JwtAuthService,
+    private readonly configService: ConfigService,
   ) {}
 
   async intraLogin(@Req() req: RequestWithUser, @Res() res: Response) {
@@ -17,14 +19,15 @@ export class AuthService {
     const user = await this.usersService.findOne(userId);
 
     if (user && user.isTwoFactorAuthenticationEnabled == false) {
-      url = 'http://192.168.99.121:3000';
+      url = `${this.configService.get<string>('FRONT_HOST')}`;
     } else if (user && user.isTwoFactorAuthenticationEnabled == true) {
-      url = 'http://192.168.99.121:3000?twoFa=true';
+      // url = `http://localhost:3000?twoFa=true`;
+      url = `${this.configService.get<string>('FRONT_HOST')}?twoFa=true`;
     } else {
       this.usersService.createUser(req.user);
-      url = 'http://192.168.99.121:3000?edit_profile=true';
+      // url = `http://localhost:3000?edit_profile=true`;
+      url = `${this.configService.get<string>('FRONT_HOST')}?edit_profile=true`;
     }
-
     const { access_token } = this.jwtAuthService.signWith2FA(req.user, false);
     res.cookie('access_token', access_token);
     res.redirect(url);

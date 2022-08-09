@@ -11,7 +11,7 @@ services:
       POSTGRES_USER: ilias
       POSTGRES_PASSWORD: 1337
       POSTGRES_DB: work_db
-      POSTGRES_URL: http://192.168.99.121/
+      POSTGRES_URL: http://localhost/
 
   pgadmin:
     image: dpage/pgadmin4
@@ -31,29 +31,3 @@ services:
       - 3000:3000
     links:
       - db
-    # environment:
-    #   - DB_SERVER=kanban-postgres
-
-
-
-  # pingpong-backend:
-  #   build: ./back-end
-  #   container_name: back-end
-  #   # environment:
-  #   #   - DB_SERVER=kanban-postgres
-  #   ports:
-  #     - 5000:5000
-  #   links:
-  #     - db
-
-  # pingpong-frontend:
-  #   build: ./front-end
-  #   container_name: front-end
-  #   ports:
-  #     - 3000:3000
-  #   links:
-  #     - pingpong-backend
-
-
-# volumes:
-#   kanban-data:

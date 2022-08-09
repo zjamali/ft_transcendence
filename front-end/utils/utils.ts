@@ -17,7 +17,7 @@ export function addFriend(sender: string, target: string) {
 	//remove sender plzplz
 	axios
 		.post(
-			"http://192.168.99.121:5000/users/send",
+			`${process.env.SERVER_HOST}/users/send`,
 			{ relatedUserId: target },
 			{ withCredentials: true }
 		)
@@ -32,7 +32,7 @@ export function addFriend(sender: string, target: string) {
 export function acceptFriendRequest(accpter: string, relatedUserId: string) {
 	axios
 		.post(
-			"http://192.168.99.121:5000/users/accept",
+			`${process.env.SERVER_HOST}/users/accept`,
 			{ relatedUserId: relatedUserId },
 			{ withCredentials: true }
 		)
@@ -47,7 +47,7 @@ export function acceptFriendRequest(accpter: string, relatedUserId: string) {
 export function unfriend(denier: string, relatedUserId: string) {
 	axios
 		.post(
-			"http://192.168.99.121:5000/users/unfriend",
+			`${process.env.SERVER_HOST}/users/unfriend`,
 			{ relatedUserId: relatedUserId },
 			{ withCredentials: true }
 		)
@@ -62,7 +62,7 @@ export function unfriend(denier: string, relatedUserId: string) {
 export function blockUser(blocker: string, relatedUserId: string) {
 	axios
 		.post(
-			"http://192.168.99.121:5000/users/block",
+			`${process.env.SERVER_HOST}/users/block`,
 			{ relatedUserId: relatedUserId },
 			{ withCredentials: true }
 		)
@@ -77,7 +77,7 @@ export function blockUser(blocker: string, relatedUserId: string) {
 export function unBlockUser(unblocker: string, relatedUserId: string) {
 	axios
 		.post(
-			"http://192.168.99.121:5000/users/unblock",
+			`${process.env.SERVER_HOST}/users/unblock`,
 			{ relatedUserId: relatedUserId },
 			{ withCredentials: true }
 		)

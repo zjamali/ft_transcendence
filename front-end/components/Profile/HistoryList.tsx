@@ -20,7 +20,7 @@ const HistoryList = (props: any) => {
 		console.log("fetch matches ::->");
 		try {
 			axios
-				.get(`http://192.168.99.121:5000/users/${props.id}/MatchesHistory`, {
+				.get(`${process.env.SERVER_HOST}/users/${props.id}/MatchesHistory`, {
 					withCredentials: true,
 				})
 				.then((res) => {
