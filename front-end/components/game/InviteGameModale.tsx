@@ -14,6 +14,7 @@ import { useRouter } from "next/router";
 type EditModalProps = {
 	setOpenInviteModal: (modal: boolean) => void;
 	inviteSender: any;
+	senderSocketId: string;
 };
 
 const CssTextField = styled(TextField)({
@@ -55,6 +56,7 @@ const CssTextField = styled(TextField)({
 const InviteGameModale: React.FC<EditModalProps> = ({
 	setOpenInviteModal,
 	inviteSender,
+	senderSocketId,
 }) => {
 	const { state } = useContext(AppContext);
 	const router = useRouter();
@@ -77,6 +79,7 @@ const InviteGameModale: React.FC<EditModalProps> = ({
 			sender: inviteSender.id,
 			receiver: state.mainUser.id,
 			game_room: `${inviteSender.id}${state.mainUser.id}`,
+			senderSocketId: senderSocketId,
 		});
 		setOpenInviteModal(false);
 	};

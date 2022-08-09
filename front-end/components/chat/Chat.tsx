@@ -27,7 +27,7 @@ export default function Chat() {
 
 	async function fetchMainUser() {
 		axios
-			.get("http://192.168.99.121:5000/users/me", { withCredentials: true })
+			.get("http://localhost:5000/users/me", { withCredentials: true })
 			.then((res) => {
 				if (res.status === 200) {
 					setMainUser({ ...res.data });
@@ -58,7 +58,7 @@ export default function Chat() {
 		});
 		state.eventsSocket.on("UPDATE_DATA", () => {
 			fetchAllChannels();
-			setReceiver(null);
+			// setReceiver(null);
 			fetchFriends();
 		});
 		state.chatSocket.on("A_CHANNELS_YOU_KICKED", () => {
@@ -103,7 +103,7 @@ export default function Chat() {
 		try {
 			axios
 				.get(
-					`http://192.168.99.121:5000/users/id/${state.mainUser.id}/friends`,
+					`http://localhost:5000/users/id/${state.mainUser.id}/friends`,
 					{
 						withCredentials: true,
 					}
@@ -125,7 +125,7 @@ export default function Chat() {
 		}
 		try {
 			axios
-				.get("http://192.168.99.121:5000/rooms", { withCredentials: true })
+				.get("http://localhost:5000/rooms", { withCredentials: true })
 				.then((res) => {
 					console.log("all channels :", res.data);
 					if (res.data) {

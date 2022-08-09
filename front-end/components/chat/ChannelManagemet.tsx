@@ -65,7 +65,7 @@ function ManageMembers(props: any) {
 	async function getRoomMembers(roomid: string) {
 		try {
 			return await axios.get(
-				`http://192.168.99.121:5000/rooms/${roomid}/members`,
+				`http://localhost:5000/rooms/${roomid}/members`,
 				{
 					withCredentials: true,
 				}
@@ -78,7 +78,7 @@ function ManageMembers(props: any) {
 	async function getRoomAdmins(roomid: string) {
 		try {
 			return await axios.get(
-				`http://192.168.99.121:5000/rooms/${roomid}/admins`,
+				`http://localhost:5000/rooms/${roomid}/admins`,
 				{
 					withCredentials: true,
 				}
@@ -90,7 +90,7 @@ function ManageMembers(props: any) {
 	async function getRoomBanned(roomid: string) {
 		try {
 			return await axios.get(
-				`http://192.168.99.121:5000/rooms/${roomid}/banned`,
+				`http://localhost:5000/rooms/${roomid}/banned`,
 				{
 					withCredentials: true,
 				}
@@ -102,7 +102,7 @@ function ManageMembers(props: any) {
 	async function getRoomMuted(roomid: string) {
 		try {
 			return await axios.get(
-				`http://192.168.99.121:5000/rooms/${roomid}/muted`,
+				`http://localhost:5000/rooms/${roomid}/muted`,
 				{
 					withCredentials: true,
 				}

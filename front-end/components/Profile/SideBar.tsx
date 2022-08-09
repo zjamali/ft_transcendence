@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import cookies, { useCookies } from "react-cookie";
+import { AppContext } from "../../context/AppContext";
 import { eventsSocket } from "../../context/sockets";
 import InviteGameModale from "../game/InviteGameModale";
 import Portal from "./Portal";
@@ -92,8 +94,22 @@ const SideBar = () => {
 	const [sideMenu, setSideMenu] = useState([...menu]);
 	console.log("PATH : ", router.pathname);
 	const [invitSender, setInvitSender] = useState(null);
+	const [senderSocketid, setSenderSocketid] = useState<string>("");
 
+	const {
+		state,
+		setLogin,
+		setMainUser,
+		setMessages,
+		setContacts,
+		setChannels,
+		setReceiver,
+		setFriends,
+		setIsUserJoinedChannel,
+		setOnlineGames,
+	} = useContext(AppContext);
 	const [openInviteModal, setOpenInviteModal] = useState(false);
+	const [cookies, setCookie, removeCookie] = useCookies(["access_token"]);
 
 	useEffect(() => {
 		const menu = [...sideMenu].map((item) => {
@@ -111,17 +127,59 @@ const SideBar = () => {
 	useEffect(() => {
 		eventsSocket.on("GAME_INVITATION", (sender) => {
 			console.log("sender : ", sender);
-			setInvitSender({ ...sender });
+			setInvitSender({ ...sender.user });
 			setOpenInviteModal(true);
+			setSenderSocketid(sender.senderSocket);
+		});
+		eventsSocket.on("YOU_LOG_OUT", (responce) => {
+			console.log(
+				"resived cookie :",
+				responce,
+				"  curreent cookies :",
+				cookies.access_token
+			);
+			if (cookies.access_token === responce) {
+				console.log("you must log out ");
+				handleLogOut();
+			}
+		});
+		eventsSocket.on("TURN_OF_INVITATION_MODAL", () => {
+			setOpenInviteModal(false);
 		});
 		eventsSocket.on("game_invitation_accepted", (data) => {
 			router.push(`/game?roomId=${data.room_id}`);
 		});
 		return () => {
-			eventsSocket.off("GAME_INVITATION");
-			eventsSocket.off("game_invitation_accepted");
+			// eventsSocket.off("GAME_INVITATION");
+			// eventsSocket.off("game_invitation_accepted");
 		};
 	}, []);
+
+	const handleLogOut = () => {
+		state.chatSocket?.close();
+		state.eventsSocket?.close();
+		removeCookie("access_token");
+		setMainUser(null);
+		setLogin(null);
+		setMessages(null);
+		setContacts(null);
+		setChannels(null);
+		setReceiver(null);
+		setFriends(null);
+		setMainUser(null);
+		setIsUserJoinedChannel(null);
+		setOnlineGames(null);
+		setLogin(false);
+		state.eventsSocket.close();
+		state.chatSocket.close();
+	};
+	useEffect(() => {
+		if (!state.login) router.push("/");
+	}, [state.login]);
+
+	useEffect(() => {
+		console.log("cookies :::::", cookies.access_token);
+	}, [cookies]);
 
 	return (
 		<aside className="sidebar">
@@ -161,6 +219,7 @@ const SideBar = () => {
 					<InviteGameModale
 						inviteSender={invitSender}
 						setOpenInviteModal={setOpenInviteModal}
+						senderSocketId={senderSocketid}
 					/>
 				</Portal>
 			) : null}

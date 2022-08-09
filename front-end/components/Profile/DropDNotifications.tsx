@@ -66,24 +66,24 @@ const DropDNotifications: React.FC = (props) => {
 			fetchFriendsRequest();
 		});
 		state.eventsSocket.on("UPDATE_DATA", () => {
+			console.log("hello accept friend request ");
 			fetchFriendsRequest();
 		});
-		return (()=> {
+		return () => {
 			state.eventsSocket.off("NEW_FRIEND_REQUEST");
-      		state.eventsSocket.off("UPDATE_DATA");
-		})
+			// state.eventsSocket.off("UPDATE_DATA");
+		};
 	}, []);
 
 	const fetchFriendsRequest = () => {
 		axios
-			.get("http://192.168.99.121:5000/users/recievedrequests", {
+			.get("http://localhost:5000/users/recievedrequests", {
 				withCredentials: true,
 			})
 			.then((responce) => {
-        if ([...responce.data].length)
-				  setRecievedrequests([...responce.data]);
-        else
-        setRecievedrequests([]);
+				if ([...responce.data].length)
+					setRecievedrequests([...responce.data]);
+				else setRecievedrequests([]);
 			});
 	};
 

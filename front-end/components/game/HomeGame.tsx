@@ -20,29 +20,27 @@ export function HomeGame() {
 	const [isGame, setIsGame] = useState(false);
 	const [isSetting, setSetting] = useState(true);
 	const [currentState, setCurrentState] = useState(data.get_State());
-	const { state } = useContext(AppContext);
+	const { state, setMainUser } = useContext(AppContext);
 
 	const [accepGame, setAccepGame] = useState(false);
 	const handleGame = async () => {
 		setCurrentState(StateGame.WAIT);
-		await axios
-			.get("http://192.168.99.121:5000/users/me", {
-				withCredentials: true,
-			})
-			.then((res) => {
-				socket.emit("join_match", {
-					user: res.data,
-				});
-				socket.on("Playing", (payload: any) => {
-					if (payload.playing) {
-						data.set_userOne(payload.first);
-						data.set_userTwo(payload.second);
-
-						data.set_State(StateGame.PLAY);
-					}
-					setCurrentState(StateGame.PLAY);
-				});
-			});
+		const res = await axios.get("http://localhost:5000/users/me", {
+			withCredentials: true,
+		});
+		if (res.data.isPlaying) return;
+		// setMainUser({ ...res.data });
+		socket.emit("join_match", {
+			user: res.data,
+		});
+		socket.on("Playing", (payload: any) => {
+			if (payload.playing) {
+				data.set_userOne(payload.first);
+				data.set_userTwo(payload.second);
+				data.set_State(StateGame.PLAY);
+			}
+			setCurrentState(StateGame.PLAY);
+		});
 		setIsGame(true);
 	};
 	const handleSetting = () => {
@@ -87,6 +85,7 @@ export function HomeGame() {
 			}, 200);
 		};
 	}, []);
+
 	return (
 		<div ref={gameContainer} className="home-game-container">
 			{!isSetting ? (
@@ -130,6 +129,7 @@ export function HomeGame() {
 									<br />
 									You can discorver it by yourself &nbsp;
 								</div>
+
 								<div className="game-buttons">
 									<Button
 										variant="outlined"

@@ -525,7 +525,7 @@
 .profile-wall-bg {
 	height: 85%;
 	width: 100%;
-	background-image: url("http://192.168.99.121:5000/users/uploads/xo.jpeg");
+	background-image: url("http://localhost:5000/users/uploads/xo.jpeg");
 	background-repeat: no-repeat;
 	background-size: cover;
 	overflow: hidden;
@@ -969,7 +969,7 @@
 }
 
 .g-o-win {
-	background-image: url("http://192.168.99.121:5000/users/uploads/celebration.gif");
+	background-image: url("http://localhost:5000/users/uploads/celebration.gif");
 	background-position: center;
 	/* background-repeat: no-repeat; */
 	background-size: contain;

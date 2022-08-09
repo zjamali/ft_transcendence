@@ -12,7 +12,7 @@ const FriendsCard = ({ id }: { id: string }) => {
 	async function fetchFriends() {
 		try {
 			axios
-				.get(`http://192.168.99.121:5000/users/id/${id}/friends`, {
+				.get(`http://localhost:5000/users/id/${id}/friends`, {
 					withCredentials: true,
 				})
 				.then((res) => {

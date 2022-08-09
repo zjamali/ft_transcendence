@@ -468,7 +468,7 @@
 .message_content {
   background-color: #d0d6dc;
   min-width: 200px;
-  color: white;
+  color: #212b36;
   /* min-height: 50px; */
   border-radius: 50px;
   display: flex;
@@ -495,6 +495,7 @@
 .message_main_user {
   align-self: flex-end;
   background-color: #ff3030;
+  color: #d0d6dc;
   margin: 10px 0;
 }
 

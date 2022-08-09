@@ -21,7 +21,7 @@ type JwtPayload = { id: string; username: string };
 
 @WebSocketGateway({
   cors: {
-    origin: 'http://192.168.99.121:3000',
+    origin: 'http://localhost:3000',
     allowedHeaders: ['my-custom-header'],
     credentials: true,
   },
@@ -40,8 +40,18 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {}
 
   @SubscribeMessage('LOG_OUT')
-  async logOut(client: any) {
-    console.log('hello log out');
+  async logOut(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() userId: string,
+  ) {
+    console.log('hello log out : ', userId);
+    const targetUser = GlobalService.UsersEventsSockets.get(userId);
+    targetUser?.forEach((socket) => {
+      this.Server.to(socket).emit(
+        'YOU_LOG_OUT',
+        this.parseCookie(client.handshake.headers.cookie)['access_token'],
+      );
+    });
     // this.userService.logOut();
   }
 
@@ -110,16 +120,29 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // }
     InviteduserSockets?.forEach((invitedSocketId) => {
       this.Server.to(invitedSocketId).emit('GAME_INVITATION', {
-        ...gameInvitation.sender,
+        user: { ...gameInvitation.sender },
+        senderSocket: client.id,
       });
     });
+    // this.Server.to(InviteduserSockets[InviteduserSockets.length - 1]).emit(
+    //   'GAME_INVITATION',
+    //   {
+    //     user: { ...gameInvitation.sender },
+    //     senderSocket: client.id,
+    //   },
+    // );
     console.log('InviteduserSockets : ', InviteduserSockets);
   }
   @SubscribeMessage('accept_game_invitaion_to_server')
   gameAcceptInvitation(
     @ConnectedSocket() client: Socket,
     @MessageBody()
-    gameInvitation: { sender: string; receiver: string; game_room: string },
+    gameInvitation: {
+      sender: string;
+      receiver: string;
+      game_room: string;
+      senderSocketId: string;
+    },
   ) {
     console.log(
       '+++++++++',
@@ -129,21 +152,30 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       ' to palay in room : ',
       gameInvitation.game_room,
     );
-    const firstPlayersSockets = GlobalService.UsersEventsSockets.get(
-      gameInvitation.sender,
-    );
+    // const firstPlayersSockets = GlobalService.UsersEventsSockets.get(
+    //   gameInvitation.sender,
+    // );
     const secondPlayerSockets = GlobalService.UsersEventsSockets.get(
       gameInvitation.receiver,
     );
-    firstPlayersSockets?.forEach((socketsID) => {
-      this.Server.to(socketsID).emit('game_invitation_accepted', {
+    // firstPlayersSockets?.forEach((socketsID) => {
+    //   this.Server.to(socketsID).emit('game_invitation_accepted', {
+    //     room_id: gameInvitation.game_room,
+    //   });
+    // });
+    this.Server.to(gameInvitation.senderSocketId).emit(
+      'game_invitation_accepted',
+      {
         room_id: gameInvitation.game_room,
-      });
+      },
+    );
+    this.Server.to(client.id).emit('game_invitation_accepted', {
+      room_id: gameInvitation.game_room,
     });
+
     secondPlayerSockets?.forEach((socketsID) => {
-      this.Server.to(socketsID).emit('game_invitation_accepted', {
-        room_id: gameInvitation.game_room,
-      });
+      if (client.id !== socketsID)
+        this.Server.to(socketsID).emit('TURN_OF_INVITATION_MODAL');
     });
   }
 
@@ -212,14 +244,16 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     targetSockets?.forEach((socketsID) => {
       this.Server.to(socketsID).emit('UPDATE_DATA');
     });
-
+    console.log('accpet friend equest ');
     const senderSockets = GlobalService.UsersEventsSockets.get(
       friendRequest.relatedUserId,
     );
     senderSockets?.forEach((socketsID) => {
       this.Server.to(socketsID).emit('UPDATE_DATA');
     });
-    this.Server.emit('UPDATE_DATA');
+    setTimeout(() => {
+      this.Server.emit('UPDATE_DATA');
+    }, 200);
   }
   @SubscribeMessage('DENY_FREIND_REQUEST')
   async denyFriendRequest(

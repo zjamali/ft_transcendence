@@ -22,7 +22,7 @@ export default function UserProfile({}: Props) {
     try{
 
       axios
-        .get("http://192.168.99.121:5000/users/me", { withCredentials: true })
+        .get("http://localhost:5000/users/me", { withCredentials: true })
         .then((res) => {
           if (res.status === 200) {
             setMainUser({ ...res.data });
@@ -38,7 +38,7 @@ export default function UserProfile({}: Props) {
 
 		state.eventsSocket.on("UPDATE_DATA", () => {
 			axios
-				.get("http://192.168.99.121:5000/users/me", {
+				.get("http://localhost:5000/users/me", {
 					withCredentials: true,
 				})
 				.then((res) => {
@@ -59,7 +59,7 @@ export default function UserProfile({}: Props) {
 
 	function userData() {
 		axios
-			.get(`http://192.168.99.121:5000/users/id/${userId}`, {
+			.get(`http://localhost:5000/users/id/${userId}`, {
 				withCredentials: true,
 			})
 			.then(async (res) => {
@@ -74,7 +74,7 @@ export default function UserProfile({}: Props) {
 			});
 	}
 	async function fetchUsersBlockedBy() {
-		return await axios.get("http://192.168.99.121:5000/users/blockedByUsers", {
+		return await axios.get("http://localhost:5000/users/blockedByUsers", {
 			withCredentials: true,
 		});
 	}
