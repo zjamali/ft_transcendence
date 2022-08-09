@@ -34,7 +34,7 @@ const Header = (props:any) => {
 			</div>
 			<div className="left-items">
 				<div className="notifications-container">
-					<DropDNotifications state={props.state} />
+					<DropDNotifications/>
 				</div>
 				<div className="user-container">
 					<DropDown userName={userName} image={src} />

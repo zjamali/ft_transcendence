@@ -4,7 +4,7 @@ import { AppContext } from "../../context/AppContext";
 import FriendsCard from "./FriendsCard";
 import HistoryCard from "./HistoryCard";
 
-const DefaultData = ({ id }: { id: string }) => {
+const DefaultData = ({ id }: { id: any }) => {
 	const [matches, setMatches] = useState<any[]>([]);
 	const { state } = useContext(AppContext);
 	const [win, setWin] = useState(0);
@@ -22,7 +22,7 @@ const DefaultData = ({ id }: { id: string }) => {
 		console.log("fetch matches ::->");
 		try {
 			axios
-				.get(`http://192.168.99.121:5000/users/${id}/MatchesHistory`, {
+				.get(`http://localhost:5000/users/${id}/MatchesHistory`, {
 					withCredentials: true,
 				})
 				.then((res) => {

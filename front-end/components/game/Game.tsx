@@ -16,7 +16,7 @@ interface GameProps {
 	data: Data;
 	currentState: StateGame;
 	setCurrentState: (state: StateGame) => void;
-	setIsGame: (isGame: boolean) => void;
+	setIsGame?: (isGame: boolean) => void;
 	gameContainer?: any;
 }
 
@@ -38,8 +38,8 @@ export function Game(props: GameProps) {
 			playerOne_Score: data.get_Score_One(),
 			playerTwo_Score: data.get_Score_Two(),
 		},
-		watcher_count: data.get_Watchers(),
-		currentState: data.get_State(),
+		watcher_count: data?.get_Watchers(),
+		currentState: data?.get_State(),
 		isWin: data.get_Winner(),
 	};
 

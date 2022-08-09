@@ -11,7 +11,7 @@ export class IntraStrategy extends PassportStrategy(Strategy, '42') {
     super({
       clientID: `${process.env.clientID}`,
       clientSecret: `${process.env.clientSecret}`,
-      callbackURL: 'http://192.168.99.121:5000/auth/42/callback',
+      callbackURL: 'http://localhost:5000/auth/42/callback',
       profileFields: {
         id: function (obj) {
           return String(obj.id);

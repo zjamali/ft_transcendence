@@ -29,7 +29,7 @@ const Profile = () => {
 			case "DefaultData":
 				return <DefaultData id={state.mainUser.id} />;
 			case "Friends":
-				return <FriendsList id={state.mainUser.id} />;
+				return <FriendsList />;
 			case "History":
 				return <HistoryList  id={state.mainUser.id} />;
 		}

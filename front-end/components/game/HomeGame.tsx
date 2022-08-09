@@ -26,7 +26,7 @@ export function HomeGame() {
 	const handleGame = async () => {
 		setCurrentState(StateGame.WAIT);
 		await axios
-			.get("http://192.168.99.121:5000/users/me", {
+			.get("http://localhost:5000/users/me", {
 				withCredentials: true,
 			})
 			.then((res) => {
@@ -52,9 +52,9 @@ export function HomeGame() {
 	useEffect(() => {
 		if (router.query && router.query.roomId) {
 			console.log("start game mother father");
-			gameInviteDefHandler(router.query.roomId);
+			gameInviteDefHandler(router.query.roomId[0]);
 		}
-	}, []);
+	}, [router]);
 
 	const gameInviteDefHandler = async (room_id: string) => {
 		// const token = Cookies.get("access_token");

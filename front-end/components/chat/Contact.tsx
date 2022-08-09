@@ -32,7 +32,7 @@ function Contact(props: ContactComponentProps) {
         <h4>{props.contact.firstName + ' ' + props.contact.lastName}</h4>
       </div>
       <div className={ContactStyles.contact_status}>
-        {props.contact.playing && (
+        {props.contact.isPlaying && (
           <div className={ContactStyles.playing}>playing</div>
         )}
         {props.contact.isOnline && (

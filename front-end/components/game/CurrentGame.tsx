@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Button } from "@mui/material";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { useRouter } from "next/router";
+import { StateGame } from "../../Library/Data";
 
 //NOTE - Initiale data and Information about all Game like (ball, paddle, score, width, height, canvas)
 // let data: Data;
@@ -114,7 +115,7 @@ function CurrentGame(props: any) {
 					</div>
 				</div>
 			) : (
-				<Game data={data} gameContainer={props.gameContainer} />
+				<Game data={data} gameContainer={props.gameContainer} setCurrentState={()=>{}} currentState={StateGame.PLAY} />
 			)}
 		</div>
 	);

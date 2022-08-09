@@ -11,22 +11,22 @@ import { validatePassword } from "../../regex/createChannelRegex";
 
 function ManageMembers(props: any) {
 	const { state } = useContext(AppContext);
-	const [timetoMute, setTimetoMute] = useState(0);
+	const [timetoMute, setTimetoMute] = useState<Number>(0);
 	const [Admins, setAdmins] = useState<[{}]>([{}]);
 	const [banned, setBanned] = useState<[{}]>([{}]);
 	const [kickedUser, setKickedUser] = useState<[{}]>([{}]);
 	const [mutedUsers, setMutedUsers] = useState<[{}]>([{}]);
-	const [selectedAdminsOption, setSelectedAdminsOption] = useState<[] | null>(
+	const [selectedAdminsOption, setSelectedAdminsOption] = useState<any>(
 		null
 	);
 	const [selectedBannedsOption, setSelectedBannedsOption] = useState<
-		[] | null
+		any
 	>(null);
 	const [selectedMutedusersOption, setSelectedMutedusersOption] = useState<
-		[] | null
+		any
 	>(null);
 	const [selectedKickedUserOption, setSelectedKickedUserOption] = useState<
-		[] | null
+		any
 	>(null);
 	const [isNewPasswordCorrects, setIsNewPasswordCorrects] = useState(true);
 	const [isCurrentPasswordCorrect, setIsCurrentPasswordCorrect] = useState(
@@ -39,10 +39,12 @@ function ManageMembers(props: any) {
 		false
 	);
 
-	const [roomSettingOption, setRoomSettingOption] = useState({
+	const [roomSettingOption, setRoomSettingOption] = useState<any>({
 		value: "default",
 		label: "default",
 	});
+	// const [roomSettingOption, setRoomSettingOption] = useState<any>(null);
+
 	const roomSettingAllOption =
 		props.room.owner === state.mainUser.id
 			? [
@@ -63,7 +65,7 @@ function ManageMembers(props: any) {
 	async function getRoomMembers(roomid: string) {
 		try {
 			return await axios.get(
-				`http://192.168.99.121:5000/rooms/${roomid}/members`,
+				`http://localhost:5000/rooms/${roomid}/members`,
 				{
 					withCredentials: true,
 				}
@@ -76,7 +78,7 @@ function ManageMembers(props: any) {
 	async function getRoomAdmins(roomid: string) {
 		try {
 			return await axios.get(
-				`http://192.168.99.121:5000/rooms/${roomid}/admins`,
+				`http://localhost:5000/rooms/${roomid}/admins`,
 				{
 					withCredentials: true,
 				}
@@ -88,7 +90,7 @@ function ManageMembers(props: any) {
 	async function getRoomBanned(roomid: string) {
 		try {
 			return await axios.get(
-				`http://192.168.99.121:5000/rooms/${roomid}/banned`,
+				`http://localhost:5000/rooms/${roomid}/banned`,
 				{
 					withCredentials: true,
 				}
@@ -100,7 +102,7 @@ function ManageMembers(props: any) {
 	async function getRoomMuted(roomid: string) {
 		try {
 			return await axios.get(
-				`http://192.168.99.121:5000/rooms/${roomid}/muted`,
+				`http://localhost:5000/rooms/${roomid}/muted`,
 				{
 					withCredentials: true,
 				}
@@ -234,105 +236,108 @@ function ManageMembers(props: any) {
 
 	function handleChannelSetting(e: any) {
 		e.preventDefault();
-		if (roomSettingOption.value === "delete" && loadingRoomDataIsDone) {
-			console.log("delete channel");
-			props.chatSocket.emit("DELETE_ROOM", {
-				admin_id: `${state.mainUser.id}`,
-				room_id: `${props.room.id}`,
-			});
-      props.setOpenSettingModal(false);
-		}
-		if (
-			roomSettingOption.value === "kick" &&
-			loadingRoomDataIsDone &&
-			selectedKickedUserOption
-		) {
-			/// 'ROOM_KICKED_USER';
-			props.chatSocket.emit("ROOM_KICKED_USER", {
-				admin_id: `${state.mainUser.id}`,
-				room_id: `${props.room.id}`,
-				new_kicked: selectedKickedUserOption,
-			});
-			props.setOpenSettingModal(false);
-		}
-		if (
-			roomSettingOption.value === "banned" &&
-			loadingRoomDataIsDone &&
-			selectedBannedsOption
-		) {
-			/// 'ROOM_banne_USER';
-			props.chatSocket.emit("ROOM_BAN_A_USER", {
-				admin_id: `${state.mainUser.id}`,
-				room_id: `${props.room.id}`,
-				banned: selectedBannedsOption,
-			});
-			props.setOpenSettingModal(false);
-		}
-		if (roomSettingOption.value === "muted" && loadingRoomDataIsDone) {
-			console.log("mute a user 77777777777");
-			props.chatSocket.emit("ROOM_MUTE_USERS", {
-				admin_id: `${state.mainUser.id}`,
-				room_id: `${props.room.id}`,
-				muted_user: selectedMutedusersOption,
-				timeToMute: timetoMute,
-			});
-			props.setOpenSettingModal(false);
-		}
-		if (
-			roomSettingOption.value === "admins" &&
-			loadingRoomDataIsDone &&
-			selectedAdminsOption
-		) {
-			/// 'ROOM_SET_ADMIN';
-			props.chatSocket.emit("ROOM_ADMINS_STATUS", {
-				admin_id: `${state.mainUser.id}`,
-				room_id: `${props.room.id}`,
-				new_admins: [...selectedAdminsOption],
-			});
-			props.setOpenSettingModal(false);
-		}
-		if (roomSettingOption.value === "password" && loadingRoomDataIsDone) {
-			/// 'ROOM_Update_passord';
-			if (!props.room.isProtected) {
-				if (!validatePassword.test(updatePassword)) {
-					setIsNewPasswordCorrects(false);
-				} else {
-					props.chatSocket.emit("ROOM_ADD_PASSWORD", {
-						admin_id: `${state.mainUser.id}`,
-						room_id: `${props.room.id}`,
-						password: updatePassword,
-					});
-					props.setOpenSettingModal(false);
-				}
-				return;
-			}
-			props.chatSocket.emit(
-				"CHECK_ROOM_PASSWORD",
-				{
+		if (!roomSettingOption) return;
+		else {
+			if (roomSettingOption.value === "delete" && loadingRoomDataIsDone) {
+				console.log("delete channel");
+				props.chatSocket.emit("DELETE_ROOM", {
+					admin_id: `${state.mainUser.id}`,
 					room_id: `${props.room.id}`,
-					password: `${currentPassword}`,
-				},
-				(checkPassword: boolean) => {
-					if (!checkPassword) {
-						setIsCurrentPasswordCorrect(false);
-						return;
+				});
+				props.setOpenSettingModal(false);
+			}
+			if (
+				roomSettingOption.value === "kick" &&
+				loadingRoomDataIsDone &&
+				selectedKickedUserOption
+			) {
+				/// 'ROOM_KICKED_USER';
+				props.chatSocket.emit("ROOM_KICKED_USER", {
+					admin_id: `${state.mainUser.id}`,
+					room_id: `${props.room.id}`,
+					new_kicked: selectedKickedUserOption,
+				});
+				props.setOpenSettingModal(false);
+			}
+			if (
+				roomSettingOption.value === "banned" &&
+				loadingRoomDataIsDone &&
+				selectedBannedsOption
+			) {
+				/// 'ROOM_banne_USER';
+				props.chatSocket.emit("ROOM_BAN_A_USER", {
+					admin_id: `${state.mainUser.id}`,
+					room_id: `${props.room.id}`,
+					banned: selectedBannedsOption,
+				});
+				props.setOpenSettingModal(false);
+			}
+			if (roomSettingOption.value === "muted" && loadingRoomDataIsDone) {
+				console.log("mute a user 77777777777");
+				props.chatSocket.emit("ROOM_MUTE_USERS", {
+					admin_id: `${state.mainUser.id}`,
+					room_id: `${props.room.id}`,
+					muted_user: selectedMutedusersOption,
+					timeToMute: timetoMute,
+				});
+				props.setOpenSettingModal(false);
+			}
+			if (
+				roomSettingOption.value === "admins" &&
+				loadingRoomDataIsDone &&
+				selectedAdminsOption
+			) {
+				/// 'ROOM_SET_ADMIN';
+				props.chatSocket.emit("ROOM_ADMINS_STATUS", {
+					admin_id: `${state.mainUser.id}`,
+					room_id: `${props.room.id}`,
+					new_admins: [...selectedAdminsOption],
+				});
+				props.setOpenSettingModal(false);
+			}
+			if (
+				roomSettingOption.value === "password" &&
+				loadingRoomDataIsDone
+			) {
+				/// 'ROOM_Update_passord';
+				if (!props.room.isProtected) {
+					if (!validatePassword.test(updatePassword)) {
+						setIsNewPasswordCorrects(false);
 					} else {
-						if (!validatePassword.test(updatePassword)) {
-							setIsNewPasswordCorrects(false);
+						props.chatSocket.emit("ROOM_ADD_PASSWORD", {
+							admin_id: `${state.mainUser.id}`,
+							room_id: `${props.room.id}`,
+							password: updatePassword,
+						});
+						props.setOpenSettingModal(false);
+					}
+					return;
+				}
+				props.chatSocket.emit(
+					"CHECK_ROOM_PASSWORD",
+					{
+						room_id: `${props.room.id}`,
+						password: `${currentPassword}`,
+					},
+					(checkPassword: boolean) => {
+						if (!checkPassword) {
+							setIsCurrentPasswordCorrect(false);
+							return;
 						} else {
-							props.chatSocket.emit(
-								"ROOM_UPDATE_PASSWORD",
-								{
+							if (!validatePassword.test(updatePassword)) {
+								setIsNewPasswordCorrects(false);
+							} else {
+								props.chatSocket.emit("ROOM_UPDATE_PASSWORD", {
 									admin_id: `${state.mainUser.id}`,
 									room_id: `${props.room.id}`,
 									new_password: updatePassword,
-								}
-							);
-							props.setOpenSettingModal(false);
+								});
+								props.setOpenSettingModal(false);
+							}
 						}
 					}
-				}
-			);
+				);
+			}
 		}
 	}
 
@@ -366,6 +371,7 @@ function ManageMembers(props: any) {
 			<div>
 				<h3>selection option : </h3>
 				<Select
+					defaultValue={roomSettingOption}
 					styles={customStyles}
 					onChange={setRoomSettingOption}
 					options={roomSettingAllOption}
@@ -414,8 +420,8 @@ function ManageMembers(props: any) {
 								id="mutedTime"
 								min={0}
 								max={60}
-								value={timetoMute}
-								onChange={(e) => setTimetoMute(e.target.value)}
+								value={String(timetoMute)}
+								onChange={(e: any) => setTimetoMute(Number(e.target.value))}
 								placeholder="in minutes"
 							/>
 						</div>
@@ -692,10 +698,8 @@ export default function ChannelManagement({
 		);
 		if (JSON.stringify(receiver) !== JSON.stringify(newReceiver[0])) {
 			console.log("reciever updated");
-			if (newReceiver[0])
-				setReceiver({ ...newReceiver[0] });
-			else
-				setReceiver(null);
+			if (newReceiver[0]) setReceiver({ ...newReceiver[0] });
+			else setReceiver(null);
 		}
 	}, [state.channels]);
 
