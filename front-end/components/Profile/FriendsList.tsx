@@ -31,7 +31,7 @@ const FriendsList = () => {
 		try {
 			axios
 				.get(
-					`http://localhost:5000/users/id/${state.mainUser.id}/friends`,
+					`${process.env.SERVER_HOST}/users/id/${state.mainUser.id}/friends`,
 					{
 						withCredentials: true,
 					}

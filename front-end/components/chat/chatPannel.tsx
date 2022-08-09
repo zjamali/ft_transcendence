@@ -68,7 +68,7 @@ export default function ChatPannel() {
 				setMessages([]);
 				axios
 					.get(
-						`http://localhost:5000/messages/${state.receiver.id}`,
+						`${process.env.SERVER_HOST}/messages/${state.receiver.id}`,
 						{
 							withCredentials: true,
 						}
@@ -180,7 +180,7 @@ export default function ChatPannel() {
 			});
 			axios
 				.get(
-					`http://localhost:5000/messages/${state.receiver?.id}?isChannel=true`,
+					`${process.env.SERVER_HOST}/messages/${state.receiver?.id}?isChannel=true`,
 					{
 						withCredentials: true,
 					}

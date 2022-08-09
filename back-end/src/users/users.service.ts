@@ -258,7 +258,7 @@ export class UsersService {
 
   async updateAvatar(currUser: User, imagePath: string) {
     const imgPathWithLink: string =
-      'http://localhost:5000/users/' + imagePath;
+      `${process.env.SERVER_HOST}/users/` + imagePath;
     await this.usersRepository.update(currUser.id, {
       image: imgPathWithLink,
     });

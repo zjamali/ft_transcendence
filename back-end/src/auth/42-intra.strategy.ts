@@ -1,17 +1,18 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback } from 'passport-42';
 import { Injectable } from '@nestjs/common';
-import { config } from 'dotenv';
+import { ConfigService } from '@nestjs/config';
+// import { config } from 'dotenv';
 
-config();
+// config();
 
 @Injectable()
 export class IntraStrategy extends PassportStrategy(Strategy, '42') {
-  constructor() {
+  constructor(private readonly configService: ConfigService) {
     super({
-      clientID: `${process.env.clientID}`,
-      clientSecret: `${process.env.clientSecret}`,
-      callbackURL: 'http://localhost:5000/auth/42/callback',
+      clientID: `${configService.get('clientID')}`, //`${process.env.clientID}`,
+      clientSecret: `${configService.get('clientSecret')}`, //`${process.env.clientSecret}`,
+      callbackURL: `${configService.get('INTRA_CALLBACK_URL')}`,
       profileFields: {
         id: function (obj) {
           return String(obj.id);

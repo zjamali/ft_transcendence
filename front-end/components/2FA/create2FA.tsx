@@ -10,7 +10,7 @@
 //   return (
 //           //<form className={login2fa.login2fa}>
 //           //  <img
-//           //    src="http://localhost:5000/2fa/generate"
+//           //    src="${process.env.SERVER_HOST}/2fa/generate"
 //           //    width={196}
 //           //    height={196}
 //           //  />
@@ -140,7 +140,7 @@ const Active2FA: React.FC<EditModalProps> = ({ closeModal2FA }) => {
 		try {
 			axios
 				.post(
-					"http://localhost:5000/2fa/turnOn",
+					`${process.env.SERVER_HOST}/2fa/turnOn`,
 					{ twoFactorAuthenticationCode: twoFAcode },
 					{
 						withCredentials: true,
@@ -159,7 +159,7 @@ const Active2FA: React.FC<EditModalProps> = ({ closeModal2FA }) => {
 		}
 	};
 
-	const twoFAGenrated = "http://localhost:5000/2fa/generate";
+	const twoFAGenrated = `${process.env.SERVER_HOST}/2fa/generate`;
 	return (
 		<>
 			<div

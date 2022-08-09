@@ -22,7 +22,7 @@ export default function ChatPage() {
 
 	async function fetchMainUser() {
 		axios
-			.get("http://localhost:5000/users/me", { withCredentials: true })
+			.get(`${process.env.SERVER_HOST}/users/me`, { withCredentials: true })
 			.then((res) => {
 				if (res.status === 200) {
 					setMainUser({ ...res.data });

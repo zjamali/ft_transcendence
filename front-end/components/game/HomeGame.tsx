@@ -25,7 +25,7 @@ export function HomeGame() {
 	const [accepGame, setAccepGame] = useState(false);
 	const handleGame = async () => {
 		setCurrentState(StateGame.WAIT);
-		const res = await axios.get("http://localhost:5000/users/me", {
+		const res = await axios.get(`${process.env.SERVER_HOST}/users/me`, {
 			withCredentials: true,
 		});
 		if (res.data.isPlaying) return;
