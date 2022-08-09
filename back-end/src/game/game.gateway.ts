@@ -10,16 +10,16 @@ import {
 } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import User from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { Game } from './Classes/game';
 import { gameSate } from './Classes/gameState';
 import { Player } from './Classes/player';
 import { GameService } from './game.service';
+import User from 'src/users/entities/user.entity';
 
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:3000',
+    origin: 'http://192.168.99.121:3000',
     allowedHeaders: ['my-custom-header'],
     credentials: true,
   },
@@ -74,7 +74,7 @@ export class GameGateway
 
   handleDisconnect(client: Socket) {
     this.logger.log('Disconnected ' + `${client.id}`);
-    const gameFound = GameGateway.game.find((gm) => {
+    let gameFound = GameGateway.game.find((gm) => {
       return (
         gm.get_PlayerOne().getSocket() === client ||
         gm.get_PlayerTwo().getSocket() === client
@@ -84,9 +84,9 @@ export class GameGateway
       if (gameFound.gameStateFunc() === gameSate.PLAY) {
         gameFound.playerOutGame(client);
         gameFound.stopGame();
+        GameGateway.game.splice(GameGateway.game.indexOf(gameFound), 1);
       }
     }
-    GameGateway.game.splice(GameGateway.game.indexOf(gameFound), 1);
   }
 
   // @SubscribeMessage('resize')
@@ -193,6 +193,7 @@ export class GameGateway
           this.gameService,
           this.sendGames,
           this.server,
+          GameGateway.game,
         );
 
         GameGateway.game.push(newGame);
@@ -276,6 +277,7 @@ export class GameGateway
           this.gameService,
           this.sendGames,
           this.server,
+          GameGateway.game,
         );
         GameGateway.game.push(newGame);
         this.sendGames(this.server);
@@ -305,5 +307,23 @@ export class GameGateway
     });
 
     if (gameFound) gameFound.addWatcher(client);
+  }
+
+  @SubscribeMessage('STOP_GAME')
+  stopGame(client: Socket) {
+    this.logger.log('Disconnected ' + `${client.id}`);
+    let gameFound = GameGateway.game.find((gm) => {
+      return (
+        gm.get_PlayerOne().getSocket() === client ||
+        gm.get_PlayerTwo().getSocket() === client
+      );
+    });
+    if (gameFound) {
+      if (gameFound.gameStateFunc() === gameSate.PLAY) {
+        gameFound.playerOutGame(client);
+        gameFound.stopGame();
+        GameGateway.game.splice(GameGateway.game.indexOf(gameFound), 1);
+      }
+    }
   }
 }

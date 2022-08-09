@@ -21,7 +21,7 @@ type JwtPayload = { id: string; username: string };
 
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:3000',
+    origin: 'http://192.168.99.121:3000',
     allowedHeaders: ['my-custom-header'],
     credentials: true,
   },
@@ -140,24 +140,11 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         room_id: gameInvitation.game_room,
       });
     });
-
-    setTimeout(() => {
-      firstPlayersSockets?.forEach((socketsID) => {
-        this.Server.to(socketsID).emit('STAR_PLAYING', {
-          room_id: gameInvitation.game_room,
-        });
-        // this.userService.setUserPlayingStatus(gameInvitation.sender, true);
+    secondPlayerSockets?.forEach((socketsID) => {
+      this.Server.to(socketsID).emit('game_invitation_accepted', {
+        room_id: gameInvitation.game_room,
       });
-    }, 2000);
-    setTimeout(() => {
-      secondPlayerSockets?.forEach((socketsID) => {
-        this.Server.to(socketsID).emit('STAR_PLAYING', {
-          room_id: gameInvitation.game_room,
-        });
-        // this.userService.setUserPlayingStatus(gameInvitation.receiver, true);
-        this.Server.emit('UPDATE_DATA');
-      });
-    }, 2000);
+    });
   }
 
   @SubscribeMessage('GAME_START')

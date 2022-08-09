@@ -23,7 +23,7 @@ export class JwtTwoFactorStrategy extends PassportStrategy(
         },
       ]),
       ignoreExperation: false,
-      secretOrKey: 'meow', //configService.get('JWT_ACCESS_TOKEN_SECRET'),
+      secretOrKey: configService.get('JWT_SECRET'),
     });
   }
 

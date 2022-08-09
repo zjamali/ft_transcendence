@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Response } from 'express';
 import { GameService } from 'src/game/game.service';
 import { Repository } from 'typeorm/repository/Repository';
-import Friend, { State } from './friend.entity';
-import User from './user.entity';
+import Friend, { State } from './entities/friend.entity';
+import User from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -16,31 +16,25 @@ export class UsersService {
     private readonly gameService: GameService,
   ) {}
 
-  getUsers() {
-    return this.usersRepository.find();
+  async getUsers(): Promise<User[]> {
+    return await this.usersRepository.find();
   }
 
-  createUser(createUserDto: any) {
+  async createUser(createUserDto: any): Promise<User[]> {
     const newUser = this.usersRepository.create(createUserDto);
-    return this.usersRepository.save(newUser);
+    return await this.usersRepository.save(newUser);
   }
 
-  async findOne(id: string): Promise<User> {
-    return this.usersRepository.findOne({ where: { id: id } });
+  async findOne(userId: string): Promise<User> {
+    return await this.usersRepository.findOne({ where: { id: userId } });
   }
 
   async sendRequest(relatingUserID: string, relatedUserID: string) {
-    //find if relatedUserId exist within users repository
     const relatedUser = await this.usersRepository.findOne({
       where: { id: relatedUserID },
     });
 
-    //if yes
-    //insert relation
-    //else
-    //return null or throw error
     if (relatedUser) {
-      //insert relation
       const userWithBigID =
         +relatedUserID > +relatingUserID ? relatedUserID : relatingUserID;
       const userWithSmallID =
@@ -49,9 +43,6 @@ export class UsersService {
       const stateDir: State =
         relatingUserID == userWithBigID ? State.PENDING_A_B : State.PENDING_B_A;
 
-      /* ************************ */
-      //HINT: don't forget to check if the relation is already pending | friends , if so no need to change it
-      /* ************************ */
       const relation = await this.friendsRepository.findOne({
         where: [{ userA: userWithBigID, userB: userWithSmallID }],
       });
@@ -62,7 +53,7 @@ export class UsersService {
           relation.state != State.PENDING_B_A &&
           relation.state != State.FRIENDS)
       ) {
-        this.friendsRepository.save([
+        await this.friendsRepository.save([
           {
             userA: userWithBigID,
             userB: userWithSmallID,
@@ -79,16 +70,11 @@ export class UsersService {
   }
 
   async acceptRequest(relatingUserID: string, relatedUserID: string) {
-    //find if relatedUserId exist within users repository
     const relatedUser = await this.usersRepository.findOne({
       where: { id: relatedUserID },
     });
-    //if yes
-    //update relation
-    //else
-    //return null or throw error
+
     if (relatedUser) {
-      //update relation
       const userWithBigID =
         +relatedUserID > +relatingUserID ? relatedUserID : relatingUserID;
       const userWithSmallID =
@@ -112,39 +98,6 @@ export class UsersService {
     return relatedUser;
   }
 
-  async getFriends(userId: string): Promise<User[]> {
-    const sql = `SELECT * FROM public.User WHERE id IN (SELECT "userB" FROM Friend where "userA" = $1 and "state" = 'friends') 
-    Union
-    SELECT * from public.User where id in (select "userA" from Friend where "userB" = $1 and "state" = 'friends')`;
-
-    const friends = this.usersRepository.query(sql, [userId]);
-    return friends;
-  }
-
-  ///////fix this
-  async getBolckedUsers(userId: string): Promise<User[]> {
-    // const sql = `SELECT * FROM public.User WHERE id IN (SELECT "relatedUserID" FROM Friend where "relatingUserID" = $1 and "state" = 'blocked')`;
-
-    const sql = `SELECT * FROM public.User WHERE id IN (SELECT "userB" FROM Friend where "userA" = $1 and "state" = 'blocked_A_B') 
-    Union
-    SELECT * from public.User where id in (select "userA" from Friend where "userB" = $1 and "state" = 'blocked_B_A')`;
-
-    const blockedUsers = this.usersRepository.query(sql, [userId]);
-    return blockedUsers;
-  }
-
-  ///////fix this
-  async getBlockedByUsers(userId: string): Promise<User[]> {
-    // const sql = `SELECT * FROM public.User WHERE id IN (SELECT "relatingUserID" FROM Friend where "relatedUserID" = $1 and "state" = 'blocked')`;
-
-    const sql = `SELECT * FROM public.User WHERE id IN (SELECT "userB" FROM Friend where "userA" = $1 and "state" = 'blocked_B_A') 
-    Union
-    SELECT * from public.User where id in (select "userA" from Friend where "userB" = $1 and "state" = 'blocked_A_B')`;
-
-    const blockedByUsers = this.usersRepository.query(sql, [userId]);
-    return blockedByUsers;
-  }
-
   async removeRelation(relatingUserID: string, relatedUserID: string) {
     const userWithBigID =
       +relatedUserID > +relatingUserID ? relatedUserID : relatingUserID;
@@ -160,7 +113,7 @@ export class UsersService {
       relation?.state == State.PENDING_A_B ||
       relation?.state == State.PENDING_B_A
     ) {
-      this.friendsRepository
+      await this.friendsRepository
         .createQueryBuilder()
         .update({ state: State.NO_RECORD })
         .where([
@@ -196,7 +149,7 @@ export class UsersService {
       const stateDir: State =
         relatingUserID == userWithBigID ? State.BLOCKED_A_B : State.BLOCKED_B_A;
 
-      this.friendsRepository
+      await this.friendsRepository
         .createQueryBuilder()
         .update({ state: stateDir })
         .where([
@@ -231,7 +184,7 @@ export class UsersService {
       (userWithSmallID == relatingUserID &&
         relation.state === State.BLOCKED_B_A)
     ) {
-      this.friendsRepository
+      await this.friendsRepository
         .createQueryBuilder()
         .update({ state: State.NO_RECORD })
         .where([
@@ -251,28 +204,48 @@ export class UsersService {
     return 'relatedUserID has been unblocked';
   }
 
+  async getFriends(userId: string): Promise<User[]> {
+    const sql = `SELECT * FROM public.User WHERE id IN (SELECT "userB" FROM Friend where "userA" = $1 and "state" = 'friends') 
+    Union
+    SELECT * from public.User where id in (select "userA" from Friend where "userB" = $1 and "state" = 'friends')`;
+
+    const friends = await this.usersRepository.query(sql, [userId]);
+    return friends;
+  }
+
+  async getBolckedUsers(userId: string): Promise<User[]> {
+    const sql = `SELECT * FROM public.User WHERE id IN (SELECT "userB" FROM Friend where "userA" = $1 and "state" = 'blocked_A_B') 
+    Union
+    SELECT * from public.User where id in (select "userA" from Friend where "userB" = $1 and "state" = 'blocked_B_A')`;
+
+    const blockedUsers = await this.usersRepository.query(sql, [userId]);
+    return blockedUsers;
+  }
+
+  async getBlockedByUsers(userId: string): Promise<User[]> {
+    const sql = `SELECT * FROM public.User WHERE id IN (SELECT "userB" FROM Friend where "userA" = $1 and "state" = 'blocked_B_A') 
+    Union
+    SELECT * from public.User where id in (select "userA" from Friend where "userB" = $1 and "state" = 'blocked_A_B')`;
+
+    const blockedByUsers = await this.usersRepository.query(sql, [userId]);
+    return blockedByUsers;
+  }
+
   async getSentRequests(userId: string) {
-    // await this.friendsRepository.find({
-    //   where: [{ relatedUserID: userId, state: State.PENDING }],
-    // });
-
-    // const sql = `SELECT * FROM public.User WHERE id IN (SELECT "relatedUserID" FROM Friend where "relatingUserID" = $1 and "state" = 'pending')`;
-
     const sql = `SELECT * FROM public.User WHERE id IN (SELECT "userB" FROM Friend where "userA" = $1 and "state" = 'pending_A_B') 
     Union
     SELECT * from public.User where id in (select "userA" from Friend where "userB" = $1 and "state" = 'pending_B_A')`;
 
-    const receivedRequests = this.usersRepository.query(sql, [userId]);
+    const receivedRequests = await this.usersRepository.query(sql, [userId]);
     return receivedRequests;
   }
 
   async getReceivedRequests(userId: string) {
-    // const sql = `SELECT * FROM public.User WHERE id IN (SELECT "relatingUserID" FROM Friend where "relatedUserID" = $1 and "state" = 'pending')`;
     const sql = `SELECT * FROM public.User WHERE id IN (SELECT "userB" FROM Friend where "userA" = $1 and "state" = 'pending_B_A') 
     Union
     SELECT * from public.User where id in (select "userA" from Friend where "userB" = $1 and "state" = 'pending_A_B')`;
 
-    const receivedRequests = this.usersRepository.query(sql, [userId]);
+    const receivedRequests = await this.usersRepository.query(sql, [userId]);
     return receivedRequests;
   }
 
@@ -284,7 +257,8 @@ export class UsersService {
   }
 
   async updateAvatar(currUser: User, imagePath: string) {
-    const imgPathWithLink: string = 'http://localhost:5000/users/' + imagePath;
+    const imgPathWithLink: string =
+      'http://192.168.99.121:5000/users/' + imagePath;
     await this.usersRepository.update(currUser.id, {
       image: imgPathWithLink,
     });
@@ -292,6 +266,7 @@ export class UsersService {
   }
 
   async updateUserName(currUser: User, givenUserName: string) {
+    givenUserName = givenUserName.substring(0, 8);
     const foundedUser: User = await this.usersRepository.findOne({
       where: { userName: givenUserName },
     });
@@ -305,7 +280,10 @@ export class UsersService {
     await this.usersRepository.update(currUser.id, {
       userName: givenUserName,
     });
-    await this.gameService.updatePlayerUserName(currUser.id, givenUserName);
+    return await this.gameService.updatePlayerUserName(
+      currUser.id,
+      givenUserName,
+    );
   }
 
   async setTwoFactorAuthenticationSecret(userId: string, secret: string) {
@@ -323,6 +301,7 @@ export class UsersService {
       },
     );
   }
+
   async setUserPlayingStatus(userId: string, status: boolean) {
     console.log(userId);
     return await this.usersRepository.update(
@@ -334,20 +313,19 @@ export class UsersService {
   }
 
   async turnOffTwoFactorAuthentication(userId: string) {
-    return this.usersRepository.update(userId, {
+    return await this.usersRepository.update(userId, {
       isTwoFactorAuthenticationEnabled: false,
       twoFactorAuthenticationSecret: null,
     });
   }
 
-  public logOut(@Res() res?: Response) {
+  logOut(@Res() res: Response) {
     res.clearCookie('access_token');
-    res.redirect('http://localhost:3000');
+    res.redirect('http://192.168.99.121:3000');
   }
 
-  public async logOutFromAllUsers() {
-    console.log('logged out');
-    this.usersRepository
+  async logOutFromAllUsers() {
+    await this.usersRepository
       .createQueryBuilder()
       .update()
       .set({ isOnline: false, isPlaying: false })

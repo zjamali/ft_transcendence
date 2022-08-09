@@ -68,7 +68,7 @@ export default function ChatPannel() {
 				setMessages([]);
 				axios
 					.get(
-						`http://localhost:5000/messages/${state.receiver.id}`,
+						`http://192.168.99.121:5000/messages/${state.receiver.id}`,
 						{
 							withCredentials: true,
 						}
@@ -179,7 +179,7 @@ export default function ChatPannel() {
 			});
 			axios
 				.get(
-					`http://localhost:5000/messages/${state.receiver?.id}?isChannel=true`,
+					`http://192.168.99.121:5000/messages/${state.receiver?.id}?isChannel=true`,
 					{
 						withCredentials: true,
 					}

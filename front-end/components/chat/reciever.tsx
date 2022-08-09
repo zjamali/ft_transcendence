@@ -3,11 +3,13 @@ import { AppContext } from "../../context/AppContext";
 import reciverStyle from "../../styles/Chat.module.css";
 import Avatar from "./avatar";
 import RoomAvatar from "react-avatar";
+import SportsEsportsTwoToneIcon from "@mui/icons-material/SportsEsportsTwoTone";
 
 import { isContact } from "../../utils/utils";
 import ChannelManagement from "./ChannelManagemet";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { Button } from "@mui/material";
 
 export default function Reciever({
 	joinRoom,
@@ -38,7 +40,7 @@ export default function Reciever({
 			});
 		// router.push('/game');
 	};
-	
+
 	return (
 		<>
 			{isContact(state.receiver) ? (
@@ -52,8 +54,16 @@ export default function Reciever({
 						<h3>{`${state.receiver.firstName} ${state.receiver.lastName}`}</h3>
 						<p>@{state.receiver.userName}</p>
 					</div>
-					<div onClick={gameHandleInvite}>
-						<a>invite to game</a>
+					<div>
+						<Button
+							variant="outlined"
+							color="primary"
+							size="large"
+							onClick={gameHandleInvite}
+							startIcon={<SportsEsportsTwoToneIcon />}
+						>
+							invite
+						</Button>
 					</div>
 				</div>
 			) : (

@@ -10,7 +10,7 @@
 //   return (
 //           //<form className={login2fa.login2fa}>
 //           //  <img
-//           //    src="http://localhost:5000/2fa/generate"
+//           //    src="http://192.168.99.121:5000/2fa/generate"
 //           //    width={196}
 //           //    height={196}
 //           //  />
@@ -140,7 +140,7 @@ const Active2FA: React.FC<EditModalProps> = ({ closeModal2FA }) => {
 		try {
 			axios
 				.post(
-					"http://localhost:5000/2fa/turnOn",
+					"http://192.168.99.121:5000/2fa/turnOn",
 					{ twoFactorAuthenticationCode: twoFAcode },
 					{
 						withCredentials: true,
@@ -159,7 +159,7 @@ const Active2FA: React.FC<EditModalProps> = ({ closeModal2FA }) => {
 		}
 	};
 
-	const twoFAGenrated = "http://localhost:5000/2fa/generate";
+	const twoFAGenrated = "http://192.168.99.121:5000/2fa/generate";
 	return (
 		<>
 			<div
@@ -194,7 +194,6 @@ const Active2FA: React.FC<EditModalProps> = ({ closeModal2FA }) => {
 								label="Enter Two Factor auth"
 								defaultValue={twoFAcode}
 								size="small"
-								helperText="test"
 								onChange={(e) => setTwoFAcode(e.target.value)}
 								style={{ marginLeft: "30px" }}
 							/>

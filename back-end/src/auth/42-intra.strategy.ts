@@ -11,7 +11,7 @@ export class IntraStrategy extends PassportStrategy(Strategy, '42') {
     super({
       clientID: `${process.env.clientID}`,
       clientSecret: `${process.env.clientSecret}`,
-      callbackURL: 'http://localhost:5000/auth/42/callback',
+      callbackURL: 'http://192.168.99.121:5000/auth/42/callback',
       profileFields: {
         id: function (obj) {
           return String(obj.id);
@@ -31,7 +31,6 @@ export class IntraStrategy extends PassportStrategy(Strategy, '42') {
     profile: any,
     done: VerifyCallback,
   ): Promise<any> {
-    // console.log('validating time');
     const { id, userName, displayName, firstName, lastName, image } = profile;
     const user = {
       id,

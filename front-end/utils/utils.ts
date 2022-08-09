@@ -17,7 +17,7 @@ export function addFriend(sender: string, target: string) {
 	//remove sender plzplz
 	axios
 		.post(
-			"http://localhost:5000/users/send",
+			"http://192.168.99.121:5000/users/send",
 			{ relatedUserId: target },
 			{ withCredentials: true }
 		)
@@ -32,7 +32,7 @@ export function addFriend(sender: string, target: string) {
 export function acceptFriendRequest(accpter: string, relatedUserId: string) {
 	axios
 		.post(
-			"http://localhost:5000/users/accept",
+			"http://192.168.99.121:5000/users/accept",
 			{ relatedUserId: relatedUserId },
 			{ withCredentials: true }
 		)
@@ -44,42 +44,48 @@ export function acceptFriendRequest(accpter: string, relatedUserId: string) {
 			});
 		});
 }
-export function unfriend(denier: string,relatedUserId: string) {
+export function unfriend(denier: string, relatedUserId: string) {
 	axios
 		.post(
-			"http://localhost:5000/users/unfriend",
+			"http://192.168.99.121:5000/users/unfriend",
 			{ relatedUserId: relatedUserId },
 			{ withCredentials: true }
 		)
 		.then((data) => {
 			console.log("unfreind  request :", data);
-      eventsSocket.emit("DENY_FREIND_REQUEST", {
+			eventsSocket.emit("DENY_FREIND_REQUEST", {
 				denier,
 				relatedUserId,
 			});
 		});
 }
-export function blockUser(blocker:string ,  relatedUserId: string) {
+export function blockUser(blocker: string, relatedUserId: string) {
 	axios
 		.post(
-			"http://localhost:5000/users/block",
+			"http://192.168.99.121:5000/users/block",
 			{ relatedUserId: relatedUserId },
 			{ withCredentials: true }
 		)
 		.then((data) => {
 			console.log("block  request :", data);
-      eventsSocket.emit("BLOCK_A_USER", {blocker, target : relatedUserId})
+			eventsSocket.emit("BLOCK_A_USER", {
+				blocker,
+				target: relatedUserId,
+			});
 		});
 }
-export function unBlockUser(unblocker:string ,relatedUserId: string) {
+export function unBlockUser(unblocker: string, relatedUserId: string) {
 	axios
 		.post(
-			"http://localhost:5000/users/unblock",
+			"http://192.168.99.121:5000/users/unblock",
 			{ relatedUserId: relatedUserId },
 			{ withCredentials: true }
 		)
 		.then((data) => {
 			console.log("unblock  request :", data);
-			eventsSocket.emit("UNBLOCK_A_USER", {unblocker, target : relatedUserId})
+			eventsSocket.emit("UNBLOCK_A_USER", {
+				unblocker,
+				target: relatedUserId,
+			});
 		});
 }

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm/repository/Repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import User from 'src/users/user.entity';
 import { GlobalService } from 'src/utils/Global.service';
+import User from 'src/users/entities/user.entity';
 
 @Injectable()
 export class EventsService {
@@ -54,9 +54,10 @@ export class EventsService {
 
   // update user status in DB
   async setUserOfflineInDb(user_id: string) {
-    await this.usersRepository.update(user_id, { isOnline: false });
+    if (user_id)
+      await this.usersRepository.update(user_id, { isOnline: false });
   }
   async setUserOnlineInDb(user_id: string) {
-    await this.usersRepository.update(user_id, { isOnline: true });
+    if (user_id) await this.usersRepository.update(user_id, { isOnline: true });
   }
 }

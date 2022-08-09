@@ -1,5 +1,4 @@
 import { UsersModule } from 'src/users/users.module';
-import { UsersService } from 'src/users/users.service';
 import { JwtAuthStrategy } from './jwt-auth.strategy';
 import { JwtAuthService } from './jwt-auth.service';
 import { ConfigService, ConfigModule } from '@nestjs/config';
@@ -11,14 +10,13 @@ import { JwtModule } from '@nestjs/jwt';
     JwtModule.registerAsync({
       useFactory: async (configService: ConfigService) => {
         return {
-          secret: 'meow', //configService.get<string>('JWT_SECRET'),
+          secret: configService.get<string>('JWT_SECRET'),
           signOptions: {
-            // expiresIn: configService.get<string>('JWT_EXPIERS_IN'),
-            expiresIn: '24000s',
+            expiresIn: configService.get<string>('JWT_EXPIRATION_TIME'),
           },
         };
       },
-      imports: [ConfigModule], /////////
+      imports: [ConfigModule],
       inject: [ConfigService],
     }),
     UsersModule,

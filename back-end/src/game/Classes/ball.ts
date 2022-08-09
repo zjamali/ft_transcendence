@@ -19,7 +19,6 @@ export class Ball {
     this._ball_speed = GameVariable._ball_Speed;
     this._ball_DX = GameVariable._ball_Speed * this.getRandomDirection();
     this._ball_DY = GameVariable._ball_Speed * this.getRandomDirection();
-
   }
 
   private getRandomDirection(): number {
@@ -39,14 +38,15 @@ export class Ball {
         GameVariable._bounded_PaddleHeight
     )
       this._ball_DY = -this._ball_DY;
-
   }
 
   public detect_Collision(paddle: Paddle): boolean {
     let paddle_top: number = paddle.get_PaddleY();
-    let paddle_bottom: number = paddle.get_PaddleY() + GameVariable._paddle_Height;
+    let paddle_bottom: number =
+      paddle.get_PaddleY() + GameVariable._paddle_Height;
     let paddle_left: number = paddle.get_PaddleX();
-    let paddle_right: number = paddle.get_PaddleX() + GameVariable._paddle_Width;
+    let paddle_right: number =
+      paddle.get_PaddleX() + GameVariable._paddle_Width;
 
     let ball_top: number = this._ball_Y - GameVariable._ball_Radius;
     let ball_bottom: number = this._ball_Y + GameVariable._ball_Radius;
@@ -62,32 +62,36 @@ export class Ball {
   }
 
   public handleCollision(player: Player): void {
-      let collidePoint: number = this._ball_Y - (player.getPaddle().get_PaddleY() + GameVariable._paddle_Height / 2);
+    let collidePoint: number =
+      this._ball_Y -
+      (player.getPaddle().get_PaddleY() + GameVariable._paddle_Height / 2);
 
-      collidePoint = collidePoint / (GameVariable._paddle_Height / 2);
+    collidePoint = collidePoint / (GameVariable._paddle_Height / 2);
 
-      let angleRad: number = (Math.PI / 4) * collidePoint;
+    let angleRad: number = (Math.PI / 4) * collidePoint;
 
-      let direction: number = this._ball_X + GameVariable._ball_Radius < GameVariable._canvas_Width / 2 ? 1 : -1;
+    let direction: number =
+      this._ball_X + GameVariable._ball_Radius < GameVariable._canvas_Width / 2
+        ? 1
+        : -1;
 
-      this._ball_DX = direction * this._ball_speed * Math.cos(angleRad);
-      this._ball_DY = this._ball_speed * Math.sin(angleRad);
+    this._ball_DX = direction * this._ball_speed * Math.cos(angleRad);
+    this._ball_DY = this._ball_speed * Math.sin(angleRad);
 
-      this.setSpeed(this.getSpeed() + 1);
-      
+    this.setSpeed(this.getSpeed() + 1);
   }
 
   public update_score(player_One: Player, player_Two: Player): void {
     if (this._ball_X - GameVariable._ball_Radius <= 0) {
       player_One.setScore(player_One.getScore() + 1);
+      // this.sendGame(this.server);
       this.resetBall(true);
-      this.sendGame(this.server);
     } else if (
       this._ball_X + GameVariable._ball_Radius >=
       GameVariable._canvas_Width
     ) {
+      // this.sendGame(this.server);
       player_Two.setScore(player_Two.getScore() + 1);
-      this.sendGame(this.server);
       this.resetBall(false);
     }
   }

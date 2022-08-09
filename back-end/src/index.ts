@@ -1,8 +1,8 @@
-import Friend from './users/friend.entity';
+import Friend from './users/entities/friend.entity';
 import Message from './chat/messages/entities/message.entity';
-import User from './users/user.entity';
 import Room from './chat/rooms/entities/room.entity';
-import { Games } from './game/enitites/game.entity';
+import Games from './game/enitites/game.entity';
+import User from './users/entities/user.entity';
 
 const entities = [User, Message, Room, Friend, Games];
 

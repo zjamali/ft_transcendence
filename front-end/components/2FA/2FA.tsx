@@ -10,7 +10,7 @@ export default function Login(props: any) {
     <div className={loginStyle.loginContainner}>
       <form
         className={loginStyle.loginForm}
-        action="http://localhost:5000/auth/42"
+        action="http://192.168.99.121:5000/auth/42"
       >
         <img src="/42logo-white.svg" alt="42logo" />
         <button type="submit">login</button>
