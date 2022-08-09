@@ -525,12 +525,12 @@
 .profile-wall-bg {
 	height: 85%;
 	width: 100%;
-	background-image: url("../public/xo.jpeg");
+	background-image: url("http://192.168.99.121:5000/users/uploads/xo.jpeg");
 	background-repeat: no-repeat;
 	background-size: cover;
 	overflow: hidden;
 	opacity: 0.6;
-	/* border: 1px solid sandybrown; */
+	/* border: 1pxk solid sandybrown; */
 }
 
 .profile-wall-img-user {
@@ -969,7 +969,7 @@
 }
 
 .g-o-win {
-	background-image: url("../public/celebration.gif");
+	background-image: url("http://192.168.99.121:5000/users/uploads/celebration.gif");
 	background-position: center;
 	/* background-repeat: no-repeat; */
 	background-size: contain;

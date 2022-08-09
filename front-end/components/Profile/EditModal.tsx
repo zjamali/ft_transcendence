@@ -137,7 +137,7 @@ const EditModal: React.FC<EditModalProps> = ({
 		if (!twoFAChecked) {
 			if (state.mainUser.isTwoFactorAuthenticationEnabled) {
 				axios
-					.post("http://localhost:5000/2fa/turnOff",{}, {
+					.post("http://192.168.99.121:5000/2fa/turnOff",{}, {
 						withCredentials: true,
 					})
 					.then((res) => {
@@ -155,7 +155,7 @@ const EditModal: React.FC<EditModalProps> = ({
 			//   Update the formData object
 			formData.append("file", imageData);
 			axios
-				.post("http://localhost:5000/users/updateAvatar", formData, {
+				.post("http://192.168.99.121:5000/users/updateAvatar", formData, {
 					withCredentials: true,
 				})
 				.then((res) => {
@@ -171,7 +171,7 @@ const EditModal: React.FC<EditModalProps> = ({
 			// formData.append("givenUserName", userName);
 			axios
 				.post(
-					"http://localhost:5000/users/updateUserName",
+					"http://192.168.99.121:5000/users/updateUserName",
 					{ givenUserName: userName },
 					{
 						withCredentials: true,

@@ -22,7 +22,7 @@ const DefaultData = ({ id }: { id: any }) => {
 		console.log("fetch matches ::->");
 		try {
 			axios
-				.get(`http://localhost:5000/users/${id}/MatchesHistory`, {
+				.get(`http://192.168.99.121:5000/users/${id}/MatchesHistory`, {
 					withCredentials: true,
 				})
 				.then((res) => {

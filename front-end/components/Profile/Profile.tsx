@@ -1,7 +1,4 @@
 import Image from "next/image";
-import Header from "./Header";
-import SideBar from "./SideBar";
-import intra from "../../public/42.jpg";
 import DefaultData from "./DefaultData";
 import EditModal from "./EditModal";
 import { useContext, useState, useEffect } from "react";
@@ -10,7 +7,6 @@ import FriendsList from "./FriendsList";
 import HistoryList from "./HistoryList";
 import { AppContext } from "../../context/AppContext";
 import MainUserNav from "./MainUserNav";
-import OtherUserNav from "./OtherUserNav";
 import Router, { useRouter } from "next/router";
 import Active2FA from "../2FA/create2FA";
 
@@ -51,7 +47,8 @@ const Profile = () => {
 	return (
 		<div className="profile-content">
 			<div className="profile-wall">
-				<div className="profile-wall-bg"></div>
+				<div className="profile-wall-bg">
+        </div>
 				<div className="profile-wall-img-user">
 					<Image
 						loader={() => src}

@@ -1,4 +1,4 @@
-import  JwtTwoFactorGuard  from 'src/auth/jwt-2fa-auth.guard';
+import JwtTwoFactorGuard from 'src/auth/jwt-2fa-auth.guard';
 import { GlobalService } from './../utils/Global.service';
 import { UsersService } from 'src/users/users.service';
 import { Server, Socket } from 'socket.io';
@@ -21,7 +21,7 @@ type JwtPayload = { id: string; username: string };
 
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:3000',
+    origin: 'http://192.168.99.121:3000',
     allowedHeaders: ['my-custom-header'],
     credentials: true,
   },
