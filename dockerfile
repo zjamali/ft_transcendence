@@ -3,17 +3,17 @@ RUN mkdir -p /workspace
 
 RUN mkdir -p /workspace/frontend
 WORKDIR /workspace/frontend
-COPY ./front-end/package.json /workspace/frontend
-COPY ./front-end/package-lock.json /workspace/frontend
-RUN npm install
+# COPY ./front-end/package.json /workspace/frontend
+# COPY ./front-end/package-lock.json /workspace/frontend
 COPY ./front-end /workspace/frontend
+RUN npm install
 
 RUN mkdir -p /workspace/backend
 WORKDIR /workspace/backend
-COPY ./back-end/package.json /workspace/backend
-COPY ./back-end/package-lock.json /workspace/backend
-RUN npm install
+# COPY ./back-end/package.json /workspace/backend
+# COPY ./back-end/package-lock.json /workspace/backend
 COPY ./back-end /workspace/backend
+RUN npm install
 
 WORKDIR /
 COPY script.sh .

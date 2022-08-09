@@ -5,6 +5,7 @@ cd /workspace/backend
 (npm run start&)
 
 cd /workspace/frontend
-npm run dev
+npm run build
+npm run start
 
-sh
+# sh
