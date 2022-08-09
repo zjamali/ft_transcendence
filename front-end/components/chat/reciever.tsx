@@ -61,6 +61,7 @@ export default function Reciever({
 							size="large"
 							onClick={gameHandleInvite}
 							startIcon={<SportsEsportsTwoToneIcon />}
+						disabled={state.receiver.isPlaying}
 						>
 							invite
 						</Button>

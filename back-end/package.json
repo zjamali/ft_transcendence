@@ -51,6 +51,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "socker.io": "^0.0.0-alpha-beta",
+    "socket.io": "^4.5.1",
     "typeorm": "^0.3.7",
     "uuidv4": "^6.2.13",
     "webpack": "^5.73.0"

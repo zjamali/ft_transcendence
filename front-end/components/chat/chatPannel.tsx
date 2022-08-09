@@ -103,7 +103,6 @@ export default function ChatPannel() {
 		state.chatSocket.on("NEW_MESSAGE", (newMessage: any) => {
 			setNewMessage({ ...newMessage });
 		});
-
 		return () => {
 			state.chatSocket.off("NEW_MESSAGE");
 		};
@@ -126,8 +125,10 @@ export default function ChatPannel() {
 				return;
 			}
 			if (
-				state.receiver &&
-				(state.receiver.id === newMessage.senderId ||
+				(state.receiver &&
+					state.receiver.id === newMessage.senderId &&
+					newMessage.receiverId === state.mainUser.id) ||
+				(state.receiver.id === newMessage.receiverId &&
 					newMessage.senderId === state.mainUser.id)
 			) {
 				console.log("all messages: ", messages);

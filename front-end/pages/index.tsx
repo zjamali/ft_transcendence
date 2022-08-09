@@ -22,18 +22,18 @@ const Home: NextPage = () => {
 				setLogin(false);
 			});
 	}
-	// useEffect(() => {
-	// 	axios
-	// 		.get(`${process.env.SERVER_HOST}/users/me`, { withCredentials: true })
-	// 		.then((res) => {
-	// 			if (res.status === 200) {
-	// 				setMainUser({ ...res.data });
-	// 			}
-	// 		})
-	// 		.catch(() => {
-	// 			setLogin(false);
-	// 		});
-	// }, []);
+	useEffect(() => {
+		axios
+			.get(`${process.env.SERVER_HOST}/users/me`, { withCredentials: true })
+			.then((res) => {
+				if (res.status === 200) {
+					setMainUser({ ...res.data });
+				}
+			})
+			.catch(() => {
+				setLogin(false);
+			});
+	}, []);
 
 	useEffect(() => {
 		if (state.mainUser) setLogin(true);

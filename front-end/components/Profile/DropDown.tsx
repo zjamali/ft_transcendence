@@ -15,7 +15,7 @@ import axios from "axios";
 import { AppContext } from "../../context/AppContext";
 import Router from "next/router";
 import cookies, { useCookies } from "react-cookie";
-import PersonIcon from '@mui/icons-material/Person';
+import PersonIcon from "@mui/icons-material/Person";
 interface DropDown {
 	userName: string;
 	image: string;
@@ -26,18 +26,40 @@ const DropDown: React.FC<DropDown> = ({ userName, image }) => {
 	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
 	};
-	const { state, setLogin, setMainUser } = useContext(AppContext);
+	const {
+		state,
+		setLogin,
+		setMainUser,
+		setMessages,
+		setContacts,
+		setChannels,
+		setReceiver,
+		setFriends,
+		setIsUserJoinedChannel,
+		setOnlineGames,
+	} = useContext(AppContext);
 	const handleClose = () => {
 		setAnchorEl(null);
 	};
 	const [cookies, setCookie, removeCookie] = useCookies(["access_token"]);
 	const handleLogOut = (e: any) => {
+		state.eventsSocket.emit("LOG_OUT", state.mainUser.id);
 		state.chatSocket?.close();
-		state.eventsSocket?.emit("LOG_OUT");
 		state.eventsSocket?.close();
 		removeCookie("access_token");
-		setLogin(false);
 		setMainUser(null);
+		setLogin(null);
+		setMessages(null);
+		setContacts(null);
+		setChannels(null);
+		setReceiver(null);
+		setFriends(null);
+		setMainUser(null);
+		setIsUserJoinedChannel(null);
+		setOnlineGames(null);
+		setLogin(false);
+		state.eventsSocket.close();
+		state.chatSocket.close();
 	};
 	useEffect(() => {
 		if (!state.login) Router.push("/");
@@ -111,9 +133,9 @@ const DropDown: React.FC<DropDown> = ({ userName, image }) => {
 					<MenuItem autoFocus={false} style={{ color: "#919eab" }}>
 						{/* <Avatar /> */}
 						<ListItemIcon style={{ color: "#919eab" }}>
-						<PersonIcon fontSize="small"/>
+							<PersonIcon fontSize="small" />
 						</ListItemIcon>
-						 {userName}
+						{userName}
 					</MenuItem>
 				</Link>
 				<Divider />

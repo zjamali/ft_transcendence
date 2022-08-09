@@ -114,7 +114,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         const targetUserSockets = GlobalService.UsersChatSockets.get(
           newUserToJoin.user_id,
         );
-        targetUserSockets.forEach((socket) => {
+        targetUserSockets?.forEach((socket) => {
           this.server.to(socket).emit('A_CHANNELS_STATUS_UPDATED');
         });
       });
@@ -410,7 +410,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('SEND_MESSAGE')
-  async create(@MessageBody() createMessageDto: CreateMessageDto) {
+  async create(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() createMessageDto: CreateMessageDto,
+  ) {
+    if (!client.handshake.headers.cookie) return;
+    const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
+    console.log('message : ', createMessageDto, ' user id : ', user_id);
+    if (!user_id) return;
+    if (user_id !== createMessageDto.senderId) return;
+
+    if (createMessageDto.content.length > 100) return;
     if (createMessageDto.isChannel === false) {
       console.log(' ✉ message : ', createMessageDto);
       // save message in db

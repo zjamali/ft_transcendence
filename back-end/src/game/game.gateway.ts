@@ -218,7 +218,18 @@ export class GameGateway
           }
         });
       }
-
+      if (
+        this.privateRoomGameSockets.has(payload.room_id) &&
+        this.privateRoomGameSockets.get(payload.room_id)[0].id === client.id
+      ) {
+        return;
+      }
+      if (
+        this.privateGameUser.has(payload.room_id) &&
+        this.privateGameUser.get(payload.room_id)[0].id == payload.user.id
+      ) {
+        return;
+      }
       if (this.privateRoomGameSockets.has(payload.room_id)) {
         this.privateRoomGameSockets.set(payload.room_id, [
           ...this.privateRoomGameSockets.get(payload.room_id),
