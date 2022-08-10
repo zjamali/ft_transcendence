@@ -21,7 +21,6 @@ import { config } from 'dotenv';
 config();
 type JwtPayload = { id: string; username: string };
 
-
 @WebSocketGateway({
   cors: {
     origin: `${process.env.FRONT_HOST}`,
@@ -59,16 +58,24 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @UseGuards(JwtTwoFactorGuard)
-  async handleConnection(client: any) {
-    this.allgetwaySockets.push(client.id);
-    if (!client.handshake.headers.cookie) return;
+  async handleConnection(client: Socket) {
+    if (!client.handshake.headers.cookie) {
+      client.disconnect();
+      return;
+    }
     const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
-    if (!user_id) return;
+    if (!user_id) {
+      client.disconnect();
+      return;
+    }
+    this.allgetwaySockets.push(client.id);
     const response = await this.eventsService.addUserEventsSocket(
       user_id,
       client.id,
     );
     if (response) {
+      console.log("connect ---> ", client.id, " userId : ",user_id);
+      
       const { user, userSockets } = response;
       if (userSockets.length === 1) {
         console.log('✅ user : connected : ', response);
@@ -80,8 +87,10 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log('getway sockets :', this.allgetwaySockets);
   }
   @UseGuards(JwtTwoFactorGuard)
-  async handleDisconnect(client: any) {
+  async handleDisconnect(client: Socket) {
     // const cookies = client.handshake.headers.cookie;
+    console.log("disconnect ---> ", client.id);
+    
     if (!client.handshake.headers.cookie) return;
     const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
     if (!user_id) return;

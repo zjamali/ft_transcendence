@@ -17,6 +17,7 @@ import { Player } from './Classes/player';
 import { GameService } from './game.service';
 import User from 'src/users/entities/user.entity';
 import { config } from 'dotenv';
+import { JwtPayload } from 'src/chat/chat.gateway';
 
 config();
 
@@ -71,7 +72,15 @@ export class GameGateway
     /* 
     if the user has watcher stat: emit "send_games" with GameGateway.game array to be rendered in the frontend
      */
-
+    if (!client.handshake.headers.cookie) {
+      client.disconnect();
+      return;
+    }
+    const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
+    if (!user_id) {
+      client.disconnect();
+      return;
+    }
     this.logger.log('Connect Success ' + `${client.id}`);
   }
 
@@ -338,6 +347,25 @@ export class GameGateway
         gameFound.stopGame();
         GameGateway.game.splice(GameGateway.game.indexOf(gameFound), 1);
       }
+    }
+  }
+
+  public getUserIdFromJWT(cookies: string): string {
+    const decodedJwtAccessToken: any = this.jwtService.decode(
+      this.parseCookie(cookies)['access_token'],
+    );
+    const jwtPayload: JwtPayload = { ...decodedJwtAccessToken };
+    return jwtPayload.id;
+  }
+  parseCookie(cookies: any) {
+    if (cookies) {
+      cookies = cookies.split('; ');
+      const result = {};
+      for (const i in cookies) {
+        const cur = cookies[i].split('=');
+        result[cur[0]] = cur[1];
+      }
+      return result;
     }
   }
 }
