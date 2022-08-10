@@ -20,13 +20,16 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob } from 'cron';
 import { JwtService } from '@nestjs/jwt';
 import { CreateRoomDto } from './rooms/dto/create-room.dto';
-import { type } from 'os';
+
+import { config } from 'dotenv';
+
+config();
 
 export type JwtPayload = { id: string; username: string };
 
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:3000',
+    origin: `${process.env.FRONT_HOST}`,
     allowedHeaders: ['my-custom-header'],
     credentials: true,
   },

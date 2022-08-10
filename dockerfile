@@ -1,6 +1,8 @@
 FROM node:16.15.1-alpine
 RUN mkdir -p /workspace
 
+COPY .env /workspace
+
 RUN mkdir -p /workspace/frontend
 WORKDIR /workspace/frontend
 # COPY ./front-end/package.json /workspace/frontend

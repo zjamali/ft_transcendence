@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable, Res } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Response } from 'express';
 import { GameService } from 'src/game/game.service';
@@ -14,6 +15,7 @@ export class UsersService {
     @InjectRepository(Friend)
     private readonly friendsRepository: Repository<Friend>,
     private readonly gameService: GameService,
+    private readonly configService: ConfigService,
   ) {}
 
   async getUsers(): Promise<User[]> {
@@ -321,7 +323,7 @@ export class UsersService {
 
   logOut(@Res() res: Response) {
     res.clearCookie('access_token');
-    res.redirect('http://localhost:3000');
+    res.redirect(`${this.configService.get('FRONT_HOST')}`);
   }
 
   async logOutFromAllUsers() {

@@ -16,10 +16,13 @@ import { gameSate } from './Classes/gameState';
 import { Player } from './Classes/player';
 import { GameService } from './game.service';
 import User from 'src/users/entities/user.entity';
+import { config } from 'dotenv';
+
+config();
 
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:3000',
+    origin: `${process.env.FRONT_HOST}`,
     allowedHeaders: ['my-custom-header'],
     credentials: true,
   },
