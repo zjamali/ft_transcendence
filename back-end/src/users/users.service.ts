@@ -238,8 +238,8 @@ export class UsersService {
     Union
     SELECT * from public.User where id in (select "userA" from Friend where "userB" = $1 and "state" = 'pending_B_A')`;
 
-    const receivedRequests = await this.usersRepository.query(sql, [userId]);
-    return receivedRequests;
+    const snetRequests = await this.usersRepository.query(sql, [userId]);
+    return snetRequests;
   }
 
   async getReceivedRequests(userId: string) {
@@ -295,7 +295,7 @@ export class UsersService {
   }
 
   async turnOnTwoFactorAuthentication(userId: string) {
-    console.log(userId);
+    
     return await this.usersRepository.update(
       { id: userId },
       {
@@ -305,7 +305,7 @@ export class UsersService {
   }
 
   async setUserPlayingStatus(userId: string, status: boolean) {
-    console.log(userId);
+    
     return await this.usersRepository.update(
       { id: userId },
       {

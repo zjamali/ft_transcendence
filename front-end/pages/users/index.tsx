@@ -56,7 +56,9 @@ const Users = () => {
 
 	useEffect(() => {
 		axios
-			.get(`${process.env.SERVER_HOST}/users/me`, { withCredentials: true })
+			.get(`${process.env.SERVER_HOST}/users/me`, {
+				withCredentials: true,
+			})
 			.then((res) => {
 				if (res.status === 200) {
 					setMainUser({ ...res.data });
@@ -70,11 +72,11 @@ const Users = () => {
 
 	useEffect(() => {
 		state.eventsSocket.on("A_USER_STATUS_UPDATED", (user: any) => {
-			console.log("user status updated");
+			
 			setUsersStatus(user.isOnline, user);
 		});
 		state.eventsSocket.on("UPDATE_DATA", (user: any) => {
-			console.log("UPDATE_DATA");
+			
 			fetchAllUsers();
 			fetchFriends();
 		});
@@ -91,7 +93,7 @@ const Users = () => {
 			.get(`${process.env.SERVER_HOST}/users`, { withCredentials: true })
 			.then(async (res) => {
 				if (res.status === 200) {
-					// console.log("all users", res.data)
+					// 
 					const blockedby = await fetchUsersBlockedBy();
 					if ([...blockedby.data].length === 0) {
 						setAllUsers(
@@ -100,14 +102,14 @@ const Users = () => {
 							)
 						);
 					} else {
-						console.log("blocked by : ", blockedby.data);
+						
 						let filtredUsers: User[] = [];
 						[...blockedby.data].forEach((BlockedByuser) => {
-							console.log();
+							
 							[...res.data].forEach((user) => {
-								 if (BlockedByuser.id != user.id) {
+								if (BlockedByuser.id != user.id) {
 									filtredUsers.push(user);
-							 }
+								}
 							});
 						});
 						setAllUsers(
@@ -119,13 +121,16 @@ const Users = () => {
 				}
 			})
 			.catch(() => {
-				console.log("cant get user");
+				
 			});
 	}
 	async function fetchUsersBlockedBy() {
-		return await axios.get(`${process.env.SERVER_HOST}/users/blockedByUsers`, {
-			withCredentials: true,
-		});
+		return await axios.get(
+			`${process.env.SERVER_HOST}/users/blockedByUsers`,
+			{
+				withCredentials: true,
+			}
+		);
 	}
 	async function fetchFriends() {
 		try {
@@ -141,7 +146,7 @@ const Users = () => {
 					setFriendsIds([...res.data].map((user) => user.id));
 				});
 		} catch {
-			console.log("CANT GET ALL USERS");
+			
 		}
 	}
 	const [open, setOpen] = useState(false);

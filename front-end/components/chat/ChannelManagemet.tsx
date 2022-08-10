@@ -8,6 +8,8 @@ import axios from "axios";
 import { Channel, User } from "../../utils/interfaces";
 import ReactLoading from "react-loading";
 import { validatePassword } from "../../regex/createChannelRegex";
+import SettingsIcon from "@mui/icons-material/Settings";
+import { Button } from "@mui/material";
 
 function ManageMembers(props: any) {
 	const { state } = useContext(AppContext);
@@ -16,12 +18,10 @@ function ManageMembers(props: any) {
 	const [banned, setBanned] = useState<[{}]>([{}]);
 	const [kickedUser, setKickedUser] = useState<[{}]>([{}]);
 	const [mutedUsers, setMutedUsers] = useState<[{}]>([{}]);
-	const [selectedAdminsOption, setSelectedAdminsOption] = useState<any>(
+	const [selectedAdminsOption, setSelectedAdminsOption] = useState<any>(null);
+	const [selectedBannedsOption, setSelectedBannedsOption] = useState<any>(
 		null
 	);
-	const [selectedBannedsOption, setSelectedBannedsOption] = useState<
-		any
-	>(null);
 	const [selectedMutedusersOption, setSelectedMutedusersOption] = useState<
 		any
 	>(null);
@@ -145,14 +145,14 @@ function ManageMembers(props: any) {
 	}
 
 	useEffect(() => {
-		console.log("active users : ", props.room.ActiveUsers);
+		
 
 		getRoomMembers(props.room.id)
 			.then((Allmembers) => {
 				return Allmembers?.data;
 			})
 			.then((members) => {
-				const membersAsOption = members.map((member: User) => {
+				const membersAsOption = members?.map((member: User) => {
 					return {
 						value: member.id,
 						label: `${member.firstName} ${member.lastName}`,
@@ -190,7 +190,7 @@ function ManageMembers(props: any) {
 					};
 				}
 			});
-			console.log("get admins  : ", adminAsOption);
+			
 			setSelectedAdminsOption(adminAsOption);
 		});
 
@@ -201,7 +201,7 @@ function ManageMembers(props: any) {
 					label: `${banned.firstName} ${banned.lastName}`,
 				};
 			});
-			console.log("get banned  : ", bannedAsOption);
+			
 			setSelectedBannedsOption(bannedAsOption);
 		});
 
@@ -212,13 +212,13 @@ function ManageMembers(props: any) {
 					label: `${muted.firstName} ${muted.lastName}`,
 				};
 			});
-			console.log("get mutedAsOption  : ", mutedAsOption);
+			
 			setSelectedMutedusersOption(mutedAsOption);
 		});
 	}, []);
 
 	useEffect(() => {
-		console.log("admins  : ", Admins);
+		
 		if (
 			selectedAdminsOption &&
 			selectedBannedsOption &&
@@ -239,7 +239,7 @@ function ManageMembers(props: any) {
 		if (!roomSettingOption) return;
 		else {
 			if (roomSettingOption.value === "delete" && loadingRoomDataIsDone) {
-				console.log("delete channel");
+				
 				props.chatSocket.emit("DELETE_ROOM", {
 					admin_id: `${state.mainUser.id}`,
 					room_id: `${props.room.id}`,
@@ -273,7 +273,7 @@ function ManageMembers(props: any) {
 				props.setOpenSettingModal(false);
 			}
 			if (roomSettingOption.value === "muted" && loadingRoomDataIsDone) {
-				console.log("mute a user 77777777777");
+				
 				props.chatSocket.emit("ROOM_MUTE_USERS", {
 					admin_id: `${state.mainUser.id}`,
 					room_id: `${props.room.id}`,
@@ -343,22 +343,22 @@ function ManageMembers(props: any) {
 
 	useEffect(() => {
 		// props.chatSocket.on("connect_failed", () => {
-		// 	console.log(
+		// 	
 		// 		"Sorry, there seems to be an issue with the connection!"
 		// 	);
 		// });
 		// props.chatSocket.on("connect_error", () => {
-		// 	console.log(
+		// 	
 		// 		"Sorry, there seems to be an issue with the connection!"
 		// 	);
 		// });
 		// props.chatSocket.on("connect_failed", () => {
-		// 	console.log(
+		// 	
 		// 		"Sorry, there seems to be an issue with the connection!"
 		// 	);
 		// });
 		// props.chatSocket.on("disconnect", () => {
-		// 	console.log(
+		// 	
 		// 		"Sorry, there seems to be an issue with the connection!"
 		// 	);
 		// });
@@ -369,7 +369,7 @@ function ManageMembers(props: any) {
 	return (
 		<div className={channelManagemetStyle.manageMembers}>
 			<div>
-				<h3>selection option : </h3>
+				<h3 style={{ marginBottom: "20px" }}>Settings Option : </h3>
 				<Select
 					defaultValue={roomSettingOption}
 					styles={customStyles}
@@ -421,7 +421,9 @@ function ManageMembers(props: any) {
 								min={0}
 								max={60}
 								value={String(timetoMute)}
-								onChange={(e: any) => setTimetoMute(Number(e.target.value))}
+								onChange={(e: any) =>
+									setTimetoMute(Number(e.target.value))
+								}
 								placeholder="in minutes"
 							/>
 						</div>
@@ -542,12 +544,15 @@ function ChannelSettings(props: any) {
 	const { state } = useContext(AppContext);
 	return (
 		<div className={channelManagemetStyle.channleSettings}>
-			<button
-				className={channelManagemetStyle.room_button}
+			<Button
+				variant="outlined"
+				color="primary"
+				size="large"
 				onClick={() => setOpenSettingModal(true)}
+				endIcon={<SettingsIcon />}
 			>
-				settings
-			</button>
+				SETTINGS
+			</Button>
 			{openSettingModal && (
 				<Modal
 					isOpen={openSettingModal}
@@ -621,7 +626,7 @@ function JoinProtectedRoom(props: any) {
 				"CHECK_ROOM_PASSWORD",
 				{ room_id: props.room_id, password: password },
 				(responce: any) => {
-					console.log("join protected room : ", responce);
+					
 					if (responce === false) {
 						setPasswordIsWrong(true);
 					} else {
@@ -678,14 +683,14 @@ export default function ChannelManagement({
 	const { state, setIsUserJoinedChannel, setReceiver } = useContext(
 		AppContext
 	);
-	console.log("room state :", state.receiver);
+	
 	const [openPasswordModal, setOpenPasswordModal] = useState(false);
 	function ChannalJoinHandle() {
 		if (state.receiver.isProtected) {
-			console.log("the room is protected");
+			
 			setOpenPasswordModal(true);
 		} else {
-			console.log("join is clicked");
+			
 			setIsUserJoinedChannel(true);
 			joinRoom();
 		}
@@ -697,7 +702,7 @@ export default function ChannelManagement({
 			(channel: Channel) => channel.id === receiver.id
 		);
 		if (JSON.stringify(receiver) !== JSON.stringify(newReceiver[0])) {
-			console.log("reciever updated");
+			
 			if (newReceiver[0]) setReceiver({ ...newReceiver[0] });
 			else setReceiver(null);
 		}

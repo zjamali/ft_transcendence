@@ -22,7 +22,7 @@ export function addFriend(sender: string, target: string) {
 			{ withCredentials: true }
 		)
 		.then((data) => {
-			console.log("post friend request :", data);
+			
 			eventsSocket.emit("SEND_FRIEND_REQUEST", {
 				sender: sender,
 				target: target,
@@ -37,7 +37,7 @@ export function acceptFriendRequest(accpter: string, relatedUserId: string) {
 			{ withCredentials: true }
 		)
 		.then((data) => {
-			console.log("accep friend request :", data);
+			
 			eventsSocket.emit("ACCEPT_FREIND_REQUEST", {
 				accpter,
 				relatedUserId,
@@ -52,7 +52,7 @@ export function unfriend(denier: string, relatedUserId: string) {
 			{ withCredentials: true }
 		)
 		.then((data) => {
-			console.log("unfreind  request :", data);
+			
 			eventsSocket.emit("DENY_FREIND_REQUEST", {
 				denier,
 				relatedUserId,
@@ -67,7 +67,7 @@ export function blockUser(blocker: string, relatedUserId: string) {
 			{ withCredentials: true }
 		)
 		.then((data) => {
-			console.log("block  request :", data);
+			
 			eventsSocket.emit("BLOCK_A_USER", {
 				blocker,
 				target: relatedUserId,
@@ -82,7 +82,7 @@ export function unBlockUser(unblocker: string, relatedUserId: string) {
 			{ withCredentials: true }
 		)
 		.then((data) => {
-			console.log("unblock  request :", data);
+			
 			eventsSocket.emit("UNBLOCK_A_USER", {
 				unblocker,
 				target: relatedUserId,

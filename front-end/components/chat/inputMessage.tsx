@@ -55,8 +55,8 @@ InputMessageInterface) {
 					<img
 						src="/images/icons/send_icon.png"
 						alt="send"
-						width={30}
-						height={30}
+						width={20}
+						height={20}
 					/>{" "}
 				</button>
 			</form>

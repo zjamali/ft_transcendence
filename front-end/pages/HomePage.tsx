@@ -24,7 +24,7 @@ export default function HomePage() {
 				setLogin(false);
 			});
 	}
-	console.log("router : --> ", router.pathname);
+	
 	useEffect(() => {
 		if (cookies.access_token) {
 			axios
