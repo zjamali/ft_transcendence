@@ -49,7 +49,7 @@ export function HomeGame() {
 
 	useEffect(() => {
 		if (router.query && router.query.roomId) {
-			console.log("start game mother father");
+			
 			gameInviteDefHandler(router.query.roomId[0]);
 		}
 	}, [router]);

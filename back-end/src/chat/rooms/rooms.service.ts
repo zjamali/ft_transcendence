@@ -66,6 +66,16 @@ export class RoomsService {
       if (roomToUpdate.admins[1]) {
         console.log('set new admins');
         roomToUpdate.owner = roomToUpdate.admins[1];
+      } else {
+        if (roomToUpdate.ActiveUsers[1]) {
+          console.log('set new admins from active Users');
+          roomToUpdate.owner = roomToUpdate.ActiveUsers[1];
+        } else {
+          console.log('set new admins from active Users');
+          if (roomToUpdate.ActiveUsers[0])
+            roomToUpdate.owner = roomToUpdate.ActiveUsers[0];
+          else console.log('the room must be deleted ');
+        }
       }
     }
     roomToUpdate.admins = roomToUpdate.admins.filter((admins) => {

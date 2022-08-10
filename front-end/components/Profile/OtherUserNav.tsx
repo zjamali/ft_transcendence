@@ -23,7 +23,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 const OtherUserNav: React.FC<OtherUserNav> = (props) => {
-	console.log(props.userName);
+	
 	const { state, setFriends } = useContext(AppContext);
 	const [isFriend, setIsFriend] = useState(false);
 	const [isblockedUser, setIsBlockedUser] = useState(false);
@@ -50,23 +50,24 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 					}
 				)
 				.then((res) => {
-					console.log("other nav friende  : ", res.data);
+					
 					if (res.data.length == 0) setIsFriend(false);
 					[...res.data].map((friend: any) => {
 						if (friend.userName === props.userName) {
 							setIsFriend(true);
-							console.log("is friend");
+							
 							return;
 						} else {
-							console.log("is not friend");
+							
 							setIsFriend(false);
 						}
 					});
 				});
 		} catch {
-			console.log(" other CANT GET ALL USERS");
+			
 		}
 	}
+
 	async function fetchBlocked() {
 		try {
 			axios
@@ -74,18 +75,18 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 					withCredentials: true,
 				})
 				.then((res) => {
-					console.log("other blocked  : ", res.data);
+					
 					if ([...res.data].length === 0) setIsBlockedUser(false);
 					[...res.data].map((User: any) => {
 						if (User.userName === props.userName) {
 							setIsBlockedUser(true);
-							// console.log("is friend");
+							// 
 							return;
 						}
 					});
 				});
 		} catch {
-			console.log(" other CANT GET ALL USERS");
+			
 		}
 	}
 	const [open, setOpen] = useState(false);

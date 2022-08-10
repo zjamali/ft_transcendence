@@ -30,7 +30,7 @@ export default function UserProfile({}: Props) {
           }
         })
         .catch(() => {
-          console.log("ee");
+          
         });
     }catch(e){
 
@@ -49,7 +49,7 @@ export default function UserProfile({}: Props) {
 				})
 				.catch(() => {
           setMainUser(null);
-					console.log("ee");
+					
 				});
 		});
 		return () => {
@@ -70,7 +70,7 @@ export default function UserProfile({}: Props) {
 					setUser(null);
 			})
 			.catch(() => {
-				console.log("eee");
+				
 			});
 	}
 	async function fetchUsersBlockedBy() {
@@ -79,7 +79,7 @@ export default function UserProfile({}: Props) {
 		});
 	}
 
-	console.log("re render page ");
+	
 	return (
 		<>
 			{state.mainUser && user ? (

@@ -14,7 +14,7 @@ export default function LiveIndex(props: IAppProps) {
 	const { state } = React.useContext(AppContext);
 	let data = null;
 	data = state.onlineGames[Number(liveId)];
-    console.log("game data : ", data);
+    
 	const gameContainer = React.useRef(null);
 	return (
 		<div className="profile-content">

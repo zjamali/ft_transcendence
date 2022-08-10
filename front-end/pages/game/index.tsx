@@ -18,7 +18,7 @@ export function PingPong(props: any) {
 					}
 				})
 				.catch(() => {
-					console.log("game get main user error");
+					
 				});
 		}
 	}, []);
