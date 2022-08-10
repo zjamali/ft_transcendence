@@ -74,8 +74,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.id,
     );
     if (response) {
-      
-
       const { user, userSockets } = response;
       if (userSockets.length === 1) {
         
