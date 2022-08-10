@@ -16,12 +16,15 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UseGuards } from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt';
+import { config } from 'dotenv';
 
+config();
 type JwtPayload = { id: string; username: string };
+
 
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:3000',
+    origin: `${process.env.FRONT_HOST}`,
     allowedHeaders: ['my-custom-header'],
     credentials: true,
   },

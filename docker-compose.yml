@@ -11,7 +11,7 @@ services:
       POSTGRES_USER: ilias
       POSTGRES_PASSWORD: 1337
       POSTGRES_DB: work_db
-      POSTGRES_URL: http://localhost/
+      POSTGRES_URL: "${DB_HOST}"
 
   pgadmin:
     image: dpage/pgadmin4
