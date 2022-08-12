@@ -3,6 +3,7 @@ import { useContext, useEffect } from "react";
 import { AppContext } from "../../context/AppContext";
 import { StateGame } from "../../Library/Data";
 import { Button } from "@mui/material";
+import Image from "next/image";
 export function GameOver({ data, setIsGame, setCurrentState }: any) {
 	/*
 	 ** set user status ins playing off :
@@ -31,6 +32,11 @@ export function GameOver({ data, setIsGame, setCurrentState }: any) {
 					</div>
 				):(
 					<div className="g-o-win">
+            <div style={{position: "absolute", left:"15%" }}>
+                <Image src="/celebration.gif" alt="celebrate" objectPosition="center" width="100" height="100" />
+                <Image src="/celebration.gif" alt="celebrate" objectPosition="center" width="100" height="100" />
+                <Image src="/celebration.gif" alt="celebrate" objectPosition="center" width="100" height="100" />
+            </div>
 						<div>YOU WIN</div>
 						<div className="game-over-button">
 							<Button variant="outlined" color="warning" size="medium" onClick={

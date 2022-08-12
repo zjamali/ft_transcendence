@@ -19,7 +19,7 @@ import User from 'src/users/entities/user.entity';
 import { config } from 'dotenv';
 import { JwtPayload } from 'src/chat/chat.gateway';
 
-config();
+config({ path: '../.env' });
 
 @WebSocketGateway({
   cors: {
@@ -86,7 +86,7 @@ export class GameGateway
 
   handleDisconnect(client: Socket) {
     this.logger.log('Disconnected ' + `${client.id}`);
-    let gameFound = GameGateway.game.find((gm) => {
+    const gameFound = GameGateway.game.find((gm) => {
       return (
         gm.get_PlayerOne().getSocket() === client ||
         gm.get_PlayerTwo().getSocket() === client
@@ -335,7 +335,7 @@ export class GameGateway
   @SubscribeMessage('STOP_GAME')
   stopGame(client: Socket) {
     this.logger.log('Disconnected ' + `${client.id}`);
-    let gameFound = GameGateway.game.find((gm) => {
+    const gameFound = GameGateway.game.find((gm) => {
       return (
         gm.get_PlayerOne().getSocket() === client ||
         gm.get_PlayerTwo().getSocket() === client

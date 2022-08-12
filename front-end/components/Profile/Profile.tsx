@@ -48,6 +48,7 @@ const Profile = () => {
 		<div className="profile-content">
 			<div className="profile-wall">
 				<div className="profile-wall-bg">
+          <Image src="/xo.jpeg" alt="image_navbar" objectFit="cover" />
         </div>
 				<div className="profile-wall-img-user">
 					<Image

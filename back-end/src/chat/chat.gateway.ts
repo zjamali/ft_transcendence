@@ -23,7 +23,7 @@ import { CreateRoomDto } from './rooms/dto/create-room.dto';
 
 import { config } from 'dotenv';
 
-config();
+config({ path: '../.env' });
 
 export type JwtPayload = { id: string; username: string };
 

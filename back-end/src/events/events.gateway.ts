@@ -12,13 +12,13 @@ import {
   MessageBody,
 } from '@nestjs/websockets';
 import { EventsService } from './events.service';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UseGuards } from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt';
 import { config } from 'dotenv';
 
-config();
+config({ path: '../.env' });
+
 type JwtPayload = { id: string; username: string };
 
 @WebSocketGateway({
@@ -74,8 +74,8 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.id,
     );
     if (response) {
-      console.log("connect ---> ", client.id, " userId : ",user_id);
-      
+      console.log('connect ---> ', client.id, ' userId : ', user_id);
+
       const { user, userSockets } = response;
       if (userSockets.length === 1) {
         console.log('✅ user : connected : ', response);
@@ -89,8 +89,8 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @UseGuards(JwtTwoFactorGuard)
   async handleDisconnect(client: Socket) {
     // const cookies = client.handshake.headers.cookie;
-    console.log("disconnect ---> ", client.id);
-    
+    console.log('disconnect ---> ', client.id);
+
     if (!client.handshake.headers.cookie) return;
     const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
     if (!user_id) return;
