@@ -14,7 +14,6 @@ export class RoomsService {
     private readonly userService: UsersService,
   ) {}
   async create(createRoomDto: CreateRoomDto) {
-    console.log('room :', createRoomDto);
     const newRoom = this.roomRepository.create(createRoomDto);
     return await this.roomRepository.save(newRoom);
   }
@@ -52,7 +51,6 @@ export class RoomsService {
     return;
   }
   async deleteUser(id: string, user_id: string) {
-    console.log('remove a user ', user_id);
     const roomToUpdate = await this.roomRepository.findOne({
       where: { id: id },
     });
@@ -64,17 +62,13 @@ export class RoomsService {
     if (user_id === roomToUpdate.owner) {
       // set a first  admin a owner
       if (roomToUpdate.admins[1]) {
-        console.log('set new admins');
         roomToUpdate.owner = roomToUpdate.admins[1];
       } else {
         if (roomToUpdate.ActiveUsers[1]) {
-          console.log('set new admins from active Users');
           roomToUpdate.owner = roomToUpdate.ActiveUsers[1];
         } else {
-          console.log('set new admins from active Users');
           if (roomToUpdate.ActiveUsers[0])
             roomToUpdate.owner = roomToUpdate.ActiveUsers[0];
-          else console.log('the room must be deleted ');
         }
       }
     }
@@ -128,7 +122,6 @@ export class RoomsService {
   }
 
   async muteUsers(room_id: string, muted_user: string[]) {
-    console.log('mute user db ');
     const roomToUpdate = await this.roomRepository.findOne({
       where: { id: room_id },
     });

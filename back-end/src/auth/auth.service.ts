@@ -21,11 +21,9 @@ export class AuthService {
     if (user && user.isTwoFactorAuthenticationEnabled == false) {
       url = `${this.configService.get<string>('FRONT_HOST')}`;
     } else if (user && user.isTwoFactorAuthenticationEnabled == true) {
-      // url = `http://localhost:3000?twoFa=true`;
       url = `${this.configService.get<string>('FRONT_HOST')}?twoFa=true`;
     } else {
       this.usersService.createUser(req.user);
-      // url = `http://localhost:3000?edit_profile=true`;
       url = `${this.configService.get<string>('FRONT_HOST')}?edit_profile=true`;
     }
     const { access_token } = this.jwtAuthService.signWith2FA(req.user, false);

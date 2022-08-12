@@ -94,7 +94,7 @@ const FriendsCard = ({ id }: { id: string }) => {
 	const [friends, setFriends] = useState<any[] | null>(null);
 	const { state } = useContext(AppContext);
 
-	// console.log(friends);
+	//
 	return (
 		<div
 			style={{ margin: "0", padding: "0", width: "90%", height: "100%" }}

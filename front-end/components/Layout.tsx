@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 
 export default function Layout(props: any) {
 	const router = useRouter();
-	const [check, setCheck] = useState<Boolean>(false)
+	const [check, setCheck] = useState<boolean>(false)
 	console.log("router : >> ", router.pathname);
 	useEffect(() => {
 

@@ -528,11 +528,12 @@
 .profile-wall-bg {
 	height: 85%;
 	width: 100%;
-	background-image: url("http://localhost:5000/users/uploads/xo.jpeg");
+	/* background-image: url("http://localhost:5000/users/uploads/xo.jpeg"); */
 	background-repeat: no-repeat;
-	background-size: cover;
+	/* background-size: cover; */
 	overflow: hidden;
 	opacity: 0.6;
+
 	/* border: 1pxk solid sandybrown; */
 }
 
@@ -548,6 +549,7 @@
 	overflow: hidden;
 	transition-duration: 450ms;
 	transition-timing-function: ease-in-out;
+  z-index: 1;
 }
 .profile-wall-img-user img {
 	object-fit: cover;
@@ -565,6 +567,7 @@
 	overflow-x: auto;
 	-ms-overflow-style: none; /* IE and Edge */
 	scrollbar-width: none;
+  opacity: 0.9;
 }
 
 .profile-wall-nav::-webkit-scrollbar {
@@ -999,10 +1002,15 @@
 }
 
 .g-o-win {
-	background-image: url("http://localhost:5000/users/uploads/celebration.gif");
+	/* background-image: url("http://localhost:5000/users/uploads/celebration.gif");
 	background-position: center;
-	/* background-repeat: no-repeat; */
-	background-size: contain;
+	background-repeat: no-repeat;
+	background-size: contain; */
+  /* position: absolute; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .game-over-button {

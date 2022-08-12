@@ -10,7 +10,6 @@ export class AuthController {
 
   @Get()
   @UseGuards(AuthGuard('42'))
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   intraAuth(@Req() req: Request) {}
 
   @Get('callback')

@@ -11,7 +11,7 @@ export default function NotFound(props: any) {
 	
 	return (
         <div className="profile-content">
-			<img src="/404.png" />
+			<img src="/404.png" alt="404 image"/>
 		</div>
 	);
 }

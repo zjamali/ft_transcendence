@@ -80,7 +80,9 @@ export default function UserProfile({}: Props) {
 			{state.mainUser && user ? (
 				<div className="profile-content">
 					<div className="profile-wall">
-						<div className="profile-wall-bg"></div>
+          <div className="profile-wall-bg">
+          <Image loader={() => "/xo.jpeg"} src="/xo.jpeg" unoptimized={true} alt="image_navbar" layout="fill" objectFit="cover" />
+        </div>
 						<div className="profile-wall-img-user">
 							{user && (
 								<Image

@@ -41,12 +41,10 @@ export class MessagesController {
       req.cookies['access_token'],
     );
     const jwtPayload: JwtPayload = { ...decodedJwtAccessToken };
-    console.log('messages user id:  ', jwtPayload.id);
 
-    console.log('queries : ', req.query['isChannel']);
     if (req.query['isChannel']) {
       const roomData = await this.roomsService.findOne(receiverId);
-      console.log('room data : ', roomData);
+
       if (roomData[0].ActiveUsers.includes(jwtPayload.id)) {
         ////// filtre messages
         const usersBlockedBy = await this.userService.getBlockedByUsers(
@@ -59,7 +57,6 @@ export class MessagesController {
         const forbiddenIds = forbiddenUserToSendMessage.map((user) => {
           return user.id;
         });
-        console.log('forbidded ids ', forbiddenIds);
 
         ///
         const messages = await this.messagesService.findOne(

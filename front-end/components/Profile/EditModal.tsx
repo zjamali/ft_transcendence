@@ -125,7 +125,7 @@ const EditModal: React.FC<EditModalProps> = ({
 		// formData.append("givenUserName", userName);
 
 		// // Details of the uploaded file
-		// console.log(userImage);
+		//
 
 		// Request made to the backend api
 		// Send formData object

@@ -88,7 +88,7 @@ const menu = [
 	},
 ];
 
-const SideBar = ({check, setCheck}) => {
+const SideBar = ({check, setCheck} : {check : boolean ; setCheck : any }) => {
 	const router = useRouter();
 	const [path, setPath] = useState("/");
 	const [sideMenu, setSideMenu] = useState([...menu]);

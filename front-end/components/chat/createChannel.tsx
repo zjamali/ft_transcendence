@@ -50,10 +50,10 @@ export function CreateChannel({
             roomType: roomType,
             ActiveUsers: [state.mainUser.id],
           })
-          console.log('create room protected')
+         
         } else setValidateRoomPassword(false)
       } else {
-        console.log('create room not protected')
+       
         createRoom({
           roomName: roomName,
           owner: state.mainUser.id,

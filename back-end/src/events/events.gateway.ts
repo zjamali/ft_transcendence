@@ -12,13 +12,13 @@ import {
   MessageBody,
 } from '@nestjs/websockets';
 import { EventsService } from './events.service';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UseGuards } from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt';
 import { config } from 'dotenv';
 
-config();
+config({ path: '../.env' });
+
 type JwtPayload = { id: string; username: string };
 
 @WebSocketGateway({

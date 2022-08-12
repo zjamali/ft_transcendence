@@ -48,8 +48,9 @@ export class UsersController {
   @UseGuards(BlockGuard)
   @UseGuards(JwtTwoFactorGuard)
   async findUserById(@Param('id') userId: string) {
-    console.log('meow');
-    return await this.usersService.findOne(userId);
+    const user = await this.usersService.findOne(userId);
+    if (!user) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+    return user;
   }
 
   @Post('send')
@@ -189,7 +190,6 @@ export class UsersController {
     )
     file: Express.Multer.File,
   ) {
-    console.log(file);
     const fileName = file?.filename;
     if (!fileName)
       throw new HttpException(
