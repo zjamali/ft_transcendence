@@ -37,6 +37,9 @@
 	width: 65px;
 	height: 70px;
 	margin-left: 0rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .left-items {
@@ -944,6 +947,33 @@
 	justify-content: space-evenly;
 	align-items: center;
 }
+
+.sideBarActive {
+	position: fixed;
+	z-index: 10;
+	background-color: #171d25;
+	line-height: 50px;
+	overflow: hidden;
+	width: 80px;
+	/* border-right: 0.1px dotted var(--text-sidebar-color); */
+	display: flex;
+	flex-direction: column;
+	height: calc(100vh - var(--header-height));
+	padding-top: 1rem;
+	align-items: center;
+	justify-content: stretch;
+	transition: width var(--animation-duration) var(--animation-timing-curve);
+	left: 0;
+	top: var(--header-height);
+	transition: 400ms ease-in-out;
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none;
+}
+
+.sdieBarActive::-webkit-scrollbar {
+	display: none;
+}
+
 
 /* GAME OVER */
 

@@ -74,11 +74,13 @@ const DropDNotifications: React.FC = (props) => {
 			fetchSentRequest();
 		});
 		state.eventsSocket.on("UPDATE_DATA", () => {
+			console.log("drop down notification");
 			fetchFriendsRequest();
 			fetchSentRequest();
 		});
 		return () => {
 			state.eventsSocket.off("NEW_FRIEND_REQUEST");
+			state.eventsSocket.off("UPDATE_DATA");
 		};
 	}, [state.contacts]);
 
@@ -88,12 +90,12 @@ const DropDNotifications: React.FC = (props) => {
 				withCredentials: true,
 			})
 			.then((responce) => {
-				if ([...responce.data].length)
+				if ([...responce.data].length > 0)
 					setRecievedrequests([...responce.data]);
 				else setRecievedrequests([]);
 			});
 	};
-	const fetchSentRequest = () => {
+	const fetchSentRequest = async () => {
 		axios
 			.get(`${process.env.SERVER_HOST}/users/sentrequests`, {
 				withCredentials: true,

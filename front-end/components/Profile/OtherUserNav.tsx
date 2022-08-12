@@ -6,6 +6,7 @@ import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import { AppContext } from "../../context/AppContext";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import { addFriend, blockUser, unBlockUser, unfriend } from "../../utils/utils";
+import AutorenewIcon from "@mui/icons-material/Autorenew";
 import axios from "axios";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
@@ -23,22 +24,24 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 const OtherUserNav: React.FC<OtherUserNav> = (props) => {
-	
 	const { state, setFriends } = useContext(AppContext);
 	const [isFriend, setIsFriend] = useState(false);
 	const [isblockedUser, setIsBlockedUser] = useState(false);
+	const [pendingIds, setPendingIds] = useState<any[]>([]);
 
 	useEffect(() => {
 		fetchFriends();
 		fetchBlocked();
+		fetchSentRequest();
 		state.eventsSocket.on("UPDATE_DATA", () => {
 			fetchFriends();
 			fetchBlocked();
+			fetchSentRequest();
 		});
 		return () => {
 			state.eventsSocket.off("A_PROFILE_UPDATE");
 		};
-	});
+	}, []);
 
 	async function fetchFriends() {
 		try {
@@ -50,23 +53,31 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 					}
 				)
 				.then((res) => {
-					
 					if (res.data.length == 0) setIsFriend(false);
 					[...res.data].map((friend: any) => {
 						if (friend.userName === props.userName) {
 							setIsFriend(true);
-							
+
 							return;
 						} else {
-							
 							setIsFriend(false);
 						}
 					});
 				});
-		} catch {
-			
-		}
+		} catch {}
 	}
+
+	const fetchSentRequest = async () => {
+		axios
+			.get(`${process.env.SERVER_HOST}/users/sentrequests`, {
+				withCredentials: true,
+			})
+			.then((responce) => {
+				if ([...responce.data].length)
+					setPendingIds([...responce.data].map((user) => user.id));
+				else setPendingIds([]);
+			});
+	};
 
 	async function fetchBlocked() {
 		try {
@@ -75,19 +86,16 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 					withCredentials: true,
 				})
 				.then((res) => {
-					
 					if ([...res.data].length === 0) setIsBlockedUser(false);
 					[...res.data].map((User: any) => {
 						if (User.userName === props.userName) {
 							setIsBlockedUser(true);
-							// 
+							//
 							return;
 						}
 					});
 				});
-		} catch {
-			
-		}
+		} catch {}
 	}
 	const [open, setOpen] = useState(false);
 	// const [openUnfriend, setOpenUnfriend] = useState(false);
@@ -133,7 +141,7 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 						startIcon={<RemoveCircleIcon />}
 						onClick={(e) => {
 							e.preventDefault();
-							blockUser(state.mainUser.id,  props.id);
+							blockUser(state.mainUser.id, props.id);
 						}}
 					>
 						Block
@@ -161,8 +169,8 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 				)}
 			</div>
 			<div className="add-or-remove">
-				{!isblockedUser ? (!isFriend ? (
-					<Stack spacing={2} sx={{ width: "100%" }}>
+				{!isblockedUser ? (
+					pendingIds.includes(props.id) ? (
 						<Button
 							variant="outlined"
 							color="primary"
@@ -172,36 +180,53 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 								fontWeight: 300,
 								textTransform: "none",
 								marginRight: 1,
-								// '& @media (max-width:300px)': {
-								// 	fontSize: 10,
-								// },
 							}}
-							startIcon={<PersonAddIcon />}
-							onClick={(e) => {
-								e.preventDefault();
-								addFriend(state.mainUser.id, props.id);
-								// if (!isFriend)
-								handleClick();
-							}}
+							startIcon={<AutorenewIcon />}
 						>
-							Add Friend
+							Pending
 						</Button>
-						<Snackbar
-							open={open}
-							autoHideDuration={2200}
-							onClose={handleClose}
-						>
-							<Alert
+					) : !isFriend ? (
+						<Stack spacing={2} sx={{ width: "100%" }}>
+							<Button
 								variant="outlined"
-								onClose={handleClose}
-								severity="success"
-								sx={{ width: "100%", color: "#3b8243" }}
+								color="primary"
+								size="small"
+								sx={{
+									fontSize: 15,
+									fontWeight: 300,
+									textTransform: "none",
+									marginRight: 1,
+									// '& @media (max-width:300px)': {
+									// 	fontSize: 10,
+									// },
+								}}
+								startIcon={<PersonAddIcon />}
+								onClick={(e) => {
+									e.preventDefault();
+									addFriend(state.mainUser.id, props.id);
+									// if (!isFriend)
+									handleClick();
+								}}
 							>
-								Friend request sent !
-							</Alert>
-						</Snackbar>
-					</Stack>) 
-				: (<Button
+								Add Friend
+							</Button>
+							<Snackbar
+								open={open}
+								autoHideDuration={2200}
+								onClose={handleClose}
+							>
+								<Alert
+									variant="outlined"
+									onClose={handleClose}
+									severity="success"
+									sx={{ width: "100%", color: "#3b8243" }}
+								>
+									Friend request sent !
+								</Alert>
+							</Snackbar>
+						</Stack>
+					) : (
+						<Button
 							variant="outlined"
 							color="error"
 							size="small"
@@ -219,8 +244,9 @@ const OtherUserNav: React.FC<OtherUserNav> = (props) => {
 							}}
 						>
 							Unfriend
-					</Button>)) : null
-				}
+						</Button>
+					)
+				) : null}
 			</div>
 		</div>
 	);

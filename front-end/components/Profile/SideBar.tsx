@@ -88,7 +88,7 @@ const menu = [
 	},
 ];
 
-const SideBar = () => {
+const SideBar = ({check, setCheck}) => {
 	const router = useRouter();
 	const [path, setPath] = useState("/");
 	const [sideMenu, setSideMenu] = useState([...menu]);
@@ -182,9 +182,9 @@ const SideBar = () => {
 	}, [cookies]);
 
 	return (
-		<aside className="sidebar">
+		<aside className={check ? "sideBarActive": "sidebar"}>
 			<div className="middle-sidebar">
-				<ul className="sidebar-list">
+				<ul className="sidebar-list" onClick={()=> setCheck(false)}>
 					{sideMenu.map((item) => {
 						return (
 							<li

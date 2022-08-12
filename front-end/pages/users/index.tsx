@@ -13,6 +13,7 @@ import CircleIcon from "@mui/icons-material/Circle";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { addFriend, unfriend } from "../../utils/utils";
+import AutorenewIcon from "@mui/icons-material/Autorenew";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
@@ -27,8 +28,8 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 const Users = () => {
 	const { state, setMainUser, friends, setFriends } = useContext(AppContext);
 	const [allUsers, setAllUsers] = useState<User[]>([]);
-	const [allBlockedByUsers, setAllBlockedByUsers] = useState<User[]>([]);
 	const [friendsIds, setFriendsIds] = useState<any[] | null>(null);
+	const [pendingIds, setPendingIds] = useState<any[]>([]);
 
 	const router = useRouter();
 
@@ -71,17 +72,19 @@ const Users = () => {
 	}, []);
 
 	useEffect(() => {
+		fetchAllUsers();
+		fetchFriends();
+		fetchSentRequest();
 		state.eventsSocket.on("A_USER_STATUS_UPDATED", (user: any) => {
-			
 			setUsersStatus(user.isOnline, user);
 		});
 		state.eventsSocket.on("UPDATE_DATA", (user: any) => {
-			
 			fetchAllUsers();
 			fetchFriends();
+			console.log("update data");
+			fetchSentRequest();
 		});
-		fetchAllUsers();
-		fetchFriends();
+
 		return () => {
 			state.eventsSocket.off("A_USER_STATUS_UPDATED");
 			state.eventsSocket.off("A_PROFILE_UPDATE");
@@ -93,7 +96,7 @@ const Users = () => {
 			.get(`${process.env.SERVER_HOST}/users`, { withCredentials: true })
 			.then(async (res) => {
 				if (res.status === 200) {
-					// 
+					//
 					const blockedby = await fetchUsersBlockedBy();
 					if ([...blockedby.data].length === 0) {
 						setAllUsers(
@@ -102,10 +105,8 @@ const Users = () => {
 							)
 						);
 					} else {
-						
 						let filtredUsers: User[] = [];
 						[...blockedby.data].forEach((BlockedByuser) => {
-							
 							[...res.data].forEach((user) => {
 								if (BlockedByuser.id != user.id) {
 									filtredUsers.push(user);
@@ -118,11 +119,10 @@ const Users = () => {
 							)
 						);
 					}
+					fetchSentRequest();
 				}
 			})
-			.catch(() => {
-				
-			});
+			.catch(() => {});
 	}
 	async function fetchUsersBlockedBy() {
 		return await axios.get(
@@ -145,10 +145,19 @@ const Users = () => {
 					setFriends([...res.data]);
 					setFriendsIds([...res.data].map((user) => user.id));
 				});
-		} catch {
-			
-		}
+		} catch {}
 	}
+	const fetchSentRequest = async () => {
+		axios
+			.get(`${process.env.SERVER_HOST}/users/sentrequests`, {
+				withCredentials: true,
+			})
+			.then((responce) => {
+				if ([...responce.data].length)
+					setPendingIds([...responce.data].map((user) => user.id));
+				else setPendingIds([]);
+			});
+	};
 	const [open, setOpen] = useState(false);
 
 	const handleClick = () => {
@@ -378,6 +387,22 @@ const Users = () => {
 																	}}
 																>
 																	Unfriend
+																</Button>
+															) : pendingIds?.includes(
+																	user.id
+															  ) ? (
+																<Button
+																	variant="outlined"
+																	color="primary"
+																	size="small"
+																	sx={{
+																		fontSize: 11,
+																	}}
+																	startIcon={
+																		<AutorenewIcon />
+																	}
+																>
+																	PENDING
 																</Button>
 															) : (
 																<Button

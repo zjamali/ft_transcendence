@@ -46,13 +46,6 @@ export default function HomePage() {
 		if (state.mainUser) setLogin(true);
 	}, [state.mainUser]);
 	return (
-		// <div style={{backgroundColor: 'red'}}>
-		// 	{!state.login && !state.mainUser ? (
-		// 		<Login login={state.login} setLogin={setLogin} />
-		// 	) : (
-		// 		<Profile />
-		// 	)}
-		// </div>
 		<>{router.query.twoFa ? <TwoFactorAuth /> : <Login />}</>
 	);
 }
