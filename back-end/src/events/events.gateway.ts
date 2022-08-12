@@ -46,7 +46,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
     @MessageBody() userId: string,
   ) {
-    
     const targetUser = GlobalService.UsersEventsSockets.get(userId);
     targetUser?.forEach((socket) => {
       this.Server.to(socket).emit(
@@ -76,18 +75,15 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (response) {
       const { user, userSockets } = response;
       if (userSockets.length === 1) {
-        
         this.Server.emit('A_USER_STATUS_UPDATED', { ...user });
         // client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user});
         await this.eventsService.setUserOnlineInDb(user_id);
       }
     }
-    
   }
   @UseGuards(JwtTwoFactorGuard)
   async handleDisconnect(client: Socket) {
     // const cookies = client.handshake.headers.cookie;
-    
 
     if (!client.handshake.headers.cookie) return;
     const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
@@ -101,7 +97,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     );
     const { user, userSockets } = response;
     if (userSockets.length === 0) {
-      
       // this.Server.emit('A_USER_STATUS_UPDATED', { ...user});
       client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user });
       await this.eventsService.setUserOfflineInDb(user_id);
@@ -114,27 +109,15 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody()
     gameInvitation: { sender: any; receiver: any; game_room: string },
   ) {
-    
     const InviteduserSockets = GlobalService.UsersEventsSockets.get(
       gameInvitation.receiver.id,
     );
-    // if (Inviteduser) {
-    //   
-    // }
     InviteduserSockets?.forEach((invitedSocketId) => {
       this.Server.to(invitedSocketId).emit('GAME_INVITATION', {
         user: { ...gameInvitation.sender },
         senderSocket: client.id,
       });
     });
-    // this.Server.to(InviteduserSockets[InviteduserSockets.length - 1]).emit(
-    //   'GAME_INVITATION',
-    //   {
-    //     user: { ...gameInvitation.sender },
-    //     senderSocket: client.id,
-    //   },
-    // );
-    
   }
   @SubscribeMessage('accept_game_invitaion_to_server')
   gameAcceptInvitation(
@@ -147,18 +130,10 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       senderSocketId: string;
     },
   ) {
-   
-    // const firstPlayersSockets = GlobalService.UsersEventsSockets.get(
-    //   gameInvitation.sender,
-    // );
     const secondPlayerSockets = GlobalService.UsersEventsSockets.get(
       gameInvitation.receiver,
     );
-    // firstPlayersSockets?.forEach((socketsID) => {
-    //   this.Server.to(socketsID).emit('game_invitation_accepted', {
-    //     room_id: gameInvitation.game_room,
-    //   });
-    // });
+
     this.Server.to(gameInvitation.senderSocketId).emit(
       'game_invitation_accepted',
       {
@@ -197,7 +172,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
     @MessageBody() userId: string,
   ) {
-    
     const user = await this.userService.findOne(userId);
     const userSockets = GlobalService.UsersEventsSockets.get(userId);
     userSockets?.forEach((socket) => {
@@ -205,17 +179,22 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
     client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user });
     this.Server.emit('UPDATE_DATA');
+    setTimeout(() => {
+      this.Server.emit('UPDATE_DATA');
+    }, 500);
   }
   @SubscribeMessage('I_UPDATE_MY_DATA')
   async userUpdateData(
     @ConnectedSocket() client: Socket,
     @MessageBody() userId: string,
   ) {
-    
     const user = await this.userService.findOne(userId);
     this.Server.to(client.id).emit('A_UPDATE_MY_DATA', { ...user });
     client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user });
     client.broadcast.emit('UPDATE_DATA');
+    setTimeout(() => {
+      this.Server.emit('UPDATE_DATA');
+    }, 500);
   }
   @SubscribeMessage('SEND_FRIEND_REQUEST')
   async sendFriendRequest(
@@ -234,6 +213,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     senderSockets?.forEach((socketsID) => {
       this.Server.to(socketsID).emit('NEW_PENDING_REQUEST');
     });
+    setTimeout(() => {
+      this.Server.emit('UPDATE_DATA');
+    }, 500);
   }
   @SubscribeMessage('ACCEPT_FREIND_REQUEST')
   async acceptFriendRequest(
@@ -246,7 +228,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     targetSockets?.forEach((socketsID) => {
       this.Server.to(socketsID).emit('UPDATE_DATA');
     });
-    
+
     const senderSockets = GlobalService.UsersEventsSockets.get(
       friendRequest.relatedUserId,
     );
@@ -255,7 +237,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
     setTimeout(() => {
       this.Server.emit('UPDATE_DATA');
-    }, 200);
+    }, 500);
   }
   @SubscribeMessage('DENY_FREIND_REQUEST')
   async denyFriendRequest(
@@ -263,6 +245,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() friendRequest: { denier: string; relatedUserId: string },
   ) {
     this.Server.emit('UPDATE_DATA');
+    setTimeout(() => {
+      this.Server.emit('UPDATE_DATA');
+    }, 500);
   }
   @SubscribeMessage('BLOCK_A_USER')
   async blockUser(
@@ -270,6 +255,10 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() blockUser: { blocker: string; target: string },
   ) {
     this.Server.emit('UPDATE_DATA');
+
+    setTimeout(() => {
+      this.Server.emit('UPDATE_DATA');
+    }, 500);
   }
   @SubscribeMessage('UNBLOCK_A_USER')
   async unblockUser(
@@ -277,6 +266,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() blockUser: { unblocker: string; target: string },
   ) {
     this.Server.emit('UPDATE_DATA');
+    setTimeout(() => {
+      this.Server.emit('UPDATE_DATA');
+    }, 500);
   }
 
   getUserIdFromJWT(cookies: string): string {

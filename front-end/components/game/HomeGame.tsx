@@ -49,7 +49,6 @@ export function HomeGame() {
 
 	useEffect(() => {
 		if (router.query && router.query.roomId) {
-			
 			gameInviteDefHandler(router.query.roomId[0]);
 		}
 	}, [router]);

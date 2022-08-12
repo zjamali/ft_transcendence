@@ -8,78 +8,73 @@ import OtherUserNav from "../../../components/Profile/OtherUserNav";
 import { User } from "../../../utils/interfaces";
 import { useRouter } from "next/router";
 import DefaultData from "../../../components/Profile/DefaultData";
-import NotFound from "../../notFound";
+import NotFound from "../../404";
 
 type Props = {};
 
 export default function UserProfile({}: Props) {
 	const [user, setUser] = useState<User | null>(null);
-	const [userFriends, setUserFriends] = useState([]);
 	const { state, setMainUser, friends } = useContext(AppContext);
 	const router = useRouter();
-	const { userId } = router.query;
+	const [userId, setUserId] = useState<any>(null);
 	useEffect(() => {
-    try{
+		const { userId } = router.query;
+		setUserId(userId);
+	}, [router]);
 
-      axios
-        .get(`${process.env.SERVER_HOST}/users/me`, { withCredentials: true })
-        .then((res) => {
-          if (res.status === 200) {
-            setMainUser({ ...res.data });
-            userData();
-          }
-        })
-        .catch(() => {
-          
-        });
-    }catch(e){
+	useEffect(() => {
+		if (userId) {
+			try {
+				axios
+					.get(`${process.env.SERVER_HOST}/users/me`, {
+						withCredentials: true,
+					})
+					.then((res) => {
+						if (res.status === 200) {
+							setMainUser({ ...res.data });
+							userData(userId);
+						}
+					})
+					.catch(() => {});
+			} catch (e) {}
+			state.eventsSocket.on("UPDATE_DATA", () => {
+				console.log("user id :", userId);
+				axios
+					.get(`${process.env.SERVER_HOST}/users/me`, {
+						withCredentials: true,
+					})
+					.then((res) => {
+						if (res.status === 200) {
+							setMainUser({ ...res.data });
+							userData(userId);
+						}
+					})
+					.catch(() => {});
+			});
+		}
+	}, [userId]);
 
-    }
-
-		state.eventsSocket.on("UPDATE_DATA", () => {
-			axios
-				.get(`${process.env.SERVER_HOST}/users/me`, {
-					withCredentials: true,
-				})
-				.then((res) => {
-					if (res.status === 200) {
-						setMainUser({ ...res.data });
-						userData();
-					}
-				})
-				.catch(() => {
-          setMainUser(null);
-					
-				});
-		});
-		return () => {
-			state.eventsSocket.off("A_PROFILE_UPDATE");
-		};
-	}, []);
-
-	function userData() {
+	function userData(userId: any) {
 		axios
 			.get(`${process.env.SERVER_HOST}/users/id/${userId}`, {
 				withCredentials: true,
 			})
 			.then(async (res) => {
 				if (res.status === 200) {
+					if (res.data.id === state.mainUser.id)
+						router.push("/");
+					else
 						setUser({ ...res.data });
 				}
-				else
+				if (res.status === 403)
 					setUser(null);
 			})
-			.catch(() => {
-				
+			.catch((error) => {
+				setUser(null);
+				console.log("user not found");
 			});
 	}
-	async function fetchUsersBlockedBy() {
-		return await axios.get(`${process.env.SERVER_HOST}/users/blockedByUsers`, {
-			withCredentials: true,
-		});
-	}
 
-	
 	return (
 		<>
 			{state.mainUser && user ? (
@@ -104,7 +99,7 @@ export default function UserProfile({}: Props) {
 							/>
 						)}
 					</div>
-					<DefaultData id={userId} />
+					<DefaultData id={user.id} />
 				</div>
 			) : (
 				<NotFound />

@@ -28,7 +28,11 @@ export class UsersService {
   }
 
   async findOne(userId: string): Promise<User> {
-    return await this.usersRepository.findOne({ where: { id: userId } });
+    const user: User = await this.usersRepository.findOne({
+      where: { id: userId },
+    });
+    if (!user) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+    return user;
   }
 
   async sendRequest(relatingUserID: string, relatedUserID: string) {
@@ -211,7 +215,7 @@ export class UsersService {
     Union
     SELECT * from public.User where id in (select "userA" from Friend where "userB" = $1 and "state" = 'friends')`;
 
-    const friends = await this.usersRepository.query(sql, [userId]);
+    const friends: User[] = await this.usersRepository.query(sql, [userId]);
     return friends;
   }
 
@@ -295,7 +299,6 @@ export class UsersService {
   }
 
   async turnOnTwoFactorAuthentication(userId: string) {
-    
     return await this.usersRepository.update(
       { id: userId },
       {
@@ -305,7 +308,6 @@ export class UsersService {
   }
 
   async setUserPlayingStatus(userId: string, status: boolean) {
-    
     return await this.usersRepository.update(
       { id: userId },
       {
