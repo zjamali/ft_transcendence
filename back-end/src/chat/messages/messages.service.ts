@@ -11,7 +11,6 @@ export class MessagesService {
     private readonly messagesRepository: Repository<Message>,
   ) {}
   create(createMessageDto: CreateMessageDto) {
-    console.log('message : ', createMessageDto);
     let newMessage: Message;
     if (createMessageDto.isChannel)
       newMessage = this.messagesRepository.create({

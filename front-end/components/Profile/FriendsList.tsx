@@ -39,7 +39,7 @@ const FriendsList = () => {
 				.then((res) => {
 					setFriends([...res.data]);
 					// setFriendsIds([...res.data].map((user)=>  user.id));
-					// console.log()
+					//
 				});
 		} catch {
 			console.log("CANT GET ALL USERS");

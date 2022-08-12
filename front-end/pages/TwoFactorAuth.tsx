@@ -16,12 +16,12 @@ export default function TwoFactorAuth(props: any) {
 				{ twoFactorAuthenticationCode: twoFaCode },
 				{ withCredentials: true }
 			).then((data) => {
-				console.log("data : ", data);
+				
 				router.push("/?login=true")
 			})
 			
 		} catch (error) {
-			console.log("2fa error");
+			
 		}
 	}
 

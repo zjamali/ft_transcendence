@@ -136,8 +136,10 @@ export default function ChatPannel() {
 				setMessages([...messagesList.current]);
 			} else {
 				// send a notification
-				console.log("send a nostification");
-				notify(`new message from ${newMessage.senderName}`);
+				//
+				console.log("message notifcation : ", newMessage);
+				if (newMessage.senderId !== state.mainUser.id)
+					notify(`new message from ${newMessage.senderName}`);
 			}
 		}
 	}, [newMessage]);

@@ -7,6 +7,7 @@ import ChatSideBar from "./chatSideBar";
 import { AppContext } from "../../context/AppContext";
 import io from "socket.io-client";
 import axios from "axios";
+import { isContact } from "../../utils/utils";
 
 export default function Chat() {
 	const {
@@ -27,7 +28,9 @@ export default function Chat() {
 
 	async function fetchMainUser() {
 		axios
-			.get(`${process.env.SERVER_HOST}/users/me`, { withCredentials: true })
+			.get(`${process.env.SERVER_HOST}/users/me`, {
+				withCredentials: true,
+			})
 			.then((res) => {
 				if (res.status === 200) {
 					setMainUser({ ...res.data });
@@ -59,6 +62,7 @@ export default function Chat() {
 		state.eventsSocket.on("UPDATE_DATA", () => {
 			fetchAllChannels();
 			// setReceiver(null);
+			console.log("fetch data ");
 			fetchFriends();
 		});
 		state.chatSocket.on("A_CHANNELS_YOU_KICKED", () => {
@@ -125,7 +129,9 @@ export default function Chat() {
 		}
 		try {
 			axios
-				.get(`${process.env.SERVER_HOST}/rooms`, { withCredentials: true })
+				.get(`${process.env.SERVER_HOST}/rooms`, {
+					withCredentials: true,
+				})
 				.then((res) => {
 					console.log("all channels :", res.data);
 					if (res.data) {
@@ -179,6 +185,21 @@ export default function Chat() {
 		if (state.receiver && windowWidth <= 1000) setShowContacts(false);
 		else setShowContacts(true);
 	}, [state.receiver, windowWidth]);
+
+	useEffect(() => {
+		if (!state.contacts.length)
+			setReceiver(null);
+		else
+		{
+			state.contacts.forEach((contact:any) => {
+				if (contact.id === state.receiver)
+					return;
+			});
+			// receiver is blocked or block mainUser
+			setReceiver(null);
+		}
+	}, [state.contacts])
+	
 
 	return (
 		<>

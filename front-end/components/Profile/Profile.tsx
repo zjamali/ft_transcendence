@@ -13,7 +13,7 @@ import Active2FA from "../2FA/create2FA";
 const Profile = () => {
 	const [active, setActive] = useState<String>("DefaultData");
 	const router = useRouter();
-	// console.log("edit_profile : ", Router.query["edit_profile"]);
+	//
 	const [openModal, setOpenModal] = useState<Boolean>(
 		router.query.edit_profile ? true : false
 	);
@@ -48,7 +48,7 @@ const Profile = () => {
 		<div className="profile-content">
 			<div className="profile-wall">
 				<div className="profile-wall-bg">
-          <Image src="/xo.jpeg" alt="image_navbar" objectFit="cover" />
+          <Image loader={() => "/xo.jpeg"} src="/xo.jpeg" unoptimized={true} alt="image_navbar" layout="fill" objectFit="cover" />
         </div>
 				<div className="profile-wall-img-user">
 					<Image

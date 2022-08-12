@@ -125,7 +125,7 @@ const DefaultData = ({ id }: { id: any }) => {
 					</div>
 					<div className="list-of-friends">
 						{matches?.map((match) => {
-							// console.log("matches ::: ", match);
+							//
 							return (
 								<HistoryCard
 									match={{ ...match }}

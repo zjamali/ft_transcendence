@@ -6,10 +6,12 @@ import { v4 as uuidv4 } from "uuid";
 export default function NotFound(props: any) {
 	// const { state, setMainUser } = useContext(AppContext)
 	useEffect(() => {
-		window.history.replaceState(null, '', '/');
+		// window.history.replaceState(null, '', '/');
 	}, [])
 	
 	return (
-        <div className="profile-content"><h1>NOT FOUND</h1></div>
+        <div className="profile-content">
+			<img src="/404.png" alt="404 image"/>
+		</div>
 	);
 }

@@ -28,7 +28,7 @@ const Setting = ({setSetting, data}: any) => {
             data.set_borderColor(isBorder);
             data.set_textColor(isText);
             data.set_traceColor(isTrace);
-            console.log(data.get_mapColor());
+           
             
         }
         setSetting(true);

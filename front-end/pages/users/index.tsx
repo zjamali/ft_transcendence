@@ -13,6 +13,7 @@ import CircleIcon from "@mui/icons-material/Circle";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { addFriend, unfriend } from "../../utils/utils";
+import AutorenewIcon from "@mui/icons-material/Autorenew";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
@@ -27,8 +28,8 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 const Users = () => {
 	const { state, setMainUser, friends, setFriends } = useContext(AppContext);
 	const [allUsers, setAllUsers] = useState<User[]>([]);
-	const [allBlockedByUsers, setAllBlockedByUsers] = useState<User[]>([]);
 	const [friendsIds, setFriendsIds] = useState<any[] | null>(null);
+	const [pendingIds, setPendingIds] = useState<any[]>([]);
 
 	const router = useRouter();
 
@@ -56,7 +57,9 @@ const Users = () => {
 
 	useEffect(() => {
 		axios
-			.get(`${process.env.SERVER_HOST}/users/me`, { withCredentials: true })
+			.get(`${process.env.SERVER_HOST}/users/me`, {
+				withCredentials: true,
+			})
 			.then((res) => {
 				if (res.status === 200) {
 					setMainUser({ ...res.data });
@@ -69,17 +72,19 @@ const Users = () => {
 	}, []);
 
 	useEffect(() => {
+		fetchAllUsers();
+		fetchFriends();
+		fetchSentRequest();
 		state.eventsSocket.on("A_USER_STATUS_UPDATED", (user: any) => {
-			console.log("user status updated");
 			setUsersStatus(user.isOnline, user);
 		});
 		state.eventsSocket.on("UPDATE_DATA", (user: any) => {
-			console.log("UPDATE_DATA");
 			fetchAllUsers();
 			fetchFriends();
+			console.log("update data");
+			fetchSentRequest();
 		});
-		fetchAllUsers();
-		fetchFriends();
+
 		return () => {
 			state.eventsSocket.off("A_USER_STATUS_UPDATED");
 			state.eventsSocket.off("A_PROFILE_UPDATE");
@@ -91,7 +96,7 @@ const Users = () => {
 			.get(`${process.env.SERVER_HOST}/users`, { withCredentials: true })
 			.then(async (res) => {
 				if (res.status === 200) {
-					// console.log("all users", res.data)
+					//
 					const blockedby = await fetchUsersBlockedBy();
 					if ([...blockedby.data].length === 0) {
 						setAllUsers(
@@ -100,14 +105,12 @@ const Users = () => {
 							)
 						);
 					} else {
-						console.log("blocked by : ", blockedby.data);
 						let filtredUsers: User[] = [];
 						[...blockedby.data].forEach((BlockedByuser) => {
-							console.log();
 							[...res.data].forEach((user) => {
-								 if (BlockedByuser.id != user.id) {
+								if (BlockedByuser.id != user.id) {
 									filtredUsers.push(user);
-							 }
+								}
 							});
 						});
 						setAllUsers(
@@ -116,16 +119,18 @@ const Users = () => {
 							)
 						);
 					}
+					fetchSentRequest();
 				}
 			})
-			.catch(() => {
-				console.log("cant get user");
-			});
+			.catch(() => {});
 	}
 	async function fetchUsersBlockedBy() {
-		return await axios.get(`${process.env.SERVER_HOST}/users/blockedByUsers`, {
-			withCredentials: true,
-		});
+		return await axios.get(
+			`${process.env.SERVER_HOST}/users/blockedByUsers`,
+			{
+				withCredentials: true,
+			}
+		);
 	}
 	async function fetchFriends() {
 		try {
@@ -140,10 +145,19 @@ const Users = () => {
 					setFriends([...res.data]);
 					setFriendsIds([...res.data].map((user) => user.id));
 				});
-		} catch {
-			console.log("CANT GET ALL USERS");
-		}
+		} catch {}
 	}
+	const fetchSentRequest = async () => {
+		axios
+			.get(`${process.env.SERVER_HOST}/users/sentrequests`, {
+				withCredentials: true,
+			})
+			.then((responce) => {
+				if ([...responce.data].length)
+					setPendingIds([...responce.data].map((user) => user.id));
+				else setPendingIds([]);
+			});
+	};
 	const [open, setOpen] = useState(false);
 
 	const handleClick = () => {
@@ -373,6 +387,22 @@ const Users = () => {
 																	}}
 																>
 																	Unfriend
+																</Button>
+															) : pendingIds?.includes(
+																	user.id
+															  ) ? (
+																<Button
+																	variant="outlined"
+																	color="primary"
+																	size="small"
+																	sx={{
+																		fontSize: 11,
+																	}}
+																	startIcon={
+																		<AutorenewIcon />
+																	}
+																>
+																	PENDING
 																</Button>
 															) : (
 																<Button

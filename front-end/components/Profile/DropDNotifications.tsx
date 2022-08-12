@@ -12,6 +12,7 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import Badge from "@mui/material/Badge";
 
 // const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 // 	props,
@@ -52,6 +53,7 @@ const DropDNotifications: React.FC = (props) => {
 	const open = Boolean(anchorEl);
 	const { state } = useContext(AppContext);
 	const [recievedrequests, setRecievedrequests] = useState<User[]>([]);
+	const [sentrequests, setSentRequests] = useState<User[]>([]);
 
 	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
@@ -62,18 +64,25 @@ const DropDNotifications: React.FC = (props) => {
 
 	useEffect(() => {
 		fetchFriendsRequest();
+		fetchSentRequest();
+		state.eventsSocket.on("NEW_PENDING_REQUEST", () => {
+			fetchFriendsRequest();
+			fetchSentRequest();
+		});
 		state.eventsSocket.on("NEW_FRIEND_REQUEST", () => {
 			fetchFriendsRequest();
+			fetchSentRequest();
 		});
 		state.eventsSocket.on("UPDATE_DATA", () => {
-			console.log("hello accept friend request ");
+			console.log("drop down notification");
 			fetchFriendsRequest();
+			fetchSentRequest();
 		});
 		return () => {
 			state.eventsSocket.off("NEW_FRIEND_REQUEST");
-			// state.eventsSocket.off("UPDATE_DATA");
+			state.eventsSocket.off("UPDATE_DATA");
 		};
-	}, []);
+	}, [state.contacts]);
 
 	const fetchFriendsRequest = () => {
 		axios
@@ -81,9 +90,20 @@ const DropDNotifications: React.FC = (props) => {
 				withCredentials: true,
 			})
 			.then((responce) => {
-				if ([...responce.data].length)
+				if ([...responce.data].length > 0)
 					setRecievedrequests([...responce.data]);
 				else setRecievedrequests([]);
+			});
+	};
+	const fetchSentRequest = async () => {
+		axios
+			.get(`${process.env.SERVER_HOST}/users/sentrequests`, {
+				withCredentials: true,
+			})
+			.then((responce) => {
+				if ([...responce.data].length)
+					setSentRequests([...responce.data]);
+				else setSentRequests([]);
 			});
 	};
 
@@ -105,13 +125,28 @@ const DropDNotifications: React.FC = (props) => {
 					aria-haspopup="true"
 					aria-expanded={open ? "true" : undefined}
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						className="notification-icon"
-						viewBox="0 0 16 16"
-					>
-						<path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z" />
-					</svg>
+					{recievedrequests.length != 0 ? (
+						<Badge
+							badgeContent={recievedrequests.length}
+							color="error"
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								className="notification-icon"
+								viewBox="0 0 16 16"
+							>
+								<path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z" />
+							</svg>
+						</Badge>
+					) : (
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							className="notification-icon"
+							viewBox="0 0 16 16"
+						>
+							<path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z" />
+						</svg>
+					)}
 				</button>
 			</Box>
 			<Menu
@@ -167,8 +202,27 @@ const DropDNotifications: React.FC = (props) => {
 				<Divider sx={{ color: "white" }} />
 				{recievedrequests?.map((recievedrequest) => (
 					<Notification
+						friendRequest={true}
 						user={recievedrequest}
 						key={recievedrequest.id}
+					/>
+				))}
+				<MenuItem
+					autoFocus={false}
+					style={{
+						color: "white",
+						fontWeight: "100",
+						height: "50px",
+					}}
+				>
+					Sent Requests
+				</MenuItem>
+				<Divider sx={{ color: "white" }} />
+				{sentrequests?.map((sentrequest) => (
+					<Notification
+						friendRequest={false}
+						user={sentrequest}
+						key={sentrequest.id}
 					/>
 				))}
 			</Menu>

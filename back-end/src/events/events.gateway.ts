@@ -46,7 +46,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
     @MessageBody() userId: string,
   ) {
-    console.log('hello log out : ', userId);
     const targetUser = GlobalService.UsersEventsSockets.get(userId);
     targetUser?.forEach((socket) => {
       this.Server.to(socket).emit(
@@ -74,22 +73,17 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.id,
     );
     if (response) {
-      console.log('connect ---> ', client.id, ' userId : ', user_id);
-
       const { user, userSockets } = response;
       if (userSockets.length === 1) {
-        console.log('✅ user : connected : ', response);
         this.Server.emit('A_USER_STATUS_UPDATED', { ...user });
         // client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user});
         await this.eventsService.setUserOnlineInDb(user_id);
       }
     }
-    console.log('getway sockets :', this.allgetwaySockets);
   }
   @UseGuards(JwtTwoFactorGuard)
   async handleDisconnect(client: Socket) {
     // const cookies = client.handshake.headers.cookie;
-    console.log('disconnect ---> ', client.id);
 
     if (!client.handshake.headers.cookie) return;
     const user_id = this.getUserIdFromJWT(client.handshake.headers.cookie);
@@ -103,7 +97,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     );
     const { user, userSockets } = response;
     if (userSockets.length === 0) {
-      console.log('user: disconnect ❌', response);
       // this.Server.emit('A_USER_STATUS_UPDATED', { ...user});
       client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user });
       await this.eventsService.setUserOfflineInDb(user_id);
@@ -116,34 +109,15 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody()
     gameInvitation: { sender: any; receiver: any; game_room: string },
   ) {
-    console.log(
-      '%%%%%%%%%',
-      gameInvitation.sender,
-      ' :game invitaion sent to ',
-      gameInvitation.receiver,
-      ' to palay in room : ',
-      gameInvitation.game_room,
-    );
     const InviteduserSockets = GlobalService.UsersEventsSockets.get(
       gameInvitation.receiver.id,
     );
-    // if (Inviteduser) {
-    //   console.log('invited user is :', Inviteduser);
-    // }
     InviteduserSockets?.forEach((invitedSocketId) => {
       this.Server.to(invitedSocketId).emit('GAME_INVITATION', {
         user: { ...gameInvitation.sender },
         senderSocket: client.id,
       });
     });
-    // this.Server.to(InviteduserSockets[InviteduserSockets.length - 1]).emit(
-    //   'GAME_INVITATION',
-    //   {
-    //     user: { ...gameInvitation.sender },
-    //     senderSocket: client.id,
-    //   },
-    // );
-    console.log('InviteduserSockets : ', InviteduserSockets);
   }
   @SubscribeMessage('accept_game_invitaion_to_server')
   gameAcceptInvitation(
@@ -156,25 +130,10 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       senderSocketId: string;
     },
   ) {
-    console.log(
-      '+++++++++',
-      gameInvitation.sender,
-      ' :game accept invitaion of ',
-      gameInvitation.receiver,
-      ' to palay in room : ',
-      gameInvitation.game_room,
-    );
-    // const firstPlayersSockets = GlobalService.UsersEventsSockets.get(
-    //   gameInvitation.sender,
-    // );
     const secondPlayerSockets = GlobalService.UsersEventsSockets.get(
       gameInvitation.receiver,
     );
-    // firstPlayersSockets?.forEach((socketsID) => {
-    //   this.Server.to(socketsID).emit('game_invitation_accepted', {
-    //     room_id: gameInvitation.game_room,
-    //   });
-    // });
+
     this.Server.to(gameInvitation.senderSocketId).emit(
       'game_invitation_accepted',
       {
@@ -213,7 +172,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
     @MessageBody() userId: string,
   ) {
-    console.log('user update profile id  : ', userId);
     const user = await this.userService.findOne(userId);
     const userSockets = GlobalService.UsersEventsSockets.get(userId);
     userSockets?.forEach((socket) => {
@@ -221,17 +179,22 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
     client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user });
     this.Server.emit('UPDATE_DATA');
+    setTimeout(() => {
+      this.Server.emit('UPDATE_DATA');
+    }, 500);
   }
   @SubscribeMessage('I_UPDATE_MY_DATA')
   async userUpdateData(
     @ConnectedSocket() client: Socket,
     @MessageBody() userId: string,
   ) {
-    console.log('user update data id  : ', userId);
     const user = await this.userService.findOne(userId);
     this.Server.to(client.id).emit('A_UPDATE_MY_DATA', { ...user });
     client.broadcast.emit('A_USER_STATUS_UPDATED', { ...user });
     client.broadcast.emit('UPDATE_DATA');
+    setTimeout(() => {
+      this.Server.emit('UPDATE_DATA');
+    }, 500);
   }
   @SubscribeMessage('SEND_FRIEND_REQUEST')
   async sendFriendRequest(
@@ -244,6 +207,15 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     targetSockets?.forEach((socketsID) => {
       this.Server.to(socketsID).emit('NEW_FRIEND_REQUEST');
     });
+    const senderSockets = GlobalService.UsersEventsSockets.get(
+      friendRequest.sender,
+    );
+    senderSockets?.forEach((socketsID) => {
+      this.Server.to(socketsID).emit('NEW_PENDING_REQUEST');
+    });
+    setTimeout(() => {
+      this.Server.emit('UPDATE_DATA');
+    }, 500);
   }
   @SubscribeMessage('ACCEPT_FREIND_REQUEST')
   async acceptFriendRequest(
@@ -256,7 +228,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     targetSockets?.forEach((socketsID) => {
       this.Server.to(socketsID).emit('UPDATE_DATA');
     });
-    console.log('accpet friend equest ');
+
     const senderSockets = GlobalService.UsersEventsSockets.get(
       friendRequest.relatedUserId,
     );
@@ -265,7 +237,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
     setTimeout(() => {
       this.Server.emit('UPDATE_DATA');
-    }, 200);
+    }, 500);
   }
   @SubscribeMessage('DENY_FREIND_REQUEST')
   async denyFriendRequest(
@@ -273,6 +245,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() friendRequest: { denier: string; relatedUserId: string },
   ) {
     this.Server.emit('UPDATE_DATA');
+    setTimeout(() => {
+      this.Server.emit('UPDATE_DATA');
+    }, 500);
   }
   @SubscribeMessage('BLOCK_A_USER')
   async blockUser(
@@ -280,6 +255,10 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() blockUser: { blocker: string; target: string },
   ) {
     this.Server.emit('UPDATE_DATA');
+
+    setTimeout(() => {
+      this.Server.emit('UPDATE_DATA');
+    }, 500);
   }
   @SubscribeMessage('UNBLOCK_A_USER')
   async unblockUser(
@@ -287,6 +266,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() blockUser: { unblocker: string; target: string },
   ) {
     this.Server.emit('UPDATE_DATA');
+    setTimeout(() => {
+      this.Server.emit('UPDATE_DATA');
+    }, 500);
   }
 
   getUserIdFromJWT(cookies: string): string {

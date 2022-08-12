@@ -20,6 +20,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import JwtTwoFactorGuard from 'src/auth/jwt-2fa-auth.guard';
 import { saveImageToStorage } from './helpers/image-storage';
 import { BlockGuard } from './block.guard';
+import User from './entities/user.entity';
 
 @Controller('users')
 export class UsersController {
@@ -47,8 +48,9 @@ export class UsersController {
   @UseGuards(BlockGuard)
   @UseGuards(JwtTwoFactorGuard)
   async findUserById(@Param('id') userId: string) {
-    console.log('meow');
-    return await this.usersService.findOne(userId);
+    const user = await this.usersService.findOne(userId);
+    if (!user) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+    return user;
   }
 
   @Post('send')
@@ -57,6 +59,11 @@ export class UsersController {
     @Req() req: RequestWithUser,
     @Body() body: { relatedUserId: string },
   ) {
+    if (req.user.id === body.relatedUserId)
+      throw new HttpException(
+        'Forbidden, Can not send request',
+        HttpStatus.FORBIDDEN,
+      );
     return await this.usersService.sendRequest(req.user.id, body.relatedUserId);
   }
 
@@ -66,6 +73,11 @@ export class UsersController {
     @Req() req: RequestWithUser,
     @Body() body: { relatedUserId: string },
   ) {
+    if (req.user.id === body.relatedUserId)
+      throw new HttpException(
+        'Forbidden, Can not send request',
+        HttpStatus.FORBIDDEN,
+      );
     return await this.usersService.acceptRequest(
       req.user.id,
       body.relatedUserId,
@@ -78,6 +90,11 @@ export class UsersController {
     @Req() req: RequestWithUser,
     @Body() body: { relatedUserId: string },
   ) {
+    if (req.user.id === body.relatedUserId)
+      throw new HttpException(
+        'Forbidden, Can not send request',
+        HttpStatus.FORBIDDEN,
+      );
     return await this.usersService.removeRelation(
       req.user.id,
       body.relatedUserId,
@@ -90,6 +107,11 @@ export class UsersController {
     @Req() req: RequestWithUser,
     @Body() body: { relatedUserId: string },
   ) {
+    if (req.user.id === body.relatedUserId)
+      throw new HttpException(
+        'Forbidden, Can not send request',
+        HttpStatus.FORBIDDEN,
+      );
     return await this.usersService.blockUser(req.user.id, body.relatedUserId);
   }
 
@@ -99,12 +121,18 @@ export class UsersController {
     @Req() req: RequestWithUser,
     @Body() body: { relatedUserId: string },
   ) {
+    if (req.user.id === body.relatedUserId)
+      throw new HttpException(
+        'Forbidden, Can not send request',
+        HttpStatus.FORBIDDEN,
+      );
     return await this.usersService.unblockUser(req.user.id, body.relatedUserId);
   }
 
   @Get('id/:id/friends')
-  async getFriends(@Param('id') id: string) {
-    return await this.usersService.getFriends(id);
+  @UseGuards(JwtTwoFactorGuard)
+  async getFriends(@Param('id') userId: string) {
+    return await this.usersService.getFriends(userId);
   }
 
   @Get('blocked')
@@ -162,7 +190,6 @@ export class UsersController {
     )
     file: Express.Multer.File,
   ) {
-    console.log(file);
     const fileName = file?.filename;
     if (!fileName)
       throw new HttpException(

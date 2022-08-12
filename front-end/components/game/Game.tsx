@@ -52,13 +52,13 @@ export function Game(props: GameProps) {
 	]);
 
 	function responseGame() {
-		// console.log(
+		//
 		// 	"game container : ",
 		// 	props.gameContainer.current.clientWidth
 		// );
 		if (!props.gameContainer.current) return;
 		const new_width = (props.gameContainer.current.clientWidth * 80) / 100;
-		// console.log("canva width : ", new_width);
+		//
 		data.set_Width(new_width);
 		data.set_Height(new_width / 2);
 		data.set_Trace_X(data.get_Width());
@@ -192,7 +192,7 @@ export function Game(props: GameProps) {
 			const context = canvas.getContext("2d");
 
 			///new_x 😦 old_x / old_width ) * new_width;
-			// console.log("canvas :", canvas);
+			//
 			const new_x = (gameState.ball.ball_x / 1200) * canvas.clientWidth;
 			const new_y = (gameState.ball.ball_y / 600) * canvas.clientHeight;
 			data.set_Ball_X(new_x);

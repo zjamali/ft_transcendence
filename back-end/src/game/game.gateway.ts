@@ -214,18 +214,12 @@ export class GameGateway
         this.socketArr.delete(newGame.get_PlayerOne().getSocket());
         this.socketArr.delete(newGame.get_PlayerTwo().getSocket());
         this.userArr.splice(0, this.userArr.length);
-
-        console.log('Game length: ' + GameGateway.game.length);
-        console.log('Socket size: ' + this.socketArr.size);
-        console.log('user size: ' + this.userArr.length);
       }
     } else {
-      console.log('user => ', payload.user, ' room : ', payload.room_id);
       //NOTE - Check If the same client not add in Set of socket
       if (this.privateGameUser.has(payload.room_id)) {
         [...this.privateGameUser.get(payload.room_id)]?.forEach((user) => {
           if (user.id == payload.user.id) {
-            console.log('user already exist');
             return;
           }
         });
@@ -255,17 +249,11 @@ export class GameGateway
         this.privateRoomGameSockets.set(payload.room_id, [client]);
         this.privateGameUser.set(payload.room_id, [payload.user]);
       }
-      console.log(
-        'invited game  users : ',
-        this.privateGameUser.get(payload.room_id),
-      );
 
       if (
         [...this.privateRoomGameSockets.get(payload.room_id)].length > 1 &&
         [...this.privateGameUser.get(payload.room_id)].length > 1
       ) {
-        console.log('start the game      0000000000');
-
         this.server.emit('Playing', {
           playing: true,
           first: {
@@ -307,9 +295,6 @@ export class GameGateway
 
         this.privateGameUser.delete(payload.room_id);
         this.privateRoomGameSockets.delete(payload.room_id);
-        console.log('Game length: ' + GameGateway.game.length);
-        console.log('Socket size: ' + this.socketArr.size);
-        console.log('user size: ' + this.userArr.length);
       }
     }
   }
@@ -318,13 +303,11 @@ export class GameGateway
   hundle_receiveGame(client: Socket, payload: any) {
     if (GameGateway.game.length !== 0) {
       const gameObj = { games: GameGateway.game.map((g) => g.getSubGame()) };
-      // console.log(gameObj);
       client.emit('receive_games', JSON.stringify(gameObj, null, 2));
     }
   }
   @SubscribeMessage('watchers')
   hundel_watchers(client: Socket, payload: any) {
-    // console.log(payload);
     const gameFound = GameGateway.game.find((gm) => {
       return gm.getId() === payload.gameId;
     });

@@ -7,6 +7,7 @@ import Link from "next/link";
 import axios from "axios";
 import { useState, useContext, useEffect } from "react";
 import { AppContext } from "../../context/AppContext";
+import { User } from "../../utils/interfaces";
 
 const FriendsCard = ({ id }: { id: string }) => {
 	async function fetchFriends() {
@@ -15,14 +16,36 @@ const FriendsCard = ({ id }: { id: string }) => {
 				.get(`${process.env.SERVER_HOST}/users/id/${id}/friends`, {
 					withCredentials: true,
 				})
-				.then((res) => {
-					// console.log('all users :', res.data)
-					setFriends([...res.data]);
+				.then(async (res) => {
+					console.log("all friends :", res.data);
+					const blockedby = await fetchUsersBlockedBy();
+					if ([...blockedby.data].length === 0) {
+						setFriends(
+							[...res.data].sort(
+								(a, b) => Number(a.id) - Number(b.id)
+							)
+						);
+					} else {
+						let filtredUsers: User[] = [];
+						[...blockedby.data].forEach((BlockedByuser) => {
+							[...res.data].forEach((user) => {
+								if (BlockedByuser.id != user.id) {
+									filtredUsers.push(user);
+								}
+							});
+						});
+						setFriends(
+							[...filtredUsers].sort(
+								(a, b) => Number(a.id) - Number(b.id)
+							)
+						);
+					}
 				});
 		} catch {
 			console.log("CANT GET ALL USERS");
 		}
 	}
+
 	function setFriendsStatus(status: boolean, user: any) {
 		if (friends) {
 			let friendsList = [...friends];
@@ -39,6 +62,15 @@ const FriendsCard = ({ id }: { id: string }) => {
 				setFriends([...friendsList]);
 			} else fetchFriends();
 		} else fetchFriends();
+	}
+
+	async function fetchUsersBlockedBy() {
+		return await axios.get(
+			`${process.env.SERVER_HOST}/users/blockedByUsers`,
+			{
+				withCredentials: true,
+			}
+		);
 	}
 
 	useEffect(() => {
@@ -62,7 +94,7 @@ const FriendsCard = ({ id }: { id: string }) => {
 	const [friends, setFriends] = useState<any[] | null>(null);
 	const { state } = useContext(AppContext);
 
-	// console.log(friends);
+	//
 	return (
 		<div
 			style={{ margin: "0", padding: "0", width: "90%", height: "100%" }}
