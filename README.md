@@ -6,8 +6,6 @@ ft_trancsendence is a website (Single-Page Application) that provides a nice use
 
 [ft_transcendence subject](https://github.com/zjamali/ft_transcendence/blob/master/files/en.subject.pdf)
 
-##
-
 ### Porfile Page :
 
 <img src="https://github.com/zjamali/ft_transcendence/blob/master/files/edit_profile.png" width="80%" /><img src="https://github.com/zjamali/ft_transcendence/blob/master/files/mainprofile.png" width="80%" />
@@ -35,18 +33,17 @@ ft_trancsendence is a website (Single-Page Application) that provides a nice use
   <img src="https://github.com/zjamali/ft_transcendence/blob/master/files/live_1.png" width="80%" />
   <img src="https://github.com/zjamali/ft_transcendence/blob/master/files/live_2.png" width="80%" />
 
-## Tech
+## Technologies used
 
-ft_transcendence uses the following technologies:
-
-- next.js
-- canvas
-- nest.js
-- typescript
-- postgresql
+- Typescript
+- Next.js
+- Nest.js
+- Canvas
+- Postgresql
 - Material UI
+- Sockets.io
 
-## Installation
+## How to launch
 
 Install the dependencies and devDependencies and start the server.
 
@@ -61,3 +58,9 @@ your preferred browser.
 ```sh
 http://localhost:3000/
 ```
+
+## Contributors:
+[Zjamali](https://github.com/zjamali)
+[Abdait-m](https://github.com/nowl01)
+[Iltafah](https://github.com/iltafah)
+[Mbelamin](https://github.com/mojahid-belaman)
