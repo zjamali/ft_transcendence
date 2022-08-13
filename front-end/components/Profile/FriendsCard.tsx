@@ -110,7 +110,7 @@ const FriendsCard = ({ id }: { id: string }) => {
 										size="small"
 										color="warning"
 										startIcon={<SportsEsportsIcon />}
-										sx={{ width: 100 }}
+										sx={{ width: 90, fontSize: '9.5px'}}
 									>
 										{" "}
 										In game
@@ -123,7 +123,7 @@ const FriendsCard = ({ id }: { id: string }) => {
 										size="small"
 										color="success"
 										startIcon={<CircleIcon />}
-										sx={{ width: 100 }}
+										sx={{ width: 90, fontSize: '9.5px'}}
 									>
 										{" "}
 										Online
@@ -136,7 +136,7 @@ const FriendsCard = ({ id }: { id: string }) => {
 										size="small"
 										color="error"
 										startIcon={<NoiseControlOffIcon />}
-										sx={{ width: 100 }}
+										sx={{ width: 90, fontSize: '9.5px' }}
 									>
 										{" "}
 										Offline
